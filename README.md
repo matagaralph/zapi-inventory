@@ -90,5 +90,3 @@ The SDK’s `list` method supports a `limit` option. If provided, it restricts h
 If omitted, the method retrieves **all** available records by automatically iterating through every page, bypassing Zoho’s native pagination. This can result in large payloads and slow responses.
 
 Use the unbounded `list` call with caution. When possible, combine `limit` with filters such as `created_date_start`, `created_date_end`, or other query parameters to narrow the result set and avoid unnecessary data retrieval.
-
-Follow the developer on X (formerly Twitter): [@matagaralph](https://x.com/matagaralph).
