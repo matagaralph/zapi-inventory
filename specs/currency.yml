@@ -1,0 +1,401 @@
+openapi: 3.0.0
+info:
+  title: Currency
+  description: 'A currency is a generally accepted form of money issued by the government. Each country had its own different currency.'
+  contact: {}
+  version: 1.0.0
+servers:
+  - url: 'https://www.zohoapis.com/inventory/v1'
+    description: 'API Endpoint'
+tags:
+  - name: currency
+    description: 'Currency Module'
+paths:
+  /settings/currencies:
+    post:
+      tags:
+        - currency
+      operationId: 'create_currency'
+      summary: 'Create a Currency'
+      description: 'Create a currency for transaction.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-a-currency-request'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-a-currency-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.CREATE
+    get:
+      tags:
+        - currency
+      operationId: 'list_currencies'
+      summary: 'List Currency'
+      description: 'Get list of currencies configured.'
+      parameters:
+        - name: filter_by
+          in: query
+          description: 'Filter currencies excluding base currency. Allowed Values: <code>Currencies.ExcludeBaseCurrency</code>'
+          required: false
+          schema:
+            type: string
+          example: ''
+        - name: page
+          in: query
+          description: 'Page number to be fetched. Default value is 1.'
+          required: false
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: per_page
+          in: query
+          description: 'Number of records to be fetched per page. Default value is 200.'
+          required: false
+          schema:
+            type: integer
+            default: 200
+          example: 200
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-currency-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  '/settings/currencies/{currency_id}':
+    put:
+      tags:
+        - currency
+      operationId: 'update_currency'
+      summary: 'Update a Currency'
+      description: 'Update the details of a currency.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-a-currency-request'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-a-currency-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.UPDATE
+    get:
+      tags:
+        - currency
+      operationId: 'get_currency'
+      summary: 'Get a Currency'
+      description: 'Get the details of a currency.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-a-currency-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.READ
+    delete:
+      tags:
+        - currency
+      operationId: 'delete_currency'
+      summary: 'Delete a currency'
+      description: 'Delete a currency. Currency that is associated to any transaction cannot be deleted.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-a-currency-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.DELETE
+    parameters:
+      - name: currency_id
+        in: path
+        required: true
+        description: 'Unique identifier of the currency.'
+        schema:
+          type: string
+        example: '982000000004012'
+      - $ref: '#/components/parameters/organization_id'
+components:
+  parameters:
+    organization_id:
+      name: organization_id
+      description: 'ID of the organization'
+      in: query
+      required: true
+      schema:
+        type: string
+      example: '10234695'
+  schemas:
+    gendoc-attributes-schema:
+      $ref: '#/components/schemas/currency-response'
+    currency-response:
+      type: object
+      properties:
+        currency_id:
+          $ref: '#/components/schemas/currency_id'
+        currency_code:
+          $ref: '#/components/schemas/currency_code'
+        currency_name:
+          $ref: '#/components/schemas/currency_name'
+        currency_symbol:
+          $ref: '#/components/schemas/currency_symbol'
+        price_precision:
+          $ref: '#/components/schemas/price_precision'
+        currency_format:
+          $ref: '#/components/schemas/currency_format'
+        is_base_currency:
+          $ref: '#/components/schemas/is_base_currency'
+    currency_id:
+      description: 'A unique ID for the currency.'
+      type: string
+      example: '982000000004012'
+    currency_code:
+      description: 'A unique code for the currency. Maximum length [100]'
+      type: string
+      example: AUD
+    currency_name:
+      description: 'The name for the currency.'
+      type: string
+      example: 'AUD- Australian Dollar'
+    currency_symbol:
+      description: 'A unique symbol for the currency. Maximum length [4]'
+      type: string
+      example: $
+    price_precision:
+      description: 'The precision for the price in decimals'
+      type: integer
+      example: 2
+    currency_format:
+      description: 'The format for the currency to be displayed. Maximum length [100]'
+      type: string
+      example: '1,234,567.89'
+    is_base_currency:
+      description: 'If the specified currency is the base currency of the organization or not.'
+      type: boolean
+      example: false
+    exchange_rate:
+      description: 'Foreign Exchange rate for the currency.'
+      type: number
+      format: double
+      example: 0
+    effective_date:
+      description: 'Date from when the currency will be in effect.'
+      type: string
+      example: '2016-06-05'
+    page:
+      description: 'current page number'
+      type: integer
+      example: 1
+    per_page:
+      description: 'values per page'
+      type: integer
+      example: 200
+    report_name:
+      description: 'Name of the report.'
+      type: string
+      example: Currencies
+    has_more_page:
+      description: 'Boolean to check for more pages'
+      type: boolean
+      example: false
+    filter_by:
+      description: 'Filter currencies excluding base currency. Allowed Values: <code>Currencies.ExcludeBaseCurrency</code>'
+      type: string
+    create-a-currency-request:
+      required:
+        - currency_code
+        - currency_symbol
+      type: object
+      properties:
+        currency_code:
+          $ref: '#/components/schemas/currency_code'
+        currency_symbol:
+          $ref: '#/components/schemas/currency_symbol'
+        price_precision:
+          $ref: '#/components/schemas/price_precision'
+        currency_format:
+          $ref: '#/components/schemas/currency_format'
+    create-a-currency-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The currency has been added.'
+          readOnly: true
+        currency:
+          description: 'A legal money issued by government of a country'
+          type: array
+          items:
+            $ref: '#/components/schemas/currency-response'
+    list-currency-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'List of all currencies are displayed successfully.'
+          readOnly: true
+        currencies:
+          type: array
+          items:
+            type: object
+            properties:
+              currency_id:
+                $ref: '#/components/schemas/currency_id'
+              currency_code:
+                $ref: '#/components/schemas/currency_code'
+              currency_name:
+                $ref: '#/components/schemas/currency_name'
+              currency_symbol:
+                $ref: '#/components/schemas/currency_symbol'
+              price_precision:
+                $ref: '#/components/schemas/price_precision'
+              currency_format:
+                $ref: '#/components/schemas/currency_format'
+              is_base_currency:
+                $ref: '#/components/schemas/is_base_currency'
+              exchange_rate:
+                $ref: '#/components/schemas/exchange_rate'
+              effective_date:
+                $ref: '#/components/schemas/effective_date'
+    update-a-currency-request:
+      required:
+        - currency_code
+        - currency_symbol
+      type: object
+      properties:
+        currency_code:
+          description: 'Unique code representing a currency'
+          type: string
+          example: CAD
+        currency_symbol:
+          $ref: '#/components/schemas/currency_symbol'
+        price_precision:
+          $ref: '#/components/schemas/price_precision'
+        currency_format:
+          $ref: '#/components/schemas/currency_format'
+    update-a-currency-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Currency information has been saved.'
+          readOnly: true
+        currency:
+          description: 'List the details of a currency'
+          type: array
+          items:
+            type: object
+            properties:
+              currency_id:
+                description: 'Unique ID of a currency'
+                type: string
+                example: '982000000004006'
+              currency_code:
+                description: 'Code to identify a currency'
+                type: string
+                example: CAD
+              currency_name:
+                description: 'Name of a currency'
+                type: string
+                example: 'CAD- Canadian Dollar'
+              currency_symbol:
+                $ref: '#/components/schemas/currency_symbol'
+              price_precision:
+                $ref: '#/components/schemas/price_precision'
+              currency_format:
+                $ref: '#/components/schemas/currency_format'
+              is_base_currency:
+                $ref: '#/components/schemas/is_base_currency'
+    get-a-currency-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        currency:
+          description: 'List of currencies'
+          type: array
+          items:
+            type: object
+            properties:
+              currency_id:
+                $ref: '#/components/schemas/currency_id'
+              currency_code:
+                $ref: '#/components/schemas/currency_code'
+              currency_name:
+                $ref: '#/components/schemas/currency_name'
+              currency_symbol:
+                $ref: '#/components/schemas/currency_symbol'
+              price_precision:
+                $ref: '#/components/schemas/price_precision'
+              currency_format:
+                $ref: '#/components/schemas/currency_format'
+              is_base_currency:
+                $ref: '#/components/schemas/is_base_currency'
+    delete-a-currency-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The currency has been deleted.'
+          readOnly: true
+  securitySchemes:
+    Zoho_Auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: 'https://accounts.zoho.com/oauth/v2/auth'
+          scopes:
+            ZohoInventory.settings.CREATE: 'Create Settings'
+            ZohoInventory.settings.UPDATE: 'Update Settings'
+            ZohoInventory.settings.READ: 'Read Settings'
+            ZohoInventory.settings.DELETE: 'Delete Settings'

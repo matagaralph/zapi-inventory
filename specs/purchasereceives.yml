@@ -1,0 +1,494 @@
+openapi: 3.0.0
+info:
+  title: 'Purchase Receives'
+  description: 'A new purchase receive can a be created.To create Purchase receive, URL parameter purchaseorder_id is needed.'
+  contact: {}
+  version: 1.0.0
+servers:
+  - url: 'https://www.zohoapis.com/inventory/v1'
+    description: 'API Endpoint'
+tags:
+  - name: purchasereceives
+    description: 'PurchaseReceives Module'
+paths:
+  /purchasereceives:
+    post:
+      tags:
+        - purchasereceives
+      operationId: 'create_purchase_receive'
+      summary: 'Create a purchase receive'
+      description: 'A new purchase receive can a be created.To create Purchase receive, URL parameter <code>purchaseorder_id</code> is needed.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-a-purchase-receive-request'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-a-purchase-receive-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.purchasereceives.CREATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  '/purchasereceives/{purchasereceive_id}':
+    get:
+      tags:
+        - purchasereceives
+      operationId: 'get_purchase_receive'
+      summary: 'Retrieve a Purchase Receive'
+      description: 'Fetches a Purchase Receive from Zoho Inventory.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/retrieve-a-purchase-receive-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.purchasereceives.READ
+    put:
+      tags:
+        - purchasereceives
+      operationId: 'update_purchase_receive'
+      summary: 'Update a Purchase Receive'
+      description: 'Update a existing Purchase Receive from Zoho Inventory.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-a-purchase-receive-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-a-purchase-receive-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.purchasereceives.UPDATE
+      parameters:
+        - $ref: '#/components/parameters/organization_id'
+    delete:
+      tags:
+        - purchasereceives
+      operationId: 'delete_purchase_receive'
+      summary: 'Delete a Purchase Receive'
+      description: 'Deletes a Purchase Receive from Zoho Inventory.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-a-purchase-receive-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.purchasereceives.DELETE
+    parameters:
+      - name: purchasereceive_id
+        in: path
+        required: true
+        description: 'Unique identifier of the purchase receive.'
+        schema:
+          type: string
+        example: '4815000000045035'
+      - $ref: '#/components/parameters/organization_id'
+components:
+  parameters:
+    organization_id:
+      name: organization_id
+      description: 'ID of the organization'
+      in: query
+      required: true
+      schema:
+        type: string
+      example: '10234695'
+  schemas:
+    gendoc-attributes-schema:
+      $ref: '#/components/schemas/purchase_receive-response'
+    purchase_receive-response:
+      type: object
+      properties:
+        purchaseorder_id:
+          $ref: '#/components/schemas/purchaseorder_id'
+        purchaseorder_number:
+          $ref: '#/components/schemas/purchaseorder_number'
+        receive_id:
+          $ref: '#/components/schemas/receive_id'
+        receive_number:
+          $ref: '#/components/schemas/receive_number'
+        date:
+          $ref: '#/components/schemas/date'
+        vendor_id:
+          $ref: '#/components/schemas/vendor_id'
+        vendor_name:
+          $ref: '#/components/schemas/vendor_name'
+        contact_persons:
+          $ref: '#/components/schemas/contact_persons'
+        notes:
+          $ref: '#/components/schemas/notes'
+        custom_fields:
+          $ref: '#/components/schemas/custom_fields'
+        line_items:
+          $ref: '#/components/schemas/line_items'
+        billing_address:
+          $ref: '#/components/schemas/billing_address'
+        shipping_address:
+          $ref: '#/components/schemas/shipping_address'
+        created_time:
+          $ref: '#/components/schemas/created_time'
+        last_modified_time:
+          $ref: '#/components/schemas/last_modified_time'
+    purchaseorder_id:
+      description: 'Unique ID generated by the server for the Purchase Order.'
+      type: integer
+      format: int64
+      example: 4815000000044972
+    purchaseorder_number:
+      description: 'Purchase Order number.'
+      type: string
+      example: PO-00002
+    receive_id:
+      description: 'Unique ID generated by the server for the Purchase Receive. This is used as identifier.'
+      type: integer
+      format: int64
+      example: 4815000000045035
+    receive_number:
+      description: 'Number of the Purchase Receive.'
+      type: string
+      example: PR-00002
+    date:
+      description: 'Date of Purchase Receive'
+      type: string
+      example: '2015-05-28'
+    vendor_id:
+      description: 'Unique ID generated by the server for the vendor.'
+      type: integer
+      format: int64
+      example: 4815000000044080
+    vendor_name:
+      description: 'Name of the vendor.'
+      type: string
+      example: Molly
+    contact_person_id:
+      description: 'Unique ID generated by the server for the contact person'
+      type: integer
+      format: int64
+      example: 4815000000044080
+    contact_persons:
+      description: 'Array of contact person IDs.'
+      type: array
+      items:
+        type: object
+        properties:
+          contact_person_id:
+            $ref: '#/components/schemas/contact_person_id'
+      example: 4815000000044080
+    notes:
+      description: 'Purchase Receive notes.'
+      type: string
+      example: 'Sample Note.'
+    customfield_id:
+      type: integer
+      description: 'Unique identifier of the custom field'
+      format: int64
+      example: '46000000012845'
+    value:
+      description: 'Value of the Custom Field'
+      type: string
+      example: Normal
+    custom_fields:
+      description: 'Custom fields for a purchasereceive.'
+      type: array
+      items:
+        type: object
+        properties:
+          customfield_id:
+            $ref: '#/components/schemas/customfield_id'
+          value:
+            $ref: '#/components/schemas/value'
+    line_item_id:
+      description: 'Unique ID generated by the server for each line item. This is used as an identifier.'
+      type: integer
+      format: int64
+      example: 4815000000044897
+    item_id:
+      description: 'Unique ID generated by the server for the item. This is used as an identifier.'
+      type: integer
+      format: int64
+      example: 4815000000044100
+    name:
+      description: 'Name of the line item.'
+      type: string
+      example: Laptop-white/15inch/dell
+    description:
+      description: 'Description of the line item.'
+      type: string
+      example: 'Just a sample description.'
+    item_order:
+      description: 'The order of the line items, starts from <code>0</code> by default.'
+      type: integer
+      example: 0
+    quantity:
+      description: 'Quantity of the line item.'
+      type: number
+      format: double
+      example: 2
+    unit:
+      description: 'Unit of line item.'
+      type: string
+      example: qty
+    line_items:
+      description: 'Number of line items for purchase receive. Each line item contains <code>line_item_id</code>, <code>item_id</code>, <code>name</code>, <code>description</code>, <code>item_order</code>, <code>quantity</code> and <code>unit</code>.'
+      type: array
+      items:
+        type: object
+        properties:
+          line_item_id:
+            $ref: '#/components/schemas/line_item_id'
+          item_id:
+            $ref: '#/components/schemas/item_id'
+          name:
+            $ref: '#/components/schemas/name'
+          description:
+            $ref: '#/components/schemas/description'
+          item_order:
+            $ref: '#/components/schemas/item_order'
+          quantity:
+            $ref: '#/components/schemas/quantity'
+          unit:
+            $ref: '#/components/schemas/unit'
+    address:
+      description: "Name of the street of the customer's billing address."
+      type: string
+      example: 'No:234,90 Church Street'
+    city:
+      description: "Name of the city of the customer's billing address."
+      type: string
+      example: 'New York City'
+    state:
+      description: "Name of the state of the customer's billing address."
+      type: string
+      example: 'New York'
+    zip:
+      description: "Zip code of the customer's billing address."
+      type: string
+      example: 10048
+    country:
+      description: "Name of the country of the customer's billing address."
+      type: string
+      example: U.S.A
+    fax:
+      description: "Fax number of the customer's billing address."
+      type: string
+      example: 324-524242
+    billing_address:
+      description: "Customer's billing address. It contains - <code>address</code>, <code>city</code>, <code>state</code>, <code>zip</code>, <code>country</code> and <code>fax</code>."
+      type: array
+      items:
+        type: object
+        properties:
+          address:
+            $ref: '#/components/schemas/address'
+          city:
+            $ref: '#/components/schemas/city'
+          state:
+            $ref: '#/components/schemas/state'
+          zip:
+            $ref: '#/components/schemas/zip'
+          country:
+            $ref: '#/components/schemas/country'
+          fax:
+            $ref: '#/components/schemas/fax'
+    shipping_address:
+      description: "Customer's shipping address. It contains - <code>address</code>, <code>city</code>, <code>state</code>, <code>zip</code>, <code>country</code> and <code>fax</code>."
+      type: array
+      items:
+        type: object
+        properties:
+          address:
+            $ref: '#/components/schemas/address'
+          city:
+            $ref: '#/components/schemas/city'
+          state:
+            $ref: '#/components/schemas/state'
+          zip:
+            $ref: '#/components/schemas/zip'
+          country:
+            $ref: '#/components/schemas/country'
+          fax:
+            $ref: '#/components/schemas/fax'
+    created_time:
+      description: 'Time at which the Purchase Receive was created.'
+      type: string
+      example: 2015-05-28T00:00:00.000Z
+    last_modified_time:
+      description: 'Time at which the Purchase Order details were last modified.'
+      type: string
+      example: 2015-05-28T00:00:00.000Z
+    create-a-purchase-receive-request:
+      required:
+        - receive_number
+        - line_items
+      type: object
+      properties:
+        receive_number:
+          $ref: '#/components/schemas/receive_number'
+        date:
+          $ref: '#/components/schemas/date'
+        notes:
+          $ref: '#/components/schemas/notes'
+        custom_fields:
+          $ref: '#/components/schemas/custom_fields'
+        line_items:
+          $ref: '#/components/schemas/line_items'
+    create-a-purchase-receive-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        purchase_receive:
+          $ref: '#/components/schemas/purchase_receive-response'
+    retrieve-a-purchase-receive-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        purchase_receive:
+          type: object
+          properties:
+            purchaseorder_id:
+              $ref: '#/components/schemas/purchaseorder_id'
+            purchaseorder_number:
+              $ref: '#/components/schemas/purchaseorder_number'
+            receive_id:
+              $ref: '#/components/schemas/receive_id'
+            receive_number:
+              $ref: '#/components/schemas/receive_number'
+            date:
+              $ref: '#/components/schemas/date'
+            vendor_id:
+              $ref: '#/components/schemas/vendor_id'
+            vendor_name:
+              $ref: '#/components/schemas/vendor_name'
+            contact_persons:
+              $ref: '#/components/schemas/contact_persons'
+            notes:
+              $ref: '#/components/schemas/notes'
+            custom_fields:
+              $ref: '#/components/schemas/custom_fields'
+            line_items:
+              $ref: '#/components/schemas/line_items'
+            billing_address:
+              $ref: '#/components/schemas/billing_address'
+            shipping_address:
+              $ref: '#/components/schemas/shipping_address'
+            created_time:
+              $ref: '#/components/schemas/created_time'
+            last_modified_time:
+              $ref: '#/components/schemas/last_modified_time'
+    update-a-purchase-receive-request:
+      required:
+        - receive_number
+        - line_items
+      type: object
+      properties:
+        receive_number:
+          $ref: '#/components/schemas/receive_number'
+        date:
+          $ref: '#/components/schemas/date'
+        notes:
+          $ref: '#/components/schemas/notes'
+        custom_fields:
+          $ref: '#/components/schemas/custom_fields'
+        line_items:
+          $ref: '#/components/schemas/line_items'
+    update-a-purchase-receive-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        purchase_receive:
+          type: object
+          properties:
+            purchaseorder_id:
+              $ref: '#/components/schemas/purchaseorder_id'
+            purchaseorder_number:
+              $ref: '#/components/schemas/purchaseorder_number'
+            receive_id:
+              $ref: '#/components/schemas/receive_id'
+            receive_number:
+              $ref: '#/components/schemas/receive_number'
+            date:
+              $ref: '#/components/schemas/date'
+            vendor_id:
+              $ref: '#/components/schemas/vendor_id'
+            vendor_name:
+              $ref: '#/components/schemas/vendor_name'
+            contact_persons:
+              $ref: '#/components/schemas/contact_persons'
+            notes:
+              $ref: '#/components/schemas/notes'
+            custom_fields:
+              $ref: '#/components/schemas/custom_fields'
+            line_items:
+              $ref: '#/components/schemas/line_items'
+            billing_address:
+              $ref: '#/components/schemas/billing_address'
+            shipping_address:
+              $ref: '#/components/schemas/shipping_address'
+            created_time:
+              $ref: '#/components/schemas/created_time'
+            last_modified_time:
+              $ref: '#/components/schemas/last_modified_time'
+    delete-a-purchase-receive-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The Purchase Receive has been deleted.'
+          readOnly: true
+  securitySchemes:
+    Zoho_Auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: 'https://accounts.zoho.com/oauth/v2/auth'
+          scopes:
+            ZohoInventory.purchasereceives.CREATE: 'Create Purchasereceives'
+            ZohoInventory.purchasereceives.READ: 'Read Purchasereceives'
+            ZohoInventory.purchasereceives.UPDATE: 'Update Purchasereceives'
+            ZohoInventory.purchasereceives.DELETE: 'Delete Purchasereceives'

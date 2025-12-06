@@ -1,0 +1,753 @@
+openapi: 3.0.0
+info:
+  title: Organizations
+  description: 'An Organisation represents a company or an institution running a business.'
+  contact: {}
+  version: 1.0.0
+servers:
+  - url: 'https://www.zohoapis.com/inventory/v1'
+    description: 'API Endpoint'
+tags:
+  - name: organizations
+    description: 'Organizations Module'
+paths:
+  /organizations:
+    post:
+      tags:
+        - organizations
+      operationId: 'create_organization'
+      summary: 'Create an organization'
+      description: 'Create an organization.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-an-organization-request'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-an-organization-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.CREATE
+    get:
+      tags:
+        - organizations
+      operationId: 'list_organizations'
+      summary: 'List organizations'
+      description: 'Get the list of organizations.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-organizations-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  '/organizations/{organization_id}':
+    put:
+      tags:
+        - organizations
+      operationId: 'update_organization'
+      summary: 'Update an organization'
+      description: 'Update the details of an organization.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-an-organization-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-an-organization-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.UPDATE
+    get:
+      tags:
+        - organizations
+      operationId: 'get_organization'
+      summary: 'Get an organization'
+      description: 'Get the details of an organization.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-an-organization-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.READ
+    parameters:
+      - name: organization_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: 'Unique identifier of the organization.'
+        example: '10229182'
+      - $ref: '#/components/parameters/organization_id'
+components:
+  parameters:
+    organization_id:
+      name: organization_id
+      description: 'ID of the organization'
+      in: query
+      required: true
+      schema:
+        type: string
+      example: '10234695'
+  schemas:
+    gendoc-attributes-schema:
+      $ref: '#/components/schemas/organization-response'
+    organization-response:
+      description: 'List of Organisation - details'
+      type: object
+      properties:
+        organization_id:
+          $ref: '#/components/schemas/organization_id'
+        name:
+          $ref: '#/components/schemas/name'
+        is_logo_uploaded:
+          $ref: '#/components/schemas/is_logo_uploaded'
+        is_default_org:
+          $ref: '#/components/schemas/is_default_org'
+        user_role:
+          $ref: '#/components/schemas/user_role'
+        account_created_date:
+          $ref: '#/components/schemas/account_created_date'
+        time_zone:
+          $ref: '#/components/schemas/time_zone'
+        language_code:
+          $ref: '#/components/schemas/language_code'
+        date_format:
+          $ref: '#/components/schemas/date_format'
+        field_separator:
+          $ref: '#/components/schemas/field_separator'
+        fiscal_year_start_month:
+          $ref: '#/components/schemas/fiscal_year_start_month'
+        tax_group_enabled:
+          $ref: '#/components/schemas/tax_group_enabled'
+        user_status:
+          $ref: '#/components/schemas/user_status'
+        contact_name:
+          $ref: '#/components/schemas/contact_name'
+        industry_type:
+          $ref: '#/components/schemas/industry_type'
+        address:
+          $ref: '#/components/schemas/address'
+    email:
+      description: 'email ID of the contact person of the organisation'
+      type: string
+      example: johndavid@zilliuminc.com
+    organization_id:
+      description: 'ID of the organisation generated by the server'
+      type: string
+      example: '10229182'
+    is_logo_uploaded:
+      description: 'Boolean to check if logo of the organisation if available'
+      type: string
+      example: ' '
+    name:
+      description: 'Name of the Organisation'
+      type: string
+      example: 'Zillium Inc'
+    contact_name:
+      description: 'Name of the contact person of the organisation'
+      type: string
+      example: 'John Smith'
+    user_role:
+      description: 'Role of the user(s). A user can be an admin or a non-admin user, accountant, staff member, special user ( this includes custom users)'
+      type: string
+      example: ' '
+    user_status:
+      description: 'Status of the user'
+      type: string
+      example: ' '
+    is_default_org:
+      type: boolean
+      example: false
+    plan_type:
+      description: 'Type of the plan subscribed'
+      type: number
+      format: double
+      example: 130
+    tax_group_enabled:
+      type: boolean
+      example: true
+    zi_migration_status:
+      type: number
+      format: double
+      example: 0
+    plan_name:
+      description: 'Name of the subscribed plan'
+      type: string
+      example: PROFESSIONAL
+    plan_period:
+      description: 'Duration/Cycle of the plan cycle'
+      type: string
+      example: Monthly
+    language_code:
+      description: 'Language for use'
+      type: string
+      example: en
+    fiscal_year_start_month:
+      description: 'Starting month of teh financial year'
+      type: number
+      format: double
+      example: 0
+    account_created_date:
+      description: 'Date of creation of the account'
+      type: string
+      example: '2012-02-15'
+    account_created_date_formatted:
+      type: string
+      example: '15 Feb 2012'
+    time_zone:
+      description: "Time Zone of the Organisation's country"
+      type: string
+      example: PST
+    is_org_active:
+      type: boolean
+      example: true
+    currency_id:
+      description: 'ID of the organisation curreency'
+      type: string
+      example: '982000000000190'
+    currency_code:
+      description: "Code of the organisation's base currency"
+      type: string
+      example: USD
+    currency_symbol:
+      description: 'Symbol used to denote currency of a country'
+      type: string
+      example: $
+    currency_format:
+      description: "Format of the organisation's currency"
+      type: string
+      example: '###,##0.00'
+    price_precision:
+      description: 'Precision of the number of places of decimal in price'
+      type: number
+      format: double
+      example: 2
+    portal_name:
+      description: 'Poratal name for the organisation. Length of the portal name should be greater than 4 and less than 31. Allowed chars [a-z][A-Z][0-9]'
+      type: string
+      example: zilluminc
+    street_address1:
+      description: 'Street name of the Billing address of the Organisation'
+      type: string
+      example: ' '
+    street_address2:
+      description: 'Continyed billing address of the organisation'
+      type: string
+      example: ' '
+    city:
+      description: 'City of the organisation'
+      type: string
+      example: ' '
+    state:
+      description: 'State where the organisation is located'
+      type: string
+      example: ' '
+    country:
+      description: 'Country of the Organisation'
+      type: string
+      example: U.S.A
+    zip:
+      description: "ZIP/Postal code of the organisation's location"
+      type: string
+      example: U.S.A
+    date_format:
+      type: string
+      example: 'dd MMM yyyy'
+    field_separator:
+      description: 'Separator used to classify fields'
+      type: string
+      example: ' '
+    industry_type:
+      description: 'Business type'
+      type: string
+      example: Services
+    industry_size:
+      description: 'The size of the industry. The possibe values could be "small scale", "medium scale", "large scale"'
+      type: string
+      example: ' '
+    unverified_email:
+      description: "To verify email address of the organisation's contact"
+      type: string
+      example: ' '
+    is_transaction_available:
+      description: 'To check for transaction history of the organisation'
+      type: string
+      example: ' '
+    show_org_address_as_one_field:
+      description: 'Display the complete address of the organisation in one box'
+      type: string
+      example: ' '
+    links:
+      description: 'External links of the organisation'
+      type: string
+      example: ' '
+    company_id_label:
+      description: 'Label denoting company ID'
+      type: string
+      example: 'Company ID'
+    company_id_value:
+      description: 'Value in the label "company ID"'
+      type: string
+      example: ' '
+    tax_id_label:
+      description: 'Label in "Tax ID" field'
+      type: string
+      example: 'Tax ID'
+    tax_id_value:
+      description: 'Value in the  tax ID field'
+      type: string
+      example: ' '
+    org_address:
+      description: 'Billing address of the organisation'
+      type: string
+      example: ' '
+    remit_to_address:
+      description: 'Shipping address of the organisation'
+      type: string
+      example: ' '
+    phone:
+      description: 'Contact number of the organisation'
+      type: string
+      example: ' '
+    fax:
+      description: 'FAX number of the organisation'
+      type: string
+      example: ' '
+    website:
+      description: "Organisation's website"
+      type: string
+      example: ' '
+    index:
+      description: 'Index used to list'
+      type: number
+      format: double
+      example: 1
+    value:
+      description: 'Value of the list'
+      type: string
+      example: ' '
+    label:
+      description: 'Label of each column'
+      type: string
+      example: ' '
+    companyid_label:
+      description: 'Label " Company ID "'
+      type: string
+      example: ' '
+    companyid_value:
+      description: 'value in field "company ID"'
+      type: string
+      example: ' '
+    taxid_label:
+      description: 'Label "tax ID"'
+      type: string
+      example: ' '
+    taxid_value:
+      description: 'Value in "tax ID"'
+      type: string
+      example: ' '
+    projects:
+      description: 'List of projects run by the organisation'
+      type: array
+      items:
+        type: string
+    address:
+      description: 'Billing address of the organisation'
+      type: object
+      properties:
+        street_address1:
+          $ref: '#/components/schemas/street_address1'
+        street_address2:
+          $ref: '#/components/schemas/street_address2'
+        city:
+          $ref: '#/components/schemas/city'
+        state:
+          $ref: '#/components/schemas/state'
+        country:
+          $ref: '#/components/schemas/country'
+        zip:
+          $ref: '#/components/schemas/zip'
+    organizations:
+      description: 'List of organisatiions under an account'
+      type: array
+      items:
+        type: string
+    organization:
+      description: 'List of Organisation - details'
+      type: array
+      items:
+        type: string
+    custom_fields:
+      description: 'Additional fields to describe an organisation'
+      type: array
+      items:
+        type: object
+        properties:
+          index:
+            $ref: '#/components/schemas/index'
+          value:
+            $ref: '#/components/schemas/value'
+          label:
+            $ref: '#/components/schemas/label'
+    create-an-organization-request:
+      required:
+        - name
+        - currency_code
+        - time_zone
+        - portal_name
+      type: object
+      properties:
+        name:
+          description: 'Name of the project.'
+          type: string
+          example: 'Zillium Inc'
+        fiscal_year_start_month:
+          description: 'Fiscal or financial starting year of your business. Allowed Values: <code>january</code>, <code>february</code>, <code>march</code>, <code>april</code>,<code> may</code>, <code>june</code>, <code>july</code>, <code>august</code>, <code>september</code>, <code>october</code>, <code>november</code> and <code>december</code>'
+          type: string
+          example: january
+        currency_code:
+          description: 'Standard code for currency.'
+          type: string
+          example: USD
+        time_zone:
+          description: 'Time zone in with the organization is located geographically.'
+          type: string
+          example: PST
+        date_format:
+          description: 'Format for representing the date.'
+          type: string
+          example: 'dd MMM yyyy'
+        field_separator:
+          description: 'Field separator for components in date.'
+          type: string
+          example: ' '
+        language_code:
+          description: 'language code for organization.For instance <code>en</code> represents english.'
+          type: string
+          example: en
+        industry_type:
+          $ref: '#/components/schemas/industry_type'
+        industry_size:
+          $ref: '#/components/schemas/industry_size'
+        portal_name:
+          $ref: '#/components/schemas/portal_name'
+        org_address:
+          $ref: '#/components/schemas/org_address'
+        remit_to_address:
+          $ref: '#/components/schemas/remit_to_address'
+        address:
+          $ref: '#/components/schemas/address'
+    create-an-organization-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        organization:
+          $ref: '#/components/schemas/organization-response'
+    list-organizations-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        organizations:
+          type: array
+          items:
+            type: object
+            properties:
+              organization_id:
+                $ref: '#/components/schemas/organization_id'
+              name:
+                $ref: '#/components/schemas/name'
+              contact_name:
+                $ref: '#/components/schemas/contact_name'
+              email:
+                $ref: '#/components/schemas/email'
+              is_default_org:
+                $ref: '#/components/schemas/is_default_org'
+              plan_type:
+                $ref: '#/components/schemas/plan_type'
+              tax_group_enabled:
+                $ref: '#/components/schemas/tax_group_enabled'
+              zi_migration_status:
+                $ref: '#/components/schemas/zi_migration_status'
+              plan_name:
+                $ref: '#/components/schemas/plan_name'
+              plan_period:
+                $ref: '#/components/schemas/plan_period'
+              language_code:
+                $ref: '#/components/schemas/language_code'
+              fiscal_year_start_month:
+                $ref: '#/components/schemas/fiscal_year_start_month'
+              account_created_date:
+                $ref: '#/components/schemas/account_created_date'
+              account_created_date_formatted:
+                $ref: '#/components/schemas/account_created_date_formatted'
+              time_zone:
+                $ref: '#/components/schemas/time_zone'
+              is_org_active:
+                $ref: '#/components/schemas/is_org_active'
+              currency_id:
+                $ref: '#/components/schemas/currency_id'
+              currency_code:
+                $ref: '#/components/schemas/currency_code'
+              currency_symbol:
+                $ref: '#/components/schemas/currency_symbol'
+              currency_format:
+                $ref: '#/components/schemas/currency_format'
+              price_precision:
+                $ref: '#/components/schemas/price_precision'
+    update-an-organization-request:
+      type: object
+      properties:
+        name:
+          description: 'Name of the project.'
+          type: string
+          example: 'Zillium Inc'
+        fiscal_year_start_month:
+          description: 'Fiscal or financial starting year of your business. Allowed Values: <code>january</code>, <code>february</code>, <code>march</code>, <code>april</code>,<code> may</code>, <code>june</code>, <code>july</code>, <code>august</code>, <code>september</code>, <code>october</code>, <code>november</code> and <code>december</code>'
+          type: string
+          example: january
+        is_logo_uploaded:
+          description: 'To determine whether logo is uploaded.'
+          type: boolean
+          example: true
+        time_zone:
+          description: 'Time zone in with the organization is located geographically.'
+          type: string
+          example: PST
+        date_format:
+          description: 'Format for representing the date.'
+          type: string
+          example: 'dd MMM yyyy'
+        field_separator:
+          description: 'Field separator for components in date.'
+          type: string
+          example: ' '
+        language_code:
+          description: 'language code for organization.For instance <code>en</code> represents english.'
+          type: string
+          example: en
+        org_address:
+          $ref: '#/components/schemas/org_address'
+        remit_to_address:
+          $ref: '#/components/schemas/remit_to_address'
+        address:
+          $ref: '#/components/schemas/address'
+        contact_name:
+          $ref: '#/components/schemas/contact_name'
+        phone:
+          $ref: '#/components/schemas/phone'
+        fax:
+          $ref: '#/components/schemas/fax'
+        website:
+          $ref: '#/components/schemas/website'
+        email:
+          $ref: '#/components/schemas/email'
+        currency_id:
+          $ref: '#/components/schemas/currency_id'
+        companyid_label:
+          $ref: '#/components/schemas/companyid_label'
+        companyid_value:
+          $ref: '#/components/schemas/companyid_value'
+        taxid_label:
+          $ref: '#/components/schemas/taxid_label'
+        taxid_value:
+          $ref: '#/components/schemas/taxid_value'
+        custom_fields:
+          $ref: '#/components/schemas/custom_fields'
+    update-an-organization-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        organization:
+          description: 'List of Organisation - details'
+          type: object
+          properties:
+            organization_id:
+              $ref: '#/components/schemas/organization_id'
+            name:
+              $ref: '#/components/schemas/name'
+            is_default_org:
+              $ref: '#/components/schemas/is_default_org'
+            account_created_date:
+              $ref: '#/components/schemas/account_created_date'
+            time_zone:
+              $ref: '#/components/schemas/time_zone'
+            language_code:
+              $ref: '#/components/schemas/language_code'
+            date_format:
+              $ref: '#/components/schemas/date_format'
+            field_separator:
+              $ref: '#/components/schemas/field_separator'
+            fiscal_year_start_month:
+              $ref: '#/components/schemas/fiscal_year_start_month'
+            contact_name:
+              $ref: '#/components/schemas/contact_name'
+            industry_type:
+              $ref: '#/components/schemas/industry_type'
+            industry_size:
+              $ref: '#/components/schemas/industry_size'
+            company_id_label:
+              $ref: '#/components/schemas/company_id_label'
+            company_id_value:
+              $ref: '#/components/schemas/company_id_value'
+            tax_id_label:
+              $ref: '#/components/schemas/tax_id_label'
+            tax_id_value:
+              $ref: '#/components/schemas/tax_id_value'
+            currency_id:
+              $ref: '#/components/schemas/currency_id'
+            currency_code:
+              $ref: '#/components/schemas/currency_code'
+            currency_symbol:
+              $ref: '#/components/schemas/currency_symbol'
+            currency_format:
+              $ref: '#/components/schemas/currency_format'
+            price_precision:
+              $ref: '#/components/schemas/price_precision'
+            org_address:
+              $ref: '#/components/schemas/org_address'
+            remit_to_address:
+              $ref: '#/components/schemas/remit_to_address'
+            phone:
+              $ref: '#/components/schemas/phone'
+            fax:
+              $ref: '#/components/schemas/fax'
+            website:
+              $ref: '#/components/schemas/website'
+            email:
+              $ref: '#/components/schemas/email'
+            is_org_active:
+              $ref: '#/components/schemas/is_org_active'
+            address:
+              $ref: '#/components/schemas/address'
+            custom_fields:
+              $ref: '#/components/schemas/custom_fields'
+    get-an-organization-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        organization:
+          description: 'List of Organisation - details'
+          type: object
+          properties:
+            organization_id:
+              $ref: '#/components/schemas/organization_id'
+            name:
+              $ref: '#/components/schemas/name'
+            is_default_org:
+              $ref: '#/components/schemas/is_default_org'
+            account_created_date:
+              $ref: '#/components/schemas/account_created_date'
+            time_zone:
+              $ref: '#/components/schemas/time_zone'
+            language_code:
+              $ref: '#/components/schemas/language_code'
+            date_format:
+              $ref: '#/components/schemas/date_format'
+            field_separator:
+              $ref: '#/components/schemas/field_separator'
+            fiscal_year_start_month:
+              $ref: '#/components/schemas/fiscal_year_start_month'
+            contact_name:
+              $ref: '#/components/schemas/contact_name'
+            industry_type:
+              $ref: '#/components/schemas/industry_type'
+            industry_size:
+              $ref: '#/components/schemas/industry_size'
+            company_id_label:
+              $ref: '#/components/schemas/company_id_label'
+            company_id_value:
+              $ref: '#/components/schemas/company_id_value'
+            tax_id_label:
+              $ref: '#/components/schemas/tax_id_label'
+            tax_id_value:
+              $ref: '#/components/schemas/tax_id_value'
+            currency_id:
+              $ref: '#/components/schemas/currency_id'
+            currency_code:
+              $ref: '#/components/schemas/currency_code'
+            currency_symbol:
+              $ref: '#/components/schemas/currency_symbol'
+            currency_format:
+              $ref: '#/components/schemas/currency_format'
+            price_precision:
+              $ref: '#/components/schemas/price_precision'
+            org_address:
+              $ref: '#/components/schemas/org_address'
+            remit_to_address:
+              $ref: '#/components/schemas/remit_to_address'
+            phone:
+              $ref: '#/components/schemas/phone'
+            fax:
+              $ref: '#/components/schemas/fax'
+            website:
+              $ref: '#/components/schemas/website'
+            email:
+              $ref: '#/components/schemas/email'
+            is_org_active:
+              $ref: '#/components/schemas/is_org_active'
+            address:
+              $ref: '#/components/schemas/address'
+            custom_fields:
+              $ref: '#/components/schemas/custom_fields'
+  securitySchemes:
+    Zoho_Auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: 'https://accounts.zoho.com/oauth/v2/auth'
+          scopes:
+            ZohoInventory.settings.CREATE: 'Create Settings'
+            ZohoInventory.settings.UPDATE: 'Update Settings'
+            ZohoInventory.settings.READ: 'Read Settings'

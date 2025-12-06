@@ -1,0 +1,470 @@
+openapi: 3.0.0
+info:
+  title: 'Price Lists'
+  description: 'Price lists used to increase or decrease a product selling or purchase price by a percentage or amount'
+  contact: {}
+  version: 1.0.0
+servers:
+  - url: 'https://www.zohoapis.com/inventory/v1'
+    description: 'API Endpoint'
+tags:
+  - name: pricelists
+    description: 'PriceLists Module'
+paths:
+  /pricebooks:
+    post:
+      tags:
+        - pricelists
+      operationId: 'create_pricebook'
+      summary: 'Create a pricebook'
+      description: 'create a new pricebook.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-a-pricebook-request'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-a-pricebook-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.CREATE
+    get:
+      tags:
+        - pricelists
+      operationId: 'list_pricebooks'
+      summary: 'List all pricebooks'
+      description: 'List all the available pricebooks in your zoho inventory.'
+      parameters:
+        - name: page
+          in: query
+          description: 'Page number to be fetched. Default value is 1.'
+          required: false
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: per_page
+          in: query
+          description: 'Number of records to be fetched per page. Default value is 200.'
+          required: false
+          schema:
+            type: integer
+            default: 200
+          example: 200
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-all-pricebooks-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  '/pricebooks/{pricebook_id}':
+    put:
+      tags:
+        - pricelists
+      operationId: 'update_pricebook'
+      summary: 'Update pricebook'
+      description: 'update existing pricebook.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-pricebook-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-pricebook-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.UPDATE
+    delete:
+      tags:
+        - pricelists
+      operationId: 'delete_pricebook'
+      summary: 'Delete the pricebook'
+      description: 'Delete the pricebook.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-the-pricebook-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.DELETE
+    parameters:
+      - name: pricebook_id
+        in: path
+        required: true
+        description: 'Unique identifier of the pricebook.'
+        schema:
+          type: string
+        example: 130426000002924000
+      - $ref: '#/components/parameters/organization_id'
+  '/pricebooks/{pricebook_id}/active':
+    post:
+      tags:
+        - pricelists
+      operationId: 'mark_pricebook_active'
+      summary: 'Mark as Active'
+      description: 'Mark the pricebook as Active.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mark-as-active-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.CREATE
+    parameters:
+      - name: pricebook_id
+        in: path
+        required: true
+        description: 'Unique identifier of the pricebook.'
+        schema:
+          type: string
+        example: 130426000002924000
+      - $ref: '#/components/parameters/organization_id'
+  '/pricebooks/{pricebook_id}/inactive':
+    post:
+      tags:
+        - pricelists
+      operationId: 'mark_pricebook_inactive'
+      summary: 'Mark as Inactive'
+      description: 'Mark the pricebook as Inactive.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mark-as-inactive-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.CREATE
+    parameters:
+      - name: pricebook_id
+        in: path
+        required: true
+        description: 'Unique identifier of the pricebook.'
+        schema:
+          type: string
+        example: 130426000002924000
+      - $ref: '#/components/parameters/organization_id'
+components:
+  parameters:
+    organization_id:
+      name: organization_id
+      description: 'ID of the organization'
+      in: query
+      required: true
+      schema:
+        type: string
+      example: '10234695'
+  schemas:
+    gendoc-attributes-schema:
+      $ref: '#/components/schemas/pricebook'
+    pricebook_id:
+      description: 'Unique ID generated by server for the price book'
+      type: integer
+      format: int64
+      example: 130426000002924000
+    name:
+      description: 'Name of the pricebook'
+      type: string
+      example: 'Price List 1'
+    description:
+      description: 'Description about the pricebook'
+      type: string
+      example: 'Flash sale'
+    currency_id:
+      description: 'The currenct id of the currency'
+      type: string
+      example: 982000000000190
+    decimal_place:
+      description: 'Decimal place for pricebook.'
+      type: integer
+      example: 1
+    is_default:
+      description: 'To check the default pricebook.Allowed values: <code>true</code>,<code>false</code>'
+      type: boolean
+      example: true
+    is_increase:
+      description: 'Mark up or Mark down to discounts.Allowed values: <code>true</code>,<code>false</code>'
+      type: boolean
+      example: true
+    percentage:
+      description: 'About percentage of discounts'
+      type: integer
+      example: 4
+    pricebook_type:
+      description: 'Type of the pricebook.Allowed values: <code>per_item</code>,<code>fixed_percentage</code>'
+      type: string
+      example: fixed_percentage
+    rounding_type:
+      description: 'Type of the rounding.Allowed values: <code>no_rounding</code>,<code>round_to_dollor</code>,<code>round_to_dollar_minus_01</code>,<code>round_to_half_dollar</code>,<code>round_to_half_dollar_minus_01</code>'
+      type: string
+      example: round_to_dollar_minus_01
+    sales_or_purchase_type:
+      description: 'Whether its sales or purchase type.Allowed values: <code>sales</code>,<code>purchases</code>'
+      type: string
+      example: sales
+    status:
+      description: 'Status of the price book'
+      type: string
+      example: active
+    item_id:
+      description: 'Unique ID generated by server for Item'
+      type: integer
+      format: int64
+      example: 17775000000227648
+    pricebook_rate:
+      description: 'Rate of the price book for the Items'
+      type: integer
+      example: 22
+    pricebook_item_id:
+      description: 'Unique ID generated by the server for each pricebook line item'
+      type: integer
+      format: int64
+      example: 17775000000227544
+    pricebook_items:
+      description: "Items for the price book , Given when choosing 'per item' as 'pricebook type'"
+      type: array
+      items:
+        type: object
+        properties:
+          item_id:
+            $ref: '#/components/schemas/item_id'
+          pricebook_rate:
+            $ref: '#/components/schemas/pricebook_rate'
+          pricebook_item_id:
+            $ref: '#/components/schemas/pricebook_item_id'
+    currency_code:
+      description: 'Code based on currency'
+      type: string
+    pricebook:
+      description: 'List all the pricebook details'
+      type: object
+      properties:
+        currency_code:
+          $ref: '#/components/schemas/currency_code'
+        currency_id:
+          $ref: '#/components/schemas/currency_id'
+        decimal_place:
+          $ref: '#/components/schemas/decimal_place'
+        description:
+          $ref: '#/components/schemas/description'
+        is_default:
+          $ref: '#/components/schemas/is_default'
+        is_increase:
+          $ref: '#/components/schemas/is_increase'
+        name:
+          $ref: '#/components/schemas/name'
+        percentage:
+          $ref: '#/components/schemas/percentage'
+        pricebook_id:
+          $ref: '#/components/schemas/pricebook_id'
+        pricebook_items:
+          $ref: '#/components/schemas/pricebook_items'
+        pricebook_type:
+          $ref: '#/components/schemas/pricebook_type'
+        rounding_type:
+          $ref: '#/components/schemas/rounding_type'
+        sales_or_purchase_type:
+          $ref: '#/components/schemas/sales_or_purchase_type'
+        status:
+          $ref: '#/components/schemas/status'
+    create-a-pricebook-request:
+      required:
+        - name
+        - pricebook_type
+        - is_increase
+        - currency_id
+        - sales_or_purchase_type
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/name'
+        description:
+          $ref: '#/components/schemas/description'
+        currency_id:
+          $ref: '#/components/schemas/currency_id'
+        pricebook_type:
+          $ref: '#/components/schemas/pricebook_type'
+        is_increase:
+          $ref: '#/components/schemas/is_increase'
+        rounding_type:
+          $ref: '#/components/schemas/rounding_type'
+        pricebook_items:
+          description: "Items for the price book , Given when choosing 'per item' as 'pricebook type'"
+          type: array
+          items:
+            type: object
+            properties:
+              item_id:
+                $ref: '#/components/schemas/item_id'
+              pricebook_rate:
+                $ref: '#/components/schemas/pricebook_rate'
+        sales_or_purchase_type:
+          $ref: '#/components/schemas/sales_or_purchase_type'
+    create-a-pricebook-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Price list has been created.'
+          readOnly: true
+        pricebook:
+          $ref: '#/components/schemas/pricebook'
+    list-all-pricebooks-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        pricebooks:
+          type: array
+          items:
+            type: object
+            properties:
+              currency_code:
+                $ref: '#/components/schemas/currency_code'
+              currency_id:
+                $ref: '#/components/schemas/currency_id'
+              decimal_place:
+                $ref: '#/components/schemas/decimal_place'
+              description:
+                $ref: '#/components/schemas/description'
+              is_default:
+                $ref: '#/components/schemas/is_default'
+              is_increase:
+                $ref: '#/components/schemas/is_increase'
+              name:
+                $ref: '#/components/schemas/name'
+              percentage:
+                $ref: '#/components/schemas/percentage'
+              pricebook_id:
+                $ref: '#/components/schemas/pricebook_id'
+              pricebook_items:
+                $ref: '#/components/schemas/pricebook_items'
+              pricebook_type:
+                $ref: '#/components/schemas/pricebook_type'
+              rounding_type:
+                $ref: '#/components/schemas/rounding_type'
+              sales_or_purchase_type:
+                $ref: '#/components/schemas/sales_or_purchase_type'
+              status:
+                $ref: '#/components/schemas/status'
+    update-pricebook-request:
+      required:
+        - name
+        - pricebook_type
+        - is_increase
+        - currency_id
+        - sales_or_purchase_type
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/name'
+        description:
+          $ref: '#/components/schemas/description'
+        currency_id:
+          $ref: '#/components/schemas/currency_id'
+        pricebook_type:
+          $ref: '#/components/schemas/pricebook_type'
+        is_increase:
+          $ref: '#/components/schemas/is_increase'
+        rounding_type:
+          $ref: '#/components/schemas/rounding_type'
+        pricebook_items:
+          $ref: '#/components/schemas/pricebook_items'
+        sales_or_purchase_type:
+          $ref: '#/components/schemas/sales_or_purchase_type'
+    update-pricebook-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Price list has been updated.'
+          readOnly: true
+        pricebook:
+          $ref: '#/components/schemas/pricebook'
+    delete-the-pricebook-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Price list has been deleted.'
+          readOnly: true
+    mark-as-active-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The price list has been marked active.'
+          readOnly: true
+    mark-as-inactive-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The price list has been marked inactive.'
+          readOnly: true
+  securitySchemes:
+    Zoho_Auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: 'https://accounts.zoho.com/oauth/v2/auth'
+          scopes:
+            ZohoInventory.settings.CREATE: 'Create Settings'
+            ZohoInventory.settings.UPDATE: 'Update Settings'
+            ZohoInventory.settings.READ: 'Read Settings'
+            ZohoInventory.settings.DELETE: 'Delete Settings'

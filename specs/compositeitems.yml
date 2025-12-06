@@ -1,0 +1,1428 @@
+openapi: 3.0.0
+info:
+  title: 'Composite Items'
+  description: 'A form or version of an composite item that differs in some respect from other forms of the same or from a standard. You can create your composite items by associating multiple items and their respective quantities.'
+  contact: {}
+  version: 1.0.0
+servers:
+  - url: 'https://www.zohoapis.com/inventory/v1'
+    description: 'API Endpoint'
+tags:
+  - name: compositeitems
+    description: 'CompositeItems Module'
+paths:
+  /compositeitems:
+    post:
+      tags:
+        - compositeitems
+      operationId: 'create_composite_item'
+      summary: 'Creating a Composite Item'
+      description: "A new composite item can be created after creating items that we want to associcate with composite item. User can attach image for composite item by calling Different API 'https://www.zohoapis.com/inventory/v1/compositeitems/{composite_item_id}/image', passing form-data parameter image i.e. -F image=bag_s.jpg"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/creating-a-composite-item-request'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/creating-a-composite-item-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.compositeitems.CREATE
+    get:
+      tags:
+        - compositeitems
+      operationId: 'list_composite_items'
+      summary: 'List All Composite Items'
+      description: 'List of all composite items.'
+      parameters:
+        - name: page
+          in: query
+          description: 'Page Number'
+          required: false
+          schema:
+            type: integer
+          example: 1
+        - name: per_page
+          in: query
+          description: 'Items to be displayed per page'
+          required: false
+          schema:
+            type: integer
+          example: 25
+        - name: sort_column
+          in: query
+          description: 'column to be used for sorting. Allowed values: <code>name</code>,<code>sku</code>,<code>rate</code>,<code>tax_name</code>,<code>purchase_rate</code>,<code>created_time</code>,<code>last_modified_time</code>,<code>reorder_level</code>'
+          required: false
+          schema:
+            type: string
+          example: ''
+        - name: sort_order
+          in: query
+          description: 'order used for sorting'
+          required: false
+          schema:
+            type: string
+          example: A
+        - name: filter_by
+          in: query
+          description: 'Filter items by status. Allowed values: <code>Status.All</code>,<code>Status.Active</code>,<code>Inactive</code>,<code>Lowstock</code>'
+          required: false
+          schema:
+            type: string
+          example: ''
+        - name: usestate
+          in: query
+          description: 'Whether current filter needs to be saved'
+          required: false
+          schema:
+            type: boolean
+          example: true
+        - name: response_option
+          in: query
+          description: 'response format number'
+          required: false
+          schema:
+            type: integer
+          example: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-all-composite-items-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.compositeitems.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  '/compositeitems/{composite_item_id}':
+    get:
+      tags:
+        - compositeitems
+      operationId: 'get_composite_item'
+      summary: 'Retrieving a Composite Item'
+      description: 'Retrieving details of an existing compostie item.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/retrieving-a-composite-item-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.compositeitems.READ
+    put:
+      tags:
+        - compositeitems
+      operationId: 'update_composite_item'
+      summary: 'Updating a composite item'
+      description: 'Updating details of an existing composite item.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updating-a-composite-item-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/updating-a-composite-item-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.compositeitems.UPDATE
+    delete:
+      tags:
+        - compositeitems
+      operationId: 'delete_composite_item'
+      summary: 'Deleting a Composite Item'
+      description: 'Deleting an existing Composite Item.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deleting-a-composite-item-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.compositeitems.DELETE
+    parameters:
+      - name: composite_item_id
+        in: path
+        required: true
+        description: 'Unique identifier of the composite item.'
+        schema:
+          type: string
+        example: 504366000000053250
+      - $ref: '#/components/parameters/organization_id'
+  '/compositeitems/{composite_item_id}/active':
+    post:
+      tags:
+        - compositeitems
+      operationId: 'mark_composite_item_active'
+      summary: 'Mark as Active'
+      description: 'Changing status of an existing composite item to active.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mark-as-active-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.compositeitems.CREATE
+    parameters:
+      - name: composite_item_id
+        in: path
+        required: true
+        description: 'Unique identifier of the composite item.'
+        schema:
+          type: string
+        example: 504366000000053250
+      - $ref: '#/components/parameters/organization_id'
+  '/compositeitems/{composite_item_id}/inactive':
+    post:
+      tags:
+        - compositeitems
+      operationId: 'mark_composite_item_inactive'
+      summary: 'Mark as Inactive'
+      description: 'Changing status of an existing composite item to inactive.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mark-as-inactive-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.compositeitems.CREATE
+    parameters:
+      - name: composite_item_id
+        in: path
+        required: true
+        description: 'Unique identifier of the composite item.'
+        schema:
+          type: string
+        example: 504366000000053250
+      - $ref: '#/components/parameters/organization_id'
+  /bundles:
+    post:
+      tags:
+        - compositeitems
+      operationId: 'create_assemblies'
+      summary: 'Create Assemblies'
+      description: 'Assemblies is the technique of putting together different components in desired quantities to produce a single commodity. These components could be goods, services and other non-inventory items of your choice.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-bundle-request'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-bundle-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.compositeitems.CREATE
+    get:
+      tags:
+        - compositeitems
+      operationId: 'list_assemblies'
+      summary: 'Assemblies History'
+      description: 'List of all Assemblies of a given composite item.'
+      parameters:
+        - name: composite_item_id
+          in: query
+          description: 'Unique ID generated for the composite item by the server. This is used as identifier'
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 504366000000053250
+        - name: page
+          in: query
+          description: 'Page number to be fetched. Default value is 1.'
+          required: false
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: per_page
+          in: query
+          description: 'Number of records to be fetched per page. Default value is 200.'
+          required: false
+          schema:
+            type: integer
+            default: 200
+          example: 200
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bundling-history-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.compositeitems.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  '/bundles/{bundle_id}':
+    get:
+      tags:
+        - compositeitems
+      operationId: 'get_assembly'
+      summary: 'Retrieve Assemblies'
+      description: 'Fetches the details for an existing Assemblies.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/retrieve-bundle-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.compositeitems.READ
+    delete:
+      tags:
+        - compositeitems
+      operationId: 'delete_assembly'
+      summary: 'Delete Assemblies'
+      description: 'Deletes an existing Assemblies from Zoho Inventory.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-bundle-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.compositeitems.DELETE
+    parameters:
+      - name: bundle_id
+        in: path
+        required: true
+        description: 'Unique identifier of the bundle.'
+        schema:
+          type: string
+        example: 504366000000053250
+      - $ref: '#/components/parameters/organization_id'
+components:
+  parameters:
+    organization_id:
+      name: organization_id
+      description: 'ID of the organization'
+      in: query
+      required: true
+      schema:
+        type: string
+      example: '10234695'
+  schemas:
+    gendoc-attributes-schema:
+      $ref: '#/components/schemas/composite_item'
+    name:
+      description: 'Name of the composite item'
+      type: string
+      example: 'Combo of Apple IPhone and Smartwatch'
+    composite_item_name:
+      description: 'Name of the composite item'
+      type: string
+      example: 'Combo of Apple IPhone and Smartwatch'
+    sku:
+      description: 'Stock Keeping Unit value of the item. It should be unique throughout the product'
+      type: string
+      example: SKUIS
+    composite_item_sku:
+      description: 'Stock Keeping Unit value of the composite item. It should be unique throughout the product'
+      type: string
+      example: SKUIS
+    unit:
+      description: 'Unit of Item'
+      type: string
+      example: units
+    reference_number:
+      description: 'Reference number for the Assemblies.'
+      type: string
+      example: REF-B-00005
+    description:
+      description: 'Sample Description.'
+      type: string
+      example: 'Just a sample description'
+    purchase_description:
+      description: 'Purchase description of the item'
+      type: string
+      example: 'Composite item purchase description'
+    composite_item_id:
+      description: 'Unique ID generated for the composite item by the server. This is used as identifier'
+      type: integer
+      format: int64
+      example: 504366000000053250
+    bundle_id:
+      description: 'Unique ID generated for the Assemblies by the server. This is used as identifier'
+      type: integer
+      format: int64
+      example: 504366000000053250
+    item_id:
+      description: 'Unique ID generated by the server for the Item. This is used as an identifier.'
+      type: integer
+      format: int64
+      example: 4815000000044208
+    rate:
+      description: 'Selling price of the item'
+      type: number
+      format: double
+      example: 85000
+    pricebook_rate:
+      description: "Price list applied on the item's selling price."
+      type: number
+      format: double
+      example: 85000
+    purchase_rate:
+      description: 'Buying price of the item'
+      type: number
+      format: double
+      example: 30000
+    initial_stock:
+      description: 'Initial stock of item'
+      type: number
+      format: double
+      example: 2
+    initial_stock_rate:
+      description: 'Average purchase price of initial stock. This is required for FIFO cost lot tracking and inventory valuation'
+      type: number
+      format: double
+      example: 30000
+    upc:
+      description: 'Unique Product Code, 12 digit unique code of the item'
+      type: integer
+      format: int64
+      example: 746325287436
+    ean:
+      description: 'European Article Number, 13 digit barcode number of the item'
+      type: integer
+      format: int64
+      example: 5789414385764
+    isbn:
+      description: 'International Standard Book Number, 13 digit unique commercial book identifier barcode of the item'
+      type: integer
+      format: int64
+      example: 368302334
+    part_number:
+      description: 'MPN - Manufacturing Part Number, unambiguously identifies a part design'
+      type: string
+      example: JHFKE7GK7
+    status:
+      description: 'Status of the Item'
+      type: string
+      example: active
+    is_combo_product:
+      description: 'Defines whether the item is composite or not <code>true for composite items</code>'
+      type: boolean
+      example: true
+    item_type:
+      description: 'Type of item <code>Always inventory</code>'
+      type: string
+      example: inventory
+    is_taxable:
+      description: 'To check if the item is taxable or not <code>true if the item is taxable, else false </code>'
+      type: boolean
+      example: true
+    reorder_level:
+      description: 'Reorder point of the item'
+      type: number
+      format: double
+      example: 1
+    vendor_id:
+      description: 'Unique ID generated by the server for preferred vendor to buy this composite item'
+      type: integer
+      format: int64
+      example: 504366000000053250
+    vendor_name:
+      description: 'Name of the preferred vendor'
+      type: string
+      example: 'Mr. vendor combo'
+    line_items:
+      description: 'A assemblies can contain multiple line items. Each line item contains <code>item_id</code>,<code>name</code>,<code>description</code>,<code>quantity_consumed</code>,<code>unit</code>,<code>account_id</code>,<code>location_id</code>.'
+      type: array
+      items:
+        type: object
+        properties:
+          item_id:
+            $ref: '#/components/schemas/item_id'
+          line_item_id:
+            $ref: '#/components/schemas/line_item_id'
+          name:
+            $ref: '#/components/schemas/name'
+          description:
+            $ref: '#/components/schemas/description'
+          quantity_consumed:
+            $ref: '#/components/schemas/quantity_consumed'
+          unit:
+            $ref: '#/components/schemas/unit'
+          account_id:
+            $ref: '#/components/schemas/account_id'
+          account_name:
+            $ref: '#/components/schemas/account_name'
+          location_id:
+            $ref: '#/components/schemas/location_id'
+          location_name:
+            $ref: '#/components/schemas/location_name'
+          rate:
+            $ref: '#/components/schemas/rate'
+    line_item_id:
+      description: 'Unique ID generated by the server for mapping the associated item with composite item'
+      type: integer
+      format: int64
+      example: 504366000000053250
+    quantity:
+      description: 'Quantity of item associated with the composite item'
+      type: number
+      format: double
+      example: 1
+    quantity_to_bundle:
+      description: 'Quantity of Assembly to be Assembled.'
+      type: number
+      format: double
+      example: 1
+    quantity_consumed:
+      description: 'Quantity of item to be Assembled.'
+      type: number
+      format: double
+      example: 1
+    location_id:
+      description: 'Location ID'
+      type: string
+      example: '460000000038080'
+    location_name:
+      description: 'Name of the location'
+      type: string
+      example: 'Head Office'
+    tax_id:
+      description: 'Unique ID generated by the server for the tax .'
+      type: integer
+      format: int64
+      example: 504366000000053100
+    tax_name:
+      description: 'Name of the tax applied on selling this item'
+      type: string
+      example: VAT
+    tax_percentage:
+      description: 'Percentage at which the item is taxed'
+      type: number
+      format: double
+      example: 13
+    tax_type:
+      description: 'Type of tax. It can either Tax or Group Tax'
+      type: string
+      example: tax
+    custom_field_id:
+      description: 'Unique ID generated by the server for the custom field.'
+      type: integer
+      format: int64
+      example: 504366000000053400
+    index:
+      description: 'Index of the custom field. It can hold any value from 1 to 10.'
+      type: integer
+      example: 1
+    label:
+      description: 'Label of the custom field.'
+      type: string
+      example: 'VAT ID'
+    value:
+      description: 'Value of the custom field.'
+      type: string
+      example: GBGD078
+    custom_fields:
+      description: 'Custom fields are used to add more information about the item'
+      type: array
+      items:
+        type: object
+        properties:
+          custom_field_id:
+            $ref: '#/components/schemas/custom_field_id'
+          value:
+            $ref: '#/components/schemas/value'
+          index:
+            $ref: '#/components/schemas/index'
+          label:
+            $ref: '#/components/schemas/label'
+    date:
+      description: 'The date on which Assemblies is done'
+      type: string
+      format: date
+      example: '2017-01-05'
+    page:
+      description: 'Page Number'
+      type: integer
+      example: 1
+    per_page:
+      description: 'Items to be displayed per page'
+      type: integer
+      example: 25
+    sort_column:
+      description: 'column to be used for sorting. Allowed values: <code>name</code>,<code>sku</code>,<code>rate</code>,<code>tax_name</code>,<code>purchase_rate</code>,<code>created_time</code>,<code>last_modified_time</code>,<code>reorder_level</code>'
+      type: string
+    sort_order:
+      description: 'order used for sorting'
+      type: string
+      example: A
+    filter_by:
+      description: 'Filter items by status. Allowed values: <code>Status.All</code>,<code>Status.Active</code>,<code>Inactive</code>,<code>Lowstock</code>'
+      type: string
+    usestate:
+      description: 'Whether current filter needs to be saved'
+      type: boolean
+      example: true
+    response_option:
+      description: 'response format number'
+      type: integer
+      example: 0
+    operation_type:
+      description: 'Type of operation'
+      type: string
+      example: Updated
+    available_stock:
+      description: 'Stock based on Shipments and Receives'
+      type: number
+      format: double
+      example: 2
+    actual_available_stock:
+      description: 'Stock based on Shipments and Receives minus ordered stock'
+      type: number
+      format: double
+      example: 2
+    purchase_account_id:
+      description: 'Unique ID generated by the server for the type of purchase'
+      type: integer
+      format: int64
+      example: 504366000000034000
+    purchase_account_name:
+      description: 'Type of purchase under which the composite item was bought'
+      type: string
+      example: 'Cost of Goods Sold'
+    account_id:
+      description: 'Unique ID generated by the server for the type of sale of this item'
+      type: integer
+      format: int64
+      example: 504366000000000400
+    account_name:
+      description: 'Type of sale under which the composite item is sold'
+      type: string
+      example: sales
+    inventory_account_id:
+      description: 'Unique ID generated by the server for the type of inventory for this item'
+      type: integer
+      format: int64
+      example: 504366000000034000
+    inventory_account_name:
+      description: 'Name of inventory type'
+      type: string
+      example: 'Inventory Asset'
+    product_type:
+      description: 'Type of the product.'
+      type: string
+      example: goods
+    source:
+      description: source
+      type: string
+      example: user
+    stock_on_hand:
+      description: 'Stock based on Invoices and Bills'
+      type: number
+      format: double
+      example: 2
+    asset_value:
+      description: 'value of the composite items based on purchase rate'
+      type: number
+      format: double
+    image_id:
+      description: 'Unique identifier generated by the server for item image'
+      type: integer
+      format: int64
+      example: 8408722000000019000
+    image_name:
+      description: 'Name of the image'
+      type: string
+      example: img1.jpg
+    image_type:
+      description: 'Type of the image <code>Only images with gif,png,jpeg,jpg,bmp extensions are allowed</code>'
+      type: string
+      example: jpg
+    mapped_items:
+      description: 'Items that are associated with the composite item'
+      type: array
+      items:
+        type: object
+        properties:
+          line_item_id:
+            $ref: '#/components/schemas/line_item_id'
+          item_id:
+            $ref: '#/components/schemas/item_id'
+          name:
+            $ref: '#/components/schemas/name'
+          rate:
+            $ref: '#/components/schemas/rate'
+          purchase_rate:
+            $ref: '#/components/schemas/purchase_rate'
+          sku:
+            $ref: '#/components/schemas/sku'
+          image_id:
+            $ref: '#/components/schemas/image_id'
+          image_name:
+            $ref: '#/components/schemas/image_name'
+          purchase_description:
+            $ref: '#/components/schemas/purchase_description'
+          image_type:
+            $ref: '#/components/schemas/image_type'
+          unit:
+            $ref: '#/components/schemas/unit'
+          is_combo_product:
+            $ref: '#/components/schemas/is_combo_product'
+          description:
+            $ref: '#/components/schemas/description'
+          quantity:
+            $ref: '#/components/schemas/quantity'
+          stock_on_hand:
+            $ref: '#/components/schemas/stock_on_hand'
+          available_stock:
+            $ref: '#/components/schemas/available_stock'
+          actual_available_stock:
+            $ref: '#/components/schemas/actual_available_stock'
+    created_time:
+      description: 'Time at which the contact was created.'
+      type: string
+      example: '2013-08-05'
+    last_modified_time:
+      description: 'Search using the Last Modified Time of the Base Currency Adjustment'
+      type: string
+    tax_specification:
+      description: 'Type of tax. It can be <code> intra</code> or <code> inter</code>'
+      type: string
+      example: intra
+      x-node_available_in:
+        - in
+      x-node_unavailable_in: []
+    item_tax_preferences:
+      type: array
+      description: 'List of tax preferences of the item'
+      items:
+        type: object
+        properties:
+          tax_id:
+            $ref: '#/components/schemas/tax_id'
+          tax_specification:
+            $ref: '#/components/schemas/tax_specification'
+      x-node_available_in:
+        - in
+      x-node_unavailable_in: []
+    hsn_or_sac:
+      description: 'HSN Code of the item'
+      type: string
+      example: 85423100
+      x-node_available_in:
+        - in
+      x-node_unavailable_in: []
+    is_completed:
+      description: 'Denotes the status of the assemblies. Currently, this has to be true since we didnt support any other status as of now.'
+      type: boolean
+      example: true
+    composite_item:
+      type: object
+      properties:
+        composite_item_id:
+          $ref: '#/components/schemas/composite_item_id'
+        name:
+          $ref: '#/components/schemas/name'
+        unit:
+          $ref: '#/components/schemas/unit'
+        tax_id:
+          $ref: '#/components/schemas/tax_id'
+        description:
+          $ref: '#/components/schemas/description'
+        tax_name:
+          $ref: '#/components/schemas/tax_name'
+        tax_percentage:
+          $ref: '#/components/schemas/tax_percentage'
+        tax_type:
+          $ref: '#/components/schemas/tax_type'
+        purchase_account_id:
+          $ref: '#/components/schemas/purchase_account_id'
+        purchase_account_name:
+          $ref: '#/components/schemas/purchase_account_name'
+        account_id:
+          $ref: '#/components/schemas/account_id'
+        account_name:
+          $ref: '#/components/schemas/account_name'
+        inventory_account_id:
+          $ref: '#/components/schemas/inventory_account_id'
+        inventory_account_name:
+          $ref: '#/components/schemas/inventory_account_name'
+        status:
+          $ref: '#/components/schemas/status'
+        source:
+          $ref: '#/components/schemas/source'
+        is_combo_product:
+          $ref: '#/components/schemas/is_combo_product'
+        item_type:
+          $ref: '#/components/schemas/item_type'
+        rate:
+          $ref: '#/components/schemas/rate'
+        pricebook_rate:
+          $ref: '#/components/schemas/pricebook_rate'
+        purchase_rate:
+          $ref: '#/components/schemas/purchase_rate'
+        reorder_level:
+          $ref: '#/components/schemas/reorder_level'
+        initial_stock:
+          $ref: '#/components/schemas/initial_stock'
+        initial_stock_rate:
+          $ref: '#/components/schemas/initial_stock_rate'
+        vendor_id:
+          $ref: '#/components/schemas/vendor_id'
+        vendor_name:
+          $ref: '#/components/schemas/vendor_name'
+        stock_on_hand:
+          $ref: '#/components/schemas/stock_on_hand'
+        asset_value:
+          $ref: '#/components/schemas/asset_value'
+        available_stock:
+          $ref: '#/components/schemas/available_stock'
+        actual_available_stock:
+          $ref: '#/components/schemas/actual_available_stock'
+        sku:
+          $ref: '#/components/schemas/sku'
+        upc:
+          $ref: '#/components/schemas/upc'
+        ean:
+          $ref: '#/components/schemas/ean'
+        isbn:
+          $ref: '#/components/schemas/isbn'
+        part_number:
+          $ref: '#/components/schemas/part_number'
+        image_id:
+          $ref: '#/components/schemas/image_id'
+        image_name:
+          $ref: '#/components/schemas/image_name'
+        purchase_description:
+          $ref: '#/components/schemas/purchase_description'
+        custom_fields:
+          $ref: '#/components/schemas/custom_fields'
+        mapped_items:
+          $ref: '#/components/schemas/mapped_items'
+        item_tax_preferences:
+          $ref: '#/components/schemas/item_tax_preferences'
+        hsn_or_sac:
+          $ref: '#/components/schemas/hsn_or_sac'
+    creating-a-composite-item-request:
+      required:
+        - name
+        - sku
+        - mapped_items
+        - rate
+        - item_type
+        - product_type
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/name'
+        mapped_items:
+          description: 'Items that are associated with the composite item'
+          type: array
+          items:
+            type: object
+            required:
+              - item_id
+            properties:
+              quantity:
+                $ref: '#/components/schemas/quantity'
+              item_id:
+                $ref: '#/components/schemas/item_id'
+              line_item_id:
+                $ref: '#/components/schemas/line_item_id'
+        description:
+          $ref: '#/components/schemas/description'
+        is_combo_product:
+          $ref: '#/components/schemas/is_combo_product'
+        vendor_id:
+          $ref: '#/components/schemas/vendor_id'
+        purchase_rate:
+          $ref: '#/components/schemas/purchase_rate'
+        purchase_description:
+          $ref: '#/components/schemas/purchase_description'
+        initial_stock:
+          $ref: '#/components/schemas/initial_stock'
+        initial_stock_rate:
+          $ref: '#/components/schemas/initial_stock_rate'
+        tax_id:
+          $ref: '#/components/schemas/tax_id'
+        sku:
+          $ref: '#/components/schemas/sku'
+        isbn:
+          $ref: '#/components/schemas/isbn'
+        ean:
+          $ref: '#/components/schemas/ean'
+        part_number:
+          $ref: '#/components/schemas/part_number'
+        reorder_level:
+          $ref: '#/components/schemas/reorder_level'
+        unit:
+          $ref: '#/components/schemas/unit'
+        upc:
+          $ref: '#/components/schemas/upc'
+        item_type:
+          $ref: '#/components/schemas/item_type'
+        rate:
+          $ref: '#/components/schemas/rate'
+        custom_fields:
+          description: 'Custom fields are used to add more information about the item'
+          type: array
+          items:
+            type: object
+            properties:
+              custom_field_id:
+                $ref: '#/components/schemas/custom_field_id'
+              value:
+                $ref: '#/components/schemas/value'
+        account_id:
+          $ref: '#/components/schemas/account_id'
+        purchase_account_id:
+          $ref: '#/components/schemas/purchase_account_id'
+        inventory_account_id:
+          $ref: '#/components/schemas/inventory_account_id'
+        item_tax_preferences:
+          $ref: '#/components/schemas/item_tax_preferences'
+        hsn_or_sac:
+          $ref: '#/components/schemas/hsn_or_sac'
+        product_type:
+          description: 'Type of the product.'
+          type: string
+          example: goods
+    creating-a-composite-item-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The item has been added.'
+          readOnly: true
+        composite_item:
+          $ref: '#/components/schemas/composite_item'
+    list-all-composite-items-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        composite_items:
+          type: array
+          items:
+            type: object
+            properties:
+              composite_item_id:
+                $ref: '#/components/schemas/composite_item_id'
+              name:
+                $ref: '#/components/schemas/name'
+              status:
+                $ref: '#/components/schemas/status'
+              source:
+                $ref: '#/components/schemas/source'
+              description:
+                $ref: '#/components/schemas/description'
+              rate:
+                $ref: '#/components/schemas/rate'
+              tax_id:
+                $ref: '#/components/schemas/tax_id'
+              tax_name:
+                $ref: '#/components/schemas/tax_name'
+              tax_percentage:
+                $ref: '#/components/schemas/tax_percentage'
+              purchase_description:
+                $ref: '#/components/schemas/purchase_description'
+              purchase_rate:
+                $ref: '#/components/schemas/purchase_rate'
+              is_combo_product:
+                $ref: '#/components/schemas/is_combo_product'
+              item_type:
+                $ref: '#/components/schemas/item_type'
+              product_type:
+                $ref: '#/components/schemas/product_type'
+              is_taxable:
+                $ref: '#/components/schemas/is_taxable'
+              stock_on_hand:
+                $ref: '#/components/schemas/stock_on_hand'
+              available_stock:
+                $ref: '#/components/schemas/available_stock'
+              actual_available_stock:
+                $ref: '#/components/schemas/actual_available_stock'
+              sku:
+                $ref: '#/components/schemas/sku'
+              upc:
+                $ref: '#/components/schemas/upc'
+              ean:
+                $ref: '#/components/schemas/ean'
+              isbn:
+                $ref: '#/components/schemas/isbn'
+              part_number:
+                $ref: '#/components/schemas/part_number'
+              reorder_level:
+                $ref: '#/components/schemas/reorder_level'
+              image_id:
+                $ref: '#/components/schemas/image_id'
+              image_name:
+                $ref: '#/components/schemas/image_name'
+              created_time:
+                $ref: '#/components/schemas/created_time'
+              last_modified_time:
+                $ref: '#/components/schemas/last_modified_time'
+    retrieving-a-composite-item-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        composite_item_id:
+          $ref: '#/components/schemas/composite_item_id'
+        name:
+          $ref: '#/components/schemas/name'
+        status:
+          $ref: '#/components/schemas/status'
+        source:
+          $ref: '#/components/schemas/source'
+        unit:
+          $ref: '#/components/schemas/unit'
+        tax_id:
+          $ref: '#/components/schemas/tax_id'
+        description:
+          $ref: '#/components/schemas/description'
+        tax_name:
+          $ref: '#/components/schemas/tax_name'
+        tax_percentage:
+          $ref: '#/components/schemas/tax_percentage'
+        tax_type:
+          $ref: '#/components/schemas/tax_type'
+        purchase_account_id:
+          $ref: '#/components/schemas/purchase_account_id'
+        purchase_account_name:
+          $ref: '#/components/schemas/purchase_account_name'
+        account_id:
+          $ref: '#/components/schemas/account_id'
+        account_name:
+          $ref: '#/components/schemas/account_name'
+        inventory_account_id:
+          $ref: '#/components/schemas/inventory_account_id'
+        inventory_account_name:
+          $ref: '#/components/schemas/inventory_account_name'
+        is_combo_product:
+          $ref: '#/components/schemas/is_combo_product'
+        item_type:
+          $ref: '#/components/schemas/item_type'
+        rate:
+          $ref: '#/components/schemas/rate'
+        pricebook_rate:
+          $ref: '#/components/schemas/pricebook_rate'
+        purchase_rate:
+          $ref: '#/components/schemas/purchase_rate'
+        reorder_level:
+          $ref: '#/components/schemas/reorder_level'
+        initial_stock:
+          $ref: '#/components/schemas/initial_stock'
+        initial_stock_rate:
+          $ref: '#/components/schemas/initial_stock_rate'
+        vendor_id:
+          $ref: '#/components/schemas/vendor_id'
+        vendor_name:
+          $ref: '#/components/schemas/vendor_name'
+        stock_on_hand:
+          $ref: '#/components/schemas/stock_on_hand'
+        asset_value:
+          $ref: '#/components/schemas/asset_value'
+        available_stock:
+          $ref: '#/components/schemas/available_stock'
+        actual_available_stock:
+          $ref: '#/components/schemas/actual_available_stock'
+        sku:
+          $ref: '#/components/schemas/sku'
+        upc:
+          $ref: '#/components/schemas/upc'
+        ean:
+          $ref: '#/components/schemas/ean'
+        isbn:
+          $ref: '#/components/schemas/isbn'
+        part_number:
+          $ref: '#/components/schemas/part_number'
+        image_id:
+          $ref: '#/components/schemas/image_id'
+        image_name:
+          $ref: '#/components/schemas/image_name'
+        purchase_description:
+          $ref: '#/components/schemas/purchase_description'
+        custom_fields:
+          $ref: '#/components/schemas/custom_fields'
+        mapped_items:
+          $ref: '#/components/schemas/mapped_items'
+        item_tax_preferences:
+          $ref: '#/components/schemas/item_tax_preferences'
+        hsn_or_sac:
+          $ref: '#/components/schemas/hsn_or_sac'
+    updating-a-composite-item-request:
+      required:
+        - name
+        - sku
+        - mapped_items
+        - rate
+        - item_type
+        - product_type
+      type: object
+      properties:
+        composite_item_id:
+          $ref: '#/components/schemas/composite_item_id'
+        name:
+          $ref: '#/components/schemas/name'
+        unit:
+          $ref: '#/components/schemas/unit'
+        tax_id:
+          $ref: '#/components/schemas/tax_id'
+        description:
+          $ref: '#/components/schemas/description'
+        tax_name:
+          $ref: '#/components/schemas/tax_name'
+        tax_percentage:
+          $ref: '#/components/schemas/tax_percentage'
+        tax_type:
+          $ref: '#/components/schemas/tax_type'
+        purchase_account_id:
+          $ref: '#/components/schemas/purchase_account_id'
+        purchase_account_name:
+          $ref: '#/components/schemas/purchase_account_name'
+        account_id:
+          $ref: '#/components/schemas/account_id'
+        account_name:
+          $ref: '#/components/schemas/account_name'
+        inventory_account_id:
+          $ref: '#/components/schemas/inventory_account_id'
+        inventory_account_name:
+          $ref: '#/components/schemas/inventory_account_name'
+        status:
+          $ref: '#/components/schemas/status'
+        source:
+          $ref: '#/components/schemas/source'
+        is_combo_product:
+          $ref: '#/components/schemas/is_combo_product'
+        item_type:
+          $ref: '#/components/schemas/item_type'
+        rate:
+          $ref: '#/components/schemas/rate'
+        pricebook_rate:
+          $ref: '#/components/schemas/pricebook_rate'
+        purchase_rate:
+          $ref: '#/components/schemas/purchase_rate'
+        reorder_level:
+          $ref: '#/components/schemas/reorder_level'
+        initial_stock:
+          $ref: '#/components/schemas/initial_stock'
+        initial_stock_rate:
+          $ref: '#/components/schemas/initial_stock_rate'
+        vendor_id:
+          $ref: '#/components/schemas/vendor_id'
+        vendor_name:
+          $ref: '#/components/schemas/vendor_name'
+        stock_on_hand:
+          $ref: '#/components/schemas/stock_on_hand'
+        asset_value:
+          $ref: '#/components/schemas/asset_value'
+        available_stock:
+          $ref: '#/components/schemas/available_stock'
+        actual_available_stock:
+          $ref: '#/components/schemas/actual_available_stock'
+        sku:
+          $ref: '#/components/schemas/sku'
+        upc:
+          $ref: '#/components/schemas/upc'
+        ean:
+          $ref: '#/components/schemas/ean'
+        isbn:
+          $ref: '#/components/schemas/isbn'
+        part_number:
+          $ref: '#/components/schemas/part_number'
+        image_id:
+          $ref: '#/components/schemas/image_id'
+        image_name:
+          $ref: '#/components/schemas/image_name'
+        purchase_description:
+          $ref: '#/components/schemas/purchase_description'
+        custom_fields:
+          $ref: '#/components/schemas/custom_fields'
+        mapped_items:
+          $ref: '#/components/schemas/mapped_items'
+        item_tax_preferences:
+          $ref: '#/components/schemas/item_tax_preferences'
+        hsn_or_sac:
+          $ref: '#/components/schemas/hsn_or_sac'
+        product_type:
+          description: 'Type of the product.'
+          type: string
+          example: goods
+    updating-a-composite-item-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Item details have been saved.'
+          readOnly: true
+        composite_item:
+          $ref: '#/components/schemas/composite_item'
+    deleting-a-composite-item-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The item has been deleted.'
+          readOnly: true
+    mark-as-active-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Re-activation complete! The item is back in business!'
+          readOnly: true
+    mark-as-inactive-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The item has been marked as inactive.'
+          readOnly: true
+    create-bundle-request:
+      required:
+        - reference_number
+        - date
+        - composite_item_id
+        - composite_item_name
+        - quantity_to_bundle
+        - line_items
+        - is_completed
+      type: object
+      properties:
+        reference_number:
+          $ref: '#/components/schemas/reference_number'
+        date:
+          $ref: '#/components/schemas/date'
+        description:
+          $ref: '#/components/schemas/description'
+        composite_item_id:
+          $ref: '#/components/schemas/composite_item_id'
+        composite_item_name:
+          $ref: '#/components/schemas/composite_item_name'
+        composite_item_sku:
+          $ref: '#/components/schemas/composite_item_sku'
+        quantity_to_bundle:
+          $ref: '#/components/schemas/quantity_to_bundle'
+        line_items:
+          description: 'A assemblies can contain multiple line items. Each line item contains <code>item_id</code>,<code>name</code>,<code>description</code>,<code>quantity_consumed</code>,<code>unit</code>,<code>account_id</code>,<code>location_id</code>.'
+          type: array
+          items:
+            type: object
+            required:
+              - item_id
+              - name
+              - quantity_consumed
+              - account_id
+              - location_id
+            properties:
+              item_id:
+                $ref: '#/components/schemas/item_id'
+              name:
+                $ref: '#/components/schemas/name'
+              description:
+                $ref: '#/components/schemas/description'
+              quantity_consumed:
+                $ref: '#/components/schemas/quantity_consumed'
+              unit:
+                $ref: '#/components/schemas/unit'
+              account_id:
+                $ref: '#/components/schemas/account_id'
+              account_name:
+                $ref: '#/components/schemas/account_name'
+              location_id:
+                $ref: '#/components/schemas/location_id'
+              location_name:
+                $ref: '#/components/schemas/location_name'
+              rate:
+                $ref: '#/components/schemas/rate'
+        is_completed:
+          $ref: '#/components/schemas/is_completed'
+    create-bundle-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Assembly has been created.'
+          readOnly: true
+        bundle_id:
+          $ref: '#/components/schemas/bundle_id'
+        reference_number:
+          $ref: '#/components/schemas/reference_number'
+        date:
+          $ref: '#/components/schemas/date'
+        description:
+          $ref: '#/components/schemas/description'
+        composite_item_id:
+          $ref: '#/components/schemas/composite_item_id'
+        composite_item_name:
+          $ref: '#/components/schemas/composite_item_name'
+        composite_item_sku:
+          $ref: '#/components/schemas/composite_item_sku'
+        quantity_to_bundle:
+          $ref: '#/components/schemas/quantity_to_bundle'
+        line_items:
+          $ref: '#/components/schemas/line_items'
+    bundling-history-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        bundles:
+          type: array
+          items:
+            type: object
+            properties:
+              bundle_id:
+                $ref: '#/components/schemas/bundle_id'
+              reference_number:
+                $ref: '#/components/schemas/reference_number'
+              date:
+                $ref: '#/components/schemas/date'
+              description:
+                $ref: '#/components/schemas/description'
+              composite_item_id:
+                $ref: '#/components/schemas/composite_item_id'
+              composite_item_name:
+                $ref: '#/components/schemas/composite_item_name'
+              composite_item_sku:
+                $ref: '#/components/schemas/composite_item_sku'
+              quantity_to_bundle:
+                $ref: '#/components/schemas/quantity_to_bundle'
+              line_items:
+                $ref: '#/components/schemas/line_items'
+    retrieve-bundle-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        bundle:
+          type: object
+          properties:
+            bundle_id:
+              $ref: '#/components/schemas/bundle_id'
+            reference_number:
+              $ref: '#/components/schemas/reference_number'
+            date:
+              $ref: '#/components/schemas/date'
+            description:
+              $ref: '#/components/schemas/description'
+            composite_item_id:
+              $ref: '#/components/schemas/composite_item_id'
+            composite_item_name:
+              $ref: '#/components/schemas/composite_item_name'
+            composite_item_sku:
+              $ref: '#/components/schemas/composite_item_sku'
+            quantity_to_bundle:
+              $ref: '#/components/schemas/quantity_to_bundle'
+            line_items:
+              $ref: '#/components/schemas/line_items'
+            is_completed:
+              $ref: '#/components/schemas/is_completed'
+    delete-bundle-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Assembly has been deleted.'
+          readOnly: true
+  securitySchemes:
+    Zoho_Auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: 'https://accounts.zoho.com/oauth/v2/auth'
+          scopes:
+            ZohoInventory.compositeitems.CREATE: 'Create Compositeitems'
+            ZohoInventory.compositeitems.READ: 'Read Compositeitems'
+            ZohoInventory.compositeitems.UPDATE: 'Update Compositeitems'
+            ZohoInventory.compositeitems.DELETE: 'Delete Compositeitems'

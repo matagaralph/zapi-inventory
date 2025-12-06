@@ -1,0 +1,2872 @@
+openapi: 3.0.0
+info:
+  title: 'Vendor Credits'
+  description: "Vendor credits are credits that you receive from your vendor, and is treated as an equivalent of physical cash that the vendor owes you. This helps you track the money you're owed until it is either paid by said vendor at a later date i.e refunded, or subtracted from any future bill amount due to that vendor."
+  contact: {}
+  version: 1.0.0
+servers:
+  - url: 'https://www.zohoapis.com/inventory/v1'
+    description: 'API Endpoint'
+tags:
+  - name: vendor-credits
+    description: 'Vendor-Credits Module'
+paths:
+  /vendorcredits:
+    post:
+      tags:
+        - vendor-credits
+      operationId: 'create_vendor_credit'
+      summary: 'Create a vendor credit'
+      description: 'Create a vendor credit for a vendor.'
+      parameters:
+        - name: ignore_auto_number_generation
+          in: query
+          description: 'Ignore auto number generation for this vendor credit only. On enabling this option vendor credit number is mandatory.'
+          required: false
+          schema:
+            type: boolean
+        - name: bill_id
+          in: query
+          description: 'Bill Associated with the Vendor Credit'
+          required: false
+          schema:
+            type: string
+          example: '460000000057075'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-a-vendor-credit-request'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-a-vendor-credit-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.debitnotes.CREATE
+    get:
+      tags:
+        - vendor-credits
+      operationId: 'list_vendor_credits'
+      summary: 'List vendor credits'
+      description: 'List vendor credits with pagination.'
+      parameters:
+        - name: vendor_credit_number
+          in: query
+          description: 'Search vendor credits by vendor credit number. Variants: <code>vendor_credit_number_startswith</code> and <code>vendor_credit_number_contains</code>'
+          required: false
+          schema:
+            type: string
+          example: DN-00002
+        - name: date
+          in: query
+          description: 'General Format: yyyy-mm-dd. Search vendor credits by date. Variants: <code>date.start</code>, <code>date.end</code>, <code>date.before</code> and <code>date.after</code>'
+          required: false
+          schema:
+            type: string
+          example: '2014-08-28'
+        - name: status
+          in: query
+          description: 'Search vendor credits by vendor credit status. Allowed statuses are open, closed and void. Allowed Values: <code>open</code>, <code>closed</code> and <code>void</code>'
+          required: false
+          schema:
+            type: string
+          example: open
+        - name: total
+          in: query
+          description: 'Search vendor credits by total amount. Variants: <code>total_start</code>, <code>total_end</code>, <code>total_less_than</code>, <code>total_less_equals</code>, <code>total_greater_than</code> and <code>total_greater_equals</code>'
+          required: false
+          schema:
+            type: string
+          example: 30
+        - name: reference_number
+          in: query
+          description: 'Search vendor credits by vendor credit reference number. Variants: <code>reference_number_startswith</code> and <code>reference_number_contains</code>'
+          required: false
+          schema:
+            type: string
+          example: ''
+        - name: customer_name
+          in: query
+          description: 'Search vendor credits by vendor name. Variants: <code>customer_name_startswith</code> and <code>customer_name_contains</code>'
+          required: false
+          schema:
+            type: string
+          example: 'Bowman and Co'
+        - name: item_name
+          in: query
+          description: 'Search vendor credits by item name. Variants: <code>item_name_startswith</code> and <code>item_name_contains</code>'
+          required: false
+          schema:
+            type: string
+          example: ''
+        - name: item_description
+          in: query
+          description: 'Search vendor credits by vendor credit item description. Variants: <code>item_description_startswith</code> and <code>item_description_contains</code>'
+          required: false
+          schema:
+            type: string
+          example: ''
+        - name: notes
+          in: query
+          description: 'Search vendor credits by vendor credit notes. Variants: <code>notes_startswith</code> and <code>notes_contains</code>'
+          required: false
+          schema:
+            type: string
+          example: ''
+        - name: custom_field
+          in: query
+          description: 'Search vendor credits by custom field. Variants : <code>custom_field_startswith</code> and <code>custom_field_contains</code>'
+          required: false
+          schema:
+            type: string
+          example: ''
+        - name: last_modified_time
+          in: query
+          description: 'Search vendor credits by vendor credit last modfified time'
+          required: false
+          schema:
+            type: string
+          example: '2014-08-28T22:53:31-0700'
+        - name: customer_id
+          in: query
+          description: 'Search vendor credits by vendor credit customer ID'
+          required: false
+          schema:
+            type: integer
+            format: int64
+          example: ''
+        - name: line_item_id
+          in: query
+          description: 'Search vendor credits by vendor credit line item ID'
+          required: false
+          schema:
+            type: integer
+            format: int64
+          example: '460000000020077'
+        - name: item_id
+          in: query
+          description: 'Search vendor credits by vendor credit item ID'
+          required: false
+          schema:
+            type: integer
+            format: int64
+          example: '460000000020071'
+        - name: tax_id
+          in: query
+          description: 'Search vendor credits by vendor credit tax ID'
+          required: false
+          schema:
+            type: integer
+            format: int64
+          example: ''
+        - name: filter_by
+          in: query
+          description: 'Filter vendor credits by statuses. Allowed Values: <code>Status.All</code>, <code>Status.Open</code>, <code>Status.Draft</code>, <code>Status.Closed</code> and <code>Status.Void</code>.'
+          required: false
+          schema:
+            type: string
+          example: ''
+        - name: search_text
+          in: query
+          description: 'Search vendor credits by vendor credit number or vendor name or vendor credit reference number.'
+          required: false
+          schema:
+            type: string
+          example: ''
+        - name: sort_column
+          in: query
+          description: 'Sort vendor credits by following columns vendor_name, vendorcredit_number, balance, total, date and created_time. Allowed Values: <code>vendor_name</code>, <code>vendor_credit_number</code>, <code>balance</code>, <code>total</code>, <code>date</code>, <code>created_time</code>, <code>last_modified_time</code> and <code>reference_number</code>.'
+          required: false
+          schema:
+            type: string
+          example: created_time
+        - name: page
+          in: query
+          description: 'Page number to be fetched. Default value is 1.'
+          required: false
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: per_page
+          in: query
+          description: 'Number of records to be fetched per page. Default value is 200.'
+          required: false
+          schema:
+            type: integer
+            default: 200
+          example: 200
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-vendor-credits-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.debitnotes.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  '/vendorcredits/{vendor_credit_id}':
+    put:
+      tags:
+        - vendor-credits
+      operationId: 'update_vendor_credit'
+      summary: 'Update vendor credit'
+      description: 'Update an existing vendor credit.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-vendor-credit-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-vendor-credit-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.debitnotes.UPDATE
+    get:
+      tags:
+        - vendor-credits
+      operationId: 'get_vendor_credit'
+      summary: 'Get vendor credit'
+      description: 'Get details of a vendor credit.'
+      parameters:
+        - name: print
+          in: query
+          description: 'Export vendor credit pdf with default print option. Allowed Values: <code>true</code>, <code>false</code>, <code>on</code> and <code>off</code>.'
+          required: false
+          schema:
+            type: boolean
+        - name: accept
+          in: query
+          description: 'You can get vendor credit details as json/pdf/html. Default format is html. Allowed Values: <code>json</code>, <code>xml</code>, <code>csv</code>, <code>xls</code>, <code>pdf</code>, <code>html</code> and <code>jhtml</code>.'
+          required: false
+          schema:
+            type: string
+          example: ''
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-vendor-credit-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.debitnotes.READ
+    delete:
+      tags:
+        - vendor-credits
+      operationId: 'delete_vendor_credit'
+      summary: 'Delete vendor credit'
+      description: 'Delete a vendor credit.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-vendor-credit-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.debitnotes.DELETE
+    parameters:
+      - name: vendor_credit_id
+        in: path
+        required: true
+        description: 'Unique identifier of the vendor credit.'
+        schema:
+          type: string
+        example: '3000000002075'
+      - $ref: '#/components/parameters/organization_id'
+  '/vendorcredits/{vendor_credit_id}/status/open':
+    post:
+      tags:
+        - vendor-credits
+      operationId: 'mark_vendor_credit_as_open'
+      summary: 'Convert to open'
+      description: 'Change an existing vendor credit status to open.'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/convert-to-open-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.debitnotes.CREATE
+    parameters:
+      - name: vendor_credit_id
+        in: path
+        required: true
+        description: 'Unique identifier of the vendor credit.'
+        schema:
+          type: string
+        example: '3000000002075'
+      - $ref: '#/components/parameters/organization_id'
+  '/vendorcredits/{vendor_credit_id}/status/void':
+    post:
+      tags:
+        - vendor-credits
+      operationId: 'mark_vendor_credit_as_void'
+      summary: 'Void vendor credit'
+      description: 'Mark an existing vendor credit as void.'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/void-vendor-credit-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.debitnotes.CREATE
+    parameters:
+      - name: vendor_credit_id
+        in: path
+        required: true
+        description: 'Unique identifier of the vendor credit.'
+        schema:
+          type: string
+        example: '3000000002075'
+      - $ref: '#/components/parameters/organization_id'
+  '/vendorcredits/{vendor_credit_id}/submit':
+    post:
+      tags:
+        - vendor-credits
+      operationId: 'submit_vendor_credit'
+      summary: 'Submit a Vendor credit for approval'
+      description: 'Submit a Vendor credit for approval.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/submit-a-vendor-credit-for-approval-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.debitnotes.CREATE
+    parameters:
+      - name: vendor_credit_id
+        in: path
+        required: true
+        description: 'Unique identifier of the vendor credit.'
+        schema:
+          type: string
+        example: '3000000002075'
+      - $ref: '#/components/parameters/organization_id'
+  '/vendorcredits/{vendor_credit_id}/approve':
+    post:
+      tags:
+        - vendor-credits
+      operationId: 'approve_vendor_credit'
+      summary: 'Approve a Vendor credit'
+      description: 'Approve a Vendor credit.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/approve-a-vendor-credit-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.debitnotes.CREATE
+    parameters:
+      - name: vendor_credit_id
+        in: path
+        required: true
+        description: 'Unique identifier of the vendor credit.'
+        schema:
+          type: string
+        example: '3000000002075'
+      - $ref: '#/components/parameters/organization_id'
+  '/vendorcredits/{vendor_credit_id}/bills':
+    get:
+      tags:
+        - vendor-credits
+      operationId: 'list_vendor_credited_bills'
+      summary: 'List bills credited'
+      description: 'List bills to which the vendor credit is applied.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-bills-credited-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.debitnotes.READ
+    post:
+      tags:
+        - vendor-credits
+      operationId: 'apply_vendor_credit_to_bill'
+      summary: 'Apply credits to a bill'
+      description: 'Apply vendor credit to existing bills.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/apply-credits-to-a-bill-request'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/apply-credits-to-a-bill-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.debitnotes.CREATE
+    parameters:
+      - name: vendor_credit_id
+        in: path
+        required: true
+        description: 'Unique identifier of the vendor credit.'
+        schema:
+          type: string
+        example: '3000000002075'
+      - $ref: '#/components/parameters/organization_id'
+  '/vendorcredits/{vendor_credit_id}/bills/{vendor_credit_bill_id}':
+    delete:
+      tags:
+        - vendor-credits
+      operationId: 'delete_vendor_credited_bill'
+      summary: 'Delete bills credited'
+      description: 'Delete the credits applied to a bill.'
+      parameters:
+        - name: vendor_credit_bill_id
+          in: path
+          required: true
+          description: 'Unique identifier of the vendor credit bill.'
+          schema:
+            type: string
+          example: '460000000057075'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-bills-credited-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.debitnotes.DELETE
+    parameters:
+      - name: vendor_credit_id
+        in: path
+        required: true
+        description: 'Unique identifier of the vendor credit.'
+        schema:
+          type: string
+        example: '3000000002075'
+      - $ref: '#/components/parameters/organization_id'
+  '/vendorcredits/{vendor_credit_id}/refunds':
+    post:
+      tags:
+        - vendor-credits
+      operationId: 'refund_vendor_credit'
+      summary: 'Refund a vendor credit'
+      description: 'Refund vendor credit amount.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/refund-a-vendor-credit-request'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/refund-a-vendor-credit-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.debitnotes.CREATE
+    get:
+      tags:
+        - vendor-credits
+      operationId: 'list_vendor_credit_refunds'
+      summary: 'List refunds of a vendor credit'
+      description: 'List all refunds of an existing vendor credit.'
+      parameters:
+        - name: page
+          in: query
+          description: 'Page number to be fetched. Default value is 1.'
+          required: false
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: per_page
+          in: query
+          description: 'Number of records to be fetched per page. Default value is 200.'
+          required: false
+          schema:
+            type: integer
+            default: 200
+          example: 200
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-refunds-of-a-vendor-credit-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.debitnotes.READ
+    parameters:
+      - name: vendor_credit_id
+        in: path
+        required: true
+        description: 'Unique identifier of the vendor credit.'
+        schema:
+          type: string
+        example: '3000000002075'
+      - $ref: '#/components/parameters/organization_id'
+  '/vendorcredits/{vendor_credit_id}/refunds/{vendor_credit_refund_id}':
+    put:
+      tags:
+        - vendor-credits
+      operationId: 'update_vendor_credit_refund'
+      summary: 'Update vendor credit refund'
+      description: 'Update the refunded transaction.'
+      parameters:
+        - name: vendor_credit_refund_id
+          in: path
+          required: true
+          description: 'Unique identifier of the vendor credit refund.'
+          schema:
+            type: string
+          example: '3000000003151'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-vendor-credit-refund-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-vendor-credit-refund-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.debitnotes.UPDATE
+    get:
+      tags:
+        - vendor-credits
+      operationId: 'get_vendor_credit_refund'
+      summary: 'Get vendor credit refund'
+      description: 'Get refund of a particular vendor credit.'
+      parameters:
+        - name: vendor_credit_refund_id
+          in: path
+          required: true
+          description: 'Unique identifier of the vendor credit refund.'
+          schema:
+            type: string
+          example: '3000000003151'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-vendor-credit-refund-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.debitnotes.READ
+    delete:
+      tags:
+        - vendor-credits
+      operationId: 'delete_vendor_credit_refund'
+      summary: 'Delete vendor credit refund'
+      description: 'Delete a vendor credit refund.'
+      parameters:
+        - name: vendor_credit_refund_id
+          in: path
+          required: true
+          description: 'Unique identifier of the vendor credit refund.'
+          schema:
+            type: string
+          example: '3000000003151'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-vendor-credit-refund-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.debitnotes.DELETE
+    parameters:
+      - name: vendor_credit_id
+        in: path
+        required: true
+        description: 'Unique identifier of the vendor credit.'
+        schema:
+          type: string
+        example: '3000000002075'
+      - $ref: '#/components/parameters/organization_id'
+  /vendorcredits/refunds:
+    get:
+      tags:
+        - vendor-credits
+      operationId: 'list_vendor_credit_refunds'
+      summary: 'List vendor credit refunds'
+      description: 'List all refunds with pagination.'
+      parameters:
+        - name: customer_id
+          in: query
+          description: 'Search vendor credits by vendor credit customer ID'
+          required: false
+          schema:
+            type: integer
+            format: int64
+          example: ''
+        - name: last_modified_time
+          in: query
+          description: 'Search vendor credits by vendor credit last modfified time'
+          required: false
+          schema:
+            type: string
+          example: '2014-08-28T22:53:31-0700'
+        - name: sort_column
+          in: query
+          description: 'Sort vendor credits by following columns vendor_name, vendorcredit_number, balance, total, date and created_time. Allowed Values: <code>vendor_name</code>, <code>vendor_credit_number</code>, <code>balance</code>, <code>total</code>, <code>date</code>, <code>created_time</code>, <code>last_modified_time</code> and <code>reference_number</code>.'
+          required: false
+          schema:
+            type: string
+          example: created_time
+        - name: page
+          in: query
+          description: 'Page number to be fetched. Default value is 1.'
+          required: false
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: per_page
+          in: query
+          description: 'Number of records to be fetched per page. Default value is 200.'
+          required: false
+          schema:
+            type: integer
+            default: 200
+          example: 200
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-vendor-credit-refunds-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.debitnotes.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  '/vendorcredits/{vendor_credit_id}/comments':
+    post:
+      tags:
+        - vendor-credits
+      operationId: 'add_vendor_credit_comment'
+      summary: 'Add a comment'
+      description: 'Add a comment to an existing vendor credit.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/add-a-comment-request'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/add-a-comment-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.debitnotes.CREATE
+    get:
+      tags:
+        - vendor-credits
+      operationId: 'list_vendor_credit_comments'
+      summary: 'List vendor credit comments & history'
+      description: 'Get history and comments of a vendor credit.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-vendor-credit-comments-and-history-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.debitnotes.READ
+    parameters:
+      - name: vendor_credit_id
+        in: path
+        required: true
+        description: 'Unique identifier of the vendor credit.'
+        schema:
+          type: string
+        example: '3000000002075'
+      - $ref: '#/components/parameters/organization_id'
+  '/vendorcredits/{vendor_credit_id}/comments/{comment_id}':
+    delete:
+      tags:
+        - vendor-credits
+      operationId: 'delete_vendor_credit_comment'
+      summary: 'Delete a comment'
+      description: 'Delete a vendor credit comment.'
+      parameters:
+        - name: comment_id
+          in: path
+          required: true
+          description: 'Unique identifier of the comment.'
+          schema:
+            type: string
+          example: '3000000002089'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-a-comment-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.debitnotes.DELETE
+    parameters:
+      - name: vendor_credit_id
+        in: path
+        required: true
+        description: 'Unique identifier of the vendor credit.'
+        schema:
+          type: string
+        example: '3000000002075'
+      - $ref: '#/components/parameters/organization_id'
+components:
+  parameters:
+    organization_id:
+      name: organization_id
+      description: 'ID of the organization'
+      in: query
+      required: true
+      schema:
+        type: string
+      example: '10234695'
+  schemas:
+    gendoc-attributes-schema:
+      $ref: '#/components/schemas/vendor_credit-response'
+    vendor_credit-response:
+      type: object
+      properties:
+        vendor_credit_id:
+          $ref: '#/components/schemas/vendor_credit_id'
+        vendor_credit_number:
+          $ref: '#/components/schemas/vendor_credit_number'
+        date:
+          $ref: '#/components/schemas/date'
+        source_of_supply:
+          $ref: '#/components/schemas/source_of_supply'
+        destination_of_supply:
+          $ref: '#/components/schemas/destination_of_supply'
+        place_of_supply:
+          $ref: '#/components/schemas/place_of_supply'
+        gst_no:
+          $ref: '#/components/schemas/gst_no'
+        gst_treatment:
+          $ref: '#/components/schemas/gst_treatment'
+        tax_treatment:
+          $ref: '#/components/schemas/tax_treatment'
+        pricebook_id:
+          $ref: '#/components/schemas/pricebook_id'
+        is_reverse_charge_applied:
+          $ref: '#/components/schemas/is_reverse_charge_applied'
+        status:
+          $ref: '#/components/schemas/status'
+        reference_number:
+          $ref: '#/components/schemas/reference_number'
+        vendor_id:
+          $ref: '#/components/schemas/vendor_id'
+        vendor_name:
+          $ref: '#/components/schemas/vendor_name'
+        currency_id:
+          $ref: '#/components/schemas/currency_id'
+        currency_code:
+          $ref: '#/components/schemas/currency_code'
+        exchange_rate:
+          $ref: '#/components/schemas/exchange_rate'
+        price_precision:
+          $ref: '#/components/schemas/price_precision'
+        vat_treatment:
+          $ref: '#/components/schemas/vat_treatment'
+        filed_in_vat_return_id:
+          $ref: '#/components/schemas/filed_in_vat_return_id'
+        filed_in_vat_return_name:
+          $ref: '#/components/schemas/filed_in_vat_return_name'
+        filed_in_vat_return_type:
+          $ref: '#/components/schemas/filed_in_vat_return_type'
+        is_inclusive_tax:
+          $ref: '#/components/schemas/is_inclusive_tax'
+        location_id:
+          $ref: '#/components/schemas/location_id'
+        location_name:
+          $ref: '#/components/schemas/location_name'
+        line_items:
+          description: 'Line items of a vendor credit.'
+          type: object
+          properties:
+            item_id:
+              $ref: '#/components/schemas/item_id'
+            line_item_id:
+              $ref: '#/components/schemas/line_item_id'
+            sku:
+              $ref: '#/components/schemas/sku'
+            account_id:
+              $ref: '#/components/schemas/account_id'
+            product_type:
+              $ref: '#/components/schemas/product_type'
+            location_id:
+              $ref: '#/components/schemas/location_id'
+            location_name:
+              $ref: '#/components/schemas/location_name'
+            reverse_charge_tax_id:
+              $ref: '#/components/schemas/reverse_charge_tax_id'
+            reverse_charge_tax_name:
+              $ref: '#/components/schemas/reverse_charge_tax_name'
+            reverse_charge_tax_percentage:
+              $ref: '#/components/schemas/reverse_charge_tax_percentage'
+            reverse_charge_tax_amount:
+              $ref: '#/components/schemas/reverse_charge_tax_amount'
+            account_name:
+              $ref: '#/components/schemas/account_name'
+            name:
+              $ref: '#/components/schemas/name'
+            description:
+              $ref: '#/components/schemas/description'
+            item_order:
+              $ref: '#/components/schemas/item_order'
+            quantity:
+              $ref: '#/components/schemas/quantity'
+            unit:
+              $ref: '#/components/schemas/unit'
+            bcy_rate:
+              $ref: '#/components/schemas/bcy_rate'
+            rate:
+              $ref: '#/components/schemas/rate'
+            tax_id:
+              $ref: '#/components/schemas/tax_id'
+            tds_tax_id:
+              $ref: '#/components/schemas/tds_tax_id'
+            tax_treatment_code:
+              $ref: '#/components/schemas/tax_treatment_code'
+            tax_exemption_id:
+              $ref: '#/components/schemas/tax_exemption_id'
+            tax_exemption_code:
+              $ref: '#/components/schemas/tax_exemption_code'
+            tax_name:
+              $ref: '#/components/schemas/tax_name'
+            tax_type:
+              $ref: '#/components/schemas/tax_type'
+            tax_percentage:
+              $ref: '#/components/schemas/tax_percentage'
+            item_total:
+              $ref: '#/components/schemas/item_total'
+            item_total_inclusive_of_tax:
+              $ref: '#/components/schemas/item_total_inclusive_of_tax'
+            hsn_or_sac:
+              $ref: '#/components/schemas/hsn_or_sac'
+            acquisition_vat_id:
+              $ref: '#/components/schemas/acquisition_vat_id'
+            acquisition_vat_name:
+              $ref: '#/components/schemas/acquisition_vat_name'
+            acquisition_vat_percentage:
+              $ref: '#/components/schemas/acquisition_vat_percentage'
+            acquisition_vat_amount:
+              $ref: '#/components/schemas/acquisition_vat_amount'
+            reverse_charge_vat_id:
+              $ref: '#/components/schemas/reverse_charge_vat_id'
+            reverse_charge_vat_name:
+              $ref: '#/components/schemas/reverse_charge_vat_name'
+            reverse_charge_vat_percentage:
+              $ref: '#/components/schemas/reverse_charge_vat_percentage'
+            reverse_charge_vat_amount:
+              $ref: '#/components/schemas/reverse_charge_vat_amount'
+            stock_on_hand:
+              $ref: '#/components/schemas/stock_on_hand'
+            tags:
+              $ref: '#/components/schemas/tags'
+            item_custom_fields:
+              $ref: '#/components/schemas/item_custom_fields'
+        acquisition_vat_summary:
+          $ref: '#/components/schemas/acquisition_vat_summary'
+        acquisition_vat_total:
+          $ref: '#/components/schemas/acquisition_vat_total'
+        reverse_charge_vat_summary:
+          $ref: '#/components/schemas/reverse_charge_vat_summary'
+        reverse_charge_vat_total:
+          $ref: '#/components/schemas/reverse_charge_vat_total'
+        documents:
+          $ref: '#/components/schemas/documents'
+        custom_fields:
+          $ref: '#/components/schemas/custom_fields'
+        sub_total:
+          $ref: '#/components/schemas/sub_total'
+        total:
+          $ref: '#/components/schemas/total'
+        total_credits_used:
+          $ref: '#/components/schemas/total_credits_used'
+        total_refunded_amount:
+          $ref: '#/components/schemas/total_refunded_amount'
+        balance:
+          $ref: '#/components/schemas/balance'
+        notes:
+          $ref: '#/components/schemas/notes'
+        comments:
+          $ref: '#/components/schemas/comments'
+        vendor_credit_refunds:
+          $ref: '#/components/schemas/vendor_credit_refunds'
+        bills_credited:
+          $ref: '#/components/schemas/bills_credited'
+        created_time:
+          $ref: '#/components/schemas/created_time'
+        last_modified_time:
+          $ref: '#/components/schemas/last_modified_time'
+    ignore_auto_number_generation:
+      description: 'Ignore auto number generation for this vendor credit only. On enabling this option vendor credit number is mandatory.'
+      type: boolean
+    bill_id:
+      description: 'Bill Associated with the Vendor Credit'
+      type: string
+      example: '460000000057075'
+    amount_applied:
+      description: 'Amount applied to the bill.'
+      type: number
+      format: double
+      example: 10
+    bills:
+      description: 'Amount applied from vendor credits to specified bills.'
+      type: array
+      items:
+        type: object
+        properties:
+          bill_id:
+            $ref: '#/components/schemas/bill_id'
+          amount_applied:
+            $ref: '#/components/schemas/amount_applied'
+    gst_treatment:
+      description: 'Choose whether the contact is GST registered/unregistered/consumer/overseas. Allowed values are <code> business_gst </code> , <code> business_none </code> , <code> overseas </code> , <code> consumer </code>.'
+      type: string
+      example: business_gst
+      x-node_available_in:
+        - in
+      x-node_unavailable_in: []
+    tax_treatment:
+      description: 'VAT treatment for the vendor credit. Choose whether the vendor falls under: <code>vat_registered</code>,<code>vat_not_registered</code>,<code>gcc_vat_not_registered</code>,<code>gcc_vat_registered</code>,<code>non_gcc</code>.</br><code>dz_vat_registered</code> and <code>dz_vat_not_registered</code> are supported only for <b>UAE</b>.</b></br><code>home_country_mexico</code>,<code>border_region_mexico</code>,<code>non_mexico</code> supported only for <b>MX</b>.'
+      type: string
+      example: vat_registered
+      x-node_available_in:
+        - gcc
+        - mx
+      x-node_unavailable_in: []
+    gst_no:
+      description: '15 digit GST identification number of the vendor.'
+      type: string
+      example: 22AAAAA0000A1Z5
+      x-node_available_in:
+        - in
+      x-node_unavailable_in: []
+    source_of_supply:
+      description: 'Place from where the goods/services are supplied. (If not given, <code>place of contact</code> given for the contact will be taken)'
+      type: string
+      example: TN
+      x-node_available_in:
+        - in
+      x-node_unavailable_in: []
+    destination_of_supply:
+      description: "Place where the goods/services are supplied to. (If not given, organisation's home state will be taken)"
+      type: string
+      example: TN
+      x-node_available_in:
+        - in
+      x-node_unavailable_in: []
+    place_of_supply:
+      description: 'The place of supply is where a transaction is considered to have occurred for VAT purposes. For the supply of goods, the place of supply is the location of the goods when the supply occurs. For the supply of services, the place of supply should be where the supplier is established. (If not given, <code>place of contact</code> given for the contact will be taken)<br/>Supported codes for UAE emirates are : </br>Abu Dhabi - <code>AB</code>,</br>Ajman - <code>AJ</code>,</br>Dubai - <code>DU</code>,</br>Fujairah - <code>FU</code>,</br>Ras al-Khaimah - <code>RA</code>,</br>Sharjah - <code>SH</code>,</br>Umm al-Quwain - <code>UM</code>.<br/>Supported codes for the GCC countries are : </br>United Arab Emirates - <code>AE</code>,</br>Saudi Arabia - <code>SA</code>,</br>Bahrain - <code>BH</code>,</br>Kuwait - <code>KW</code>,</br>Oman - <code>OM</code>,</br>Qatar - <code>QA</code>.'
+      type: string
+      example: DU
+      x-node_available_in:
+        - gcc
+      x-node_unavailable_in: []
+    reverse_charge_tax_id:
+      description: 'ID of the reverse charge tax'
+      type: string
+      example: 460000000057089
+      x-node_available_in:
+        - in
+        - gcc
+      x-node_unavailable_in: []
+    location_id:
+      description: 'Location ID'
+      type: string
+      example: '460000000038080'
+    location_name:
+      description: 'Name of the location.'
+      type: string
+    pricebook_id:
+      description: 'ID of the pricebook'
+      type: string
+    reverse_charge_tax_name:
+      description: 'Enter the tax name of the reverse charge'
+      type: string
+      example: intra
+      x-node_available_in:
+        - in
+      x-node_unavailable_in: []
+    reverse_charge_tax_percentage:
+      description: 'Tax percentage of the reverse charge'
+      type: number
+      format: double
+      example: 10
+      x-node_available_in:
+        - in
+      x-node_unavailable_in: []
+    reverse_charge_tax_amount:
+      description: 'Tax amount of the reverse charge'
+      type: number
+      format: double
+      example: 100
+      x-node_available_in:
+        - in
+      x-node_unavailable_in: []
+    project_id:
+      description: 'ID of the project'
+      type: string
+      example: 90300000087378
+    project_name:
+      description: 'Name of the project.'
+      type: string
+      example: 'Sample Project'
+    is_reverse_charge_applied:
+      description: 'Applicable for transactions where you pay reverse charge'
+      type: boolean
+      example: true
+      x-node_available_in:
+        - in
+      x-node_unavailable_in: []
+    apply_to_bills:
+      type: object
+      properties:
+        bills:
+          $ref: '#/components/schemas/bills'
+    vendor_credit_number:
+      description: 'Number of the Vendor Credit'
+      type: string
+      example: DN-00002
+    date:
+      description: 'The date the vendor credit is created. [yyyy-mm-dd]'
+      type: string
+      example: '2014-08-28'
+    status:
+      type: string
+      example: open
+    reference_number:
+      description: 'Reference number for the refund recorded.'
+      type: string
+    vendor_id:
+      description: 'ID of the vendor the vendor credit associated with the Vendor Credit'
+      type: string
+      example: '460000000020029'
+    vendor_name:
+      description: 'Name of the Vendor Associated with the Vendor Credit'
+      type: string
+      example: 'Bowman and Co'
+    currency_id:
+      description: 'ID of the Currency Involved in the Vendor Credit'
+      type: string
+      example: '3000000000083'
+    currency_code:
+      description: 'Code of the Currency Involved in the Vendor Credit'
+      type: string
+      example: USD
+    exchange_rate:
+      description: 'Exchange rate of the currency.'
+      type: number
+      format: double
+      example: 1
+    price_precision:
+      type: integer
+      example: 2
+    is_inclusive_tax:
+      description: 'Used to specify whether the line item rates are inclusive or exclusive of tax.'
+      type: boolean
+      example: false
+      x-node_available_in: []
+      x-node_unavailable_in:
+        - us
+    document_id:
+      description: 'ID of the Document'
+      type: integer
+      format: int64
+    file_name:
+      description: 'Name of the file'
+      type: string
+    documents:
+      type: array
+      description: 'List of documents associated with the vendor credit'
+      items:
+        type: object
+        properties:
+          document_id:
+            $ref: '#/components/schemas/document_id'
+          file_name:
+            $ref: '#/components/schemas/file_name'
+    custom_fields:
+      type: array
+      items:
+        type: object
+        properties:
+          custom_field_id:
+            $ref: '#/components/schemas/custom_field_id'
+          label:
+            $ref: '#/components/schemas/label'
+          value:
+            $ref: '#/components/schemas/value'
+          index:
+            $ref: '#/components/schemas/index'
+    sub_total:
+      type: number
+      format: double
+      example: 30
+    total:
+      type: number
+      format: double
+      example: 30
+    total_credits_used:
+      type: number
+      format: double
+      example: 0
+    total_refunded_amount:
+      type: number
+      format: double
+      example: 0
+    balance:
+      description: 'Balance in the Vendor Credit'
+      type: number
+      format: double
+      example: 30
+    tax_name:
+      description: 'Name of the Tax'
+      type: string
+    tax_amount:
+      description: 'Amount of the Tax'
+      type: number
+      format: double
+    taxes:
+      type: array
+      items:
+        type: object
+        properties:
+          tax_name:
+            $ref: '#/components/schemas/tax_name'
+          tax_amount:
+            $ref: '#/components/schemas/tax_amount'
+    tax:
+      type: object
+      properties:
+        tax_name:
+          $ref: '#/components/schemas/tax_name'
+        tax_amount:
+          $ref: '#/components/schemas/tax_amount'
+    notes:
+      description: 'Notes for the Vendor Credit'
+      type: string
+    vendor_credit_bill_id:
+      description: 'ID of the Vendor Credited Bill ID'
+      type: string
+    bills_credited:
+      type: array
+      items:
+        type: object
+        properties:
+          bill_id:
+            description: 'ID of the Bill Credited'
+            type: string
+            example: '460000000057075'
+          vendor_credit_bill_id:
+            $ref: '#/components/schemas/vendor_credit_bill_id'
+          date:
+            description: 'Date of the Bill Credit'
+            type: string
+            example: '2014-08-30'
+          bill_number:
+            description: 'Number of the Bill Credited'
+            type: string
+          amount:
+            description: 'Amount that is credited in the bill'
+            type: number
+            format: double
+            example: 13
+    created_time:
+      description: 'Time of Vendor Credit Creation'
+      type: string
+      example: '2014-08-28T22:53:31-0700'
+    last_modified_time:
+      description: 'Last Modified Time of Vendor Credit'
+      type: string
+      example: '2014-08-28T22:53:31-0700'
+    item_id:
+      description: 'ID of the item.'
+      type: string
+      example: '460000000020071'
+    line_item_id:
+      description: 'ID of the Line Item'
+      type: string
+      example: '460000000020077'
+    sku:
+      description: 'SKU of the Item'
+      type: string
+    account_id:
+      description: 'ID of the account, the line item is associated with'
+      type: string
+      example: '460000000020097'
+    account_name:
+      description: 'Name of the account the line item is associated with'
+      type: string
+      example: 'IT and Internet Expenses'
+    name:
+      description: 'Name of the line item.'
+      type: string
+      example: 'Premium Plan - Web hosting'
+    description:
+      description: 'Description of the line item.'
+      type: string
+    item_order:
+      description: 'Order of the line item'
+      type: integer
+      example: 0
+    quantity:
+      description: 'Quantity of the line item.'
+      type: number
+      format: double
+      example: 1
+    unit:
+      description: 'Unit of the line item e.g. kgs, Nos.'
+      type: string
+      example: Nos
+    bcy_rate:
+      description: 'Rate of the Item in Base Currency'
+      type: number
+      format: double
+      example: 30
+    rate:
+      description: 'Rate of the line item.'
+      type: number
+      format: double
+      example: 30
+    amount:
+      type: number
+      format: double
+      example: 13
+    tax_id:
+      description: 'ID of the Tax associated with the Vendor Credit'
+      type: string
+    tds_tax_id:
+      description: 'TDS Tax ID of the Tax associated with the Vendor Credit'
+      type: string
+      x-node_available_in:
+        - mx
+      x-node_unavailable_in: []
+    tax_treatment_code:
+      description: 'Specify reason for using out of scope.</br>Supported values for <b>UAE</b> are <code>uae_same_tax_group</code>, <code>uae_reimbursed_expense</code> and <code>uae_others</code>.</br> Supported values for <b>Bahrain</b> are <code>bahrain_same_tax_group</code>, <code>bahrain_transfer_of_concern</code>, <code>bahrain_disbursement</code>, <code>bahrain_head_to_branch_transaction</code> and <code>bahrain_others</code>.'
+      type: string
+      example: uae_others
+      x-node_available_in:
+        - gcc
+      x-node_unavailable_in: []
+    tax_exemption_id:
+      description: 'ID of the Tax Exemption associated'
+      type: string
+      x-node_available_in:
+        - in
+        - au
+      x-node_unavailable_in: []
+    tax_exemption_code:
+      description: 'Code of the Tax Exemption associated'
+      type: string
+      x-node_available_in:
+        - in
+        - au
+      x-node_unavailable_in: []
+    tax_type:
+      description: 'Type of the Tax'
+      type: string
+    tax_percentage:
+      description: 'Percentage of Tax'
+      type: number
+      format: double
+    item_total:
+      description: 'Total price of the Item'
+      type: number
+      format: double
+      example: 30
+    item_total_inclusive_of_tax:
+      description: 'Total price of the Item inclusive of Tax'
+      type: number
+      format: double
+      example: 30
+    product_type:
+      description: 'Type of the product.  Allowed Values: <code>goods</code>, <code>digital_service</code> and <code>service</code>.'
+      type: string
+      x-node_available_in:
+        - uk
+        - eu
+      x-node_unavailable_in: []
+    hsn_or_sac:
+      description: 'HSN Code'
+      type: string
+      x-node_available_in:
+        - in
+      x-node_unavailable_in: []
+    acquisition_vat_id:
+      description: 'ID of the VAT Acquistion'
+      type: string
+      x-node_available_in:
+        - uk
+        - eu
+      x-node_unavailable_in: []
+    acquisition_vat_name:
+      description: 'Name of the VAT Acquistion'
+      type: string
+      x-node_available_in:
+        - uk
+        - eu
+      x-node_unavailable_in: []
+    acquisition_vat_percentage:
+      description: 'Percentage of the VAT Acquistion'
+      type: string
+      x-node_available_in:
+        - uk
+        - eu
+      x-node_unavailable_in: []
+    acquisition_vat_amount:
+      description: 'Amount of the VAT Acquistion'
+      type: string
+      x-node_available_in:
+        - uk
+        - eu
+      x-node_unavailable_in: []
+    acquisition_vat_summary:
+      description: 'Summary of the VAT Acquistion'
+      x-node_available_in:
+        - uk
+        - eu
+      x-node_unavailable_in: []
+      type: array
+      items:
+        type: object
+        properties:
+          tax:
+            $ref: '#/components/schemas/tax'
+    reverse_charge_vat_summary:
+      description: 'Summary of the Reverse Charge'
+      type: array
+      items:
+        type: object
+        properties:
+          tax:
+            $ref: '#/components/schemas/tax'
+      x-node_available_in:
+        - uk
+        - eu
+      x-node_unavailable_in: []
+    acquisition_vat_total:
+      description: 'Total of the VAT Acquistion'
+      type: number
+      format: double
+      x-node_available_in:
+        - uk
+        - eu
+      x-node_unavailable_in: []
+    reverse_charge_vat_total:
+      description: 'Total of the Reverse Charge'
+      type: number
+      format: double
+      x-node_available_in:
+        - uk
+        - eu
+      x-node_unavailable_in: []
+    reverse_charge_vat_id:
+      description: 'ID of the Reverse Charge'
+      type: string
+      x-node_available_in:
+        - uk
+        - eu
+      x-node_unavailable_in: []
+    reverse_charge_vat_name:
+      description: 'Name of the Reverse Charge'
+      type: string
+      x-node_available_in:
+        - uk
+        - eu
+      x-node_unavailable_in: []
+    reverse_charge_vat_percentage:
+      description: 'Percentage of the Reverse Charge'
+      type: string
+      x-node_available_in:
+        - uk
+        - eu
+      x-node_unavailable_in: []
+    reverse_charge_vat_amount:
+      description: 'Percentage of the Reverse Charge'
+      type: string
+      x-node_available_in:
+        - uk
+        - eu
+      x-node_unavailable_in: []
+    tag_id:
+      description: 'ID of the tag'
+      type: integer
+      format: int64
+    tag_option_id:
+      description: 'ID of the tag option'
+      type: integer
+      format: int64
+    tags:
+      type: array
+      items:
+        type: object
+        properties:
+          tag_id:
+            $ref: '#/components/schemas/tag_id'
+          tag_option_id:
+            $ref: '#/components/schemas/tag_option_id'
+    custom_field_id:
+      description: 'ID of the Custom Field'
+      type: integer
+      format: int64
+    index:
+      description: 'Index of the Custom Field'
+      type: integer
+    value:
+      description: 'Value of the Custom Field'
+      type: string
+    label:
+      description: 'Label of the Custom Field'
+      type: string
+    item_custom_fields:
+      type: array
+      items:
+        type: object
+        properties:
+          custom_field_id:
+            $ref: '#/components/schemas/custom_field_id'
+          label:
+            $ref: '#/components/schemas/label'
+          value:
+            $ref: '#/components/schemas/value'
+          index:
+            $ref: '#/components/schemas/index'
+    serial_numbers:
+      type: array
+      items:
+        type: string
+    stock_on_hand:
+      description: 'Stock on Hand for that Item'
+      type: string
+    comment_id:
+      description: 'ID of the Comment'
+      type: string
+      example: '3000000002089'
+    vendor_credit_id:
+      description: 'ID of the Vendor Credit'
+      type: string
+      example: '3000000002075'
+    commented_by_id:
+      description: 'ID of the User who caused the comment'
+      type: string
+      example: '3000000000741'
+    commented_by:
+      description: 'Name of the User who caused the comment'
+      type: string
+      example: rajdeep.a
+    comment_type:
+      description: 'Type of the comment'
+      type: string
+      example: system
+    date_description:
+      description: 'Description of the Date of the Comment'
+      type: string
+      example: '32 minutes ago'
+    time:
+      description: 'Time of the Comment'
+      type: string
+      example: '10:52 PM'
+    operation_type:
+      description: 'Type of operation that caused the Comment'
+      type: string
+      example: Added
+    transaction_id:
+      description: 'Transaction ID that caused the Comment'
+      type: string
+      example: '460000000069087'
+    transaction_type:
+      description: 'Transaction Type that caused the Comment'
+      type: string
+      example: vendor_credit
+    page:
+      type: integer
+      example: 1
+    per_page:
+      type: integer
+      example: 200
+    has_more_page:
+      type: boolean
+      example: false
+    report_name:
+      type: string
+      example: Bills
+    applied_filter:
+      type: string
+      example: Status.All
+    sort_order:
+      type: string
+      example: D
+    has_attachment:
+      description: 'Check if Vendor Credit has attachment'
+      type: boolean
+      example: false
+    print:
+      description: 'Export vendor credit pdf with default print option. Allowed Values: <code>true</code>, <code>false</code>, <code>on</code> and <code>off</code>.'
+      type: boolean
+    accept:
+      description: 'You can get vendor credit details as json/pdf/html. Default format is html. Allowed Values: <code>json</code>, <code>xml</code>, <code>csv</code>, <code>xls</code>, <code>pdf</code>, <code>html</code> and <code>jhtml</code>.'
+      type: string
+    item_name:
+      description: 'Search vendor credits by item name. Variants: <code>item_name_startswith</code> and <code>item_name_contains</code>.'
+      type: string
+    item_description:
+      description: 'Search vendor credits by vendor credit item description. Variants: <code>item_description_startswith</code> and <code>item_description_contains</code>.'
+      type: string
+    filter_by:
+      description: 'Filter vendor credits by statuses. Allowed Values: <code>Status.All</code>, <code>Status.Open</code>, <code>Status.Draft</code>, <code>Status.Closed</code> and <code>Status.Void</code>.'
+      type: string
+    search_text:
+      description: 'Search vendor credits by vendor credit number or vendor name or vendor credit reference number.'
+      type: string
+    sort_column:
+      description: 'Sort vendor credits by following columns vendor_name, vendorcredit_number, balance, total, date and created_time. Allowed Values: <code>vendor_name</code>, <code>vendor_credit_number</code>, <code>balance</code>, <code>total</code>, <code>date</code>, <code>created_time</code>, <code>last_modified_time</code> and <code>reference_number</code>.'
+      type: string
+      example: created_time
+    bill_number:
+      type: string
+    due_date:
+      type: string
+      example: '2014-08-30'
+    due_days:
+      type: string
+      example: 'Due Today'
+    attachment_name:
+      type: string
+    vendor_credit_refund_id:
+      description: 'ID of the Vendor Credit Refund'
+      type: string
+      example: '3000000003151'
+    refund_mode:
+      description: 'Mode of Refund'
+      type: string
+      example: cash
+    amount_bcy:
+      description: 'Refund Amount in Base Currency'
+      type: number
+      format: double
+      example: 13
+    amount_fcy:
+      description: 'Refund Amount in Foreign Currency'
+      type: number
+      format: double
+      example: 13
+    customer_name:
+      description: 'Vendor associated with the Entity'
+      type: string
+      example: 'Bowman and Co'
+    is_update_customer:
+      description: 'Check if customer should be updated'
+      type: boolean
+      example: false
+    vat_treatment:
+      description: 'VAT treatment for the invoice. VAT treatment denotes the location of the customer, if the customer resides in UK then the VAT treatment is <code>uk</code>. If the vendor is in an EU country & VAT registered, you are resides in Northen Ireland and purchasing Goods then his VAT treatment is <code>eu_vat_registered</code> and if he resides outside the EU then his VAT treatment is <code>overseas</code>(For Pre Brexit, this can be split as <code>eu_vat_registered</code>, <code>eu_vat_not_registered</code> and <code>non_eu</code>).'
+      type: string
+      x-node_available_in:
+        - uk
+      x-node_unavailable_in: []
+    filed_in_vat_return_id:
+      description: 'ID of the VAT Return the Vendor Credit is filed in'
+      type: string
+      x-node_available_in:
+        - uk
+      x-node_unavailable_in: []
+    filed_in_vat_return_name:
+      description: 'Name of the VAT Return the Vendor Credit is filed in'
+      type: string
+      x-node_available_in:
+        - uk
+      x-node_unavailable_in: []
+    filed_in_vat_return_type:
+      description: 'Type of the VAT Return the Vendor Credit is filed in'
+      type: string
+      x-node_available_in:
+        - uk
+      x-node_unavailable_in: []
+    imported_transaction_id:
+      description: 'ID of the Imported Transaction'
+      type: integer
+      format: int64
+      example: '460000000013297'
+    payee:
+      description: 'Payee of the Transaction'
+      type: string
+      example: 'John Roberts'
+    imported_transactions:
+      type: array
+      items:
+        type: object
+        properties:
+          imported_transaction_id:
+            $ref: '#/components/schemas/imported_transaction_id'
+          date:
+            $ref: '#/components/schemas/date'
+          amount:
+            $ref: '#/components/schemas/amount'
+          payee:
+            $ref: '#/components/schemas/payee'
+          description:
+            $ref: '#/components/schemas/description'
+          reference_number:
+            $ref: '#/components/schemas/reference_number'
+          status:
+            $ref: '#/components/schemas/status'
+          account_id:
+            $ref: '#/components/schemas/account_id'
+    vendor_credit_refunds:
+      type: array
+      items:
+        type: object
+        properties:
+          vendor_credit_refund_id:
+            $ref: '#/components/schemas/vendor_credit_refund_id'
+          vendor_credit_id:
+            $ref: '#/components/schemas/vendor_credit_id'
+          date:
+            $ref: '#/components/schemas/date'
+          refund_mode:
+            $ref: '#/components/schemas/refund_mode'
+          reference_number:
+            $ref: '#/components/schemas/reference_number'
+          description:
+            $ref: '#/components/schemas/description'
+          amount_bcy:
+            $ref: '#/components/schemas/amount_bcy'
+          amount_fcy:
+            $ref: '#/components/schemas/amount_fcy'
+          filed_in_vat_return_id:
+            $ref: '#/components/schemas/filed_in_vat_return_id'
+          filed_in_vat_return_name:
+            $ref: '#/components/schemas/filed_in_vat_return_name'
+          filed_in_vat_return_type:
+            $ref: '#/components/schemas/filed_in_vat_return_type'
+    vendor_credit_refund:
+      type: object
+      properties:
+        vendor_credit_refund_id:
+          $ref: '#/components/schemas/vendor_credit_refund_id'
+        vendor_credit_id:
+          $ref: '#/components/schemas/vendor_credit_id'
+        date:
+          $ref: '#/components/schemas/date'
+        refund_mode:
+          $ref: '#/components/schemas/refund_mode'
+        reference_number:
+          $ref: '#/components/schemas/reference_number'
+        amount:
+          $ref: '#/components/schemas/amount'
+        exchange_rate:
+          $ref: '#/components/schemas/exchange_rate'
+        account_id:
+          $ref: '#/components/schemas/account_id'
+        account_name:
+          $ref: '#/components/schemas/account_name'
+        description:
+          $ref: '#/components/schemas/description'
+        imported_transactions:
+          $ref: '#/components/schemas/imported_transactions'
+    line_items:
+      description: 'Line items of a vendor credit.'
+      type: array
+      items:
+        type: object
+        properties:
+          item_id:
+            $ref: '#/components/schemas/item_id'
+          line_item_id:
+            $ref: '#/components/schemas/line_item_id'
+          account_id:
+            $ref: '#/components/schemas/account_id'
+          name:
+            $ref: '#/components/schemas/name'
+          hsn_or_sac:
+            $ref: '#/components/schemas/hsn_or_sac'
+          reverse_charge_tax_id:
+            $ref: '#/components/schemas/reverse_charge_tax_id'
+          location_id:
+            $ref: '#/components/schemas/location_id'
+          description:
+            $ref: '#/components/schemas/description'
+          item_order:
+            $ref: '#/components/schemas/item_order'
+          quantity:
+            $ref: '#/components/schemas/quantity'
+          unit:
+            $ref: '#/components/schemas/unit'
+          rate:
+            $ref: '#/components/schemas/rate'
+          tax_id:
+            $ref: '#/components/schemas/tax_id'
+          tds_tax_id:
+            $ref: '#/components/schemas/tds_tax_id'
+          tax_treatment_code:
+            $ref: '#/components/schemas/tax_treatment_code'
+          tags:
+            $ref: '#/components/schemas/tags'
+          item_custom_fields:
+            $ref: '#/components/schemas/item_custom_fields'
+          serial_numbers:
+            $ref: '#/components/schemas/serial_numbers'
+          project_id:
+            $ref: '#/components/schemas/project_id'
+          project_name:
+            $ref: '#/components/schemas/project_name'
+    comments:
+      type: array
+      items:
+        type: object
+        properties:
+          comment_id:
+            $ref: '#/components/schemas/comment_id'
+          vendor_credit_id:
+            $ref: '#/components/schemas/vendor_credit_id'
+          description:
+            $ref: '#/components/schemas/description'
+          commented_by_id:
+            $ref: '#/components/schemas/commented_by_id'
+          commented_by:
+            $ref: '#/components/schemas/commented_by'
+          comment_type:
+            $ref: '#/components/schemas/comment_type'
+          date:
+            $ref: '#/components/schemas/date'
+          date_description:
+            $ref: '#/components/schemas/date_description'
+          time:
+            $ref: '#/components/schemas/time'
+          operation_type:
+            $ref: '#/components/schemas/operation_type'
+          transaction_id:
+            $ref: '#/components/schemas/transaction_id'
+          transaction_type:
+            $ref: '#/components/schemas/transaction_type'
+    vendor_credit:
+      type: object
+      properties:
+        vendor_credit_id:
+          $ref: '#/components/schemas/vendor_credit_id'
+        vendor_credit_number:
+          $ref: '#/components/schemas/vendor_credit_number'
+        date:
+          $ref: '#/components/schemas/date'
+        status:
+          $ref: '#/components/schemas/status'
+        reference_number:
+          $ref: '#/components/schemas/reference_number'
+        vendor_id:
+          $ref: '#/components/schemas/vendor_id'
+        vendor_name:
+          $ref: '#/components/schemas/vendor_name'
+        currency_id:
+          $ref: '#/components/schemas/currency_id'
+        currency_code:
+          $ref: '#/components/schemas/currency_code'
+        exchange_rate:
+          $ref: '#/components/schemas/exchange_rate'
+        price_precision:
+          $ref: '#/components/schemas/price_precision'
+        vat_treatment:
+          $ref: '#/components/schemas/vat_treatment'
+        filed_in_vat_return_id:
+          $ref: '#/components/schemas/filed_in_vat_return_id'
+        filed_in_vat_return_name:
+          $ref: '#/components/schemas/filed_in_vat_return_name'
+        filed_in_vat_return_type:
+          $ref: '#/components/schemas/filed_in_vat_return_type'
+        is_inclusive_tax:
+          $ref: '#/components/schemas/is_inclusive_tax'
+        location_id:
+          $ref: '#/components/schemas/location_id'
+        location_name:
+          $ref: '#/components/schemas/location_name'
+        line_items:
+          $ref: '#/components/schemas/line_items'
+        acquisition_vat_summary:
+          $ref: '#/components/schemas/acquisition_vat_summary'
+        acquisition_vat_total:
+          $ref: '#/components/schemas/acquisition_vat_total'
+        reverse_charge_vat_summary:
+          $ref: '#/components/schemas/reverse_charge_vat_summary'
+        reverse_charge_vat_total:
+          $ref: '#/components/schemas/reverse_charge_vat_total'
+        documents:
+          $ref: '#/components/schemas/documents'
+        custom_fields:
+          $ref: '#/components/schemas/custom_fields'
+        sub_total:
+          $ref: '#/components/schemas/sub_total'
+        total:
+          $ref: '#/components/schemas/total'
+        total_credits_used:
+          $ref: '#/components/schemas/total_credits_used'
+        total_refunded_amount:
+          $ref: '#/components/schemas/total_refunded_amount'
+        balance:
+          $ref: '#/components/schemas/balance'
+        notes:
+          $ref: '#/components/schemas/notes'
+        comments:
+          $ref: '#/components/schemas/comments'
+        vendor_credit_refunds:
+          $ref: '#/components/schemas/vendor_credit_refunds'
+        bills_credited:
+          $ref: '#/components/schemas/bills_credited'
+        created_time:
+          $ref: '#/components/schemas/created_time'
+        last_modified_time:
+          $ref: '#/components/schemas/last_modified_time'
+    page_context:
+      type: object
+      properties:
+        page:
+          $ref: '#/components/schemas/page'
+        per_page:
+          $ref: '#/components/schemas/per_page'
+        has_more_page:
+          $ref: '#/components/schemas/has_more_page'
+        report_name:
+          $ref: '#/components/schemas/report_name'
+        applied_filter:
+          $ref: '#/components/schemas/applied_filter'
+        sort_column:
+          $ref: '#/components/schemas/sort_column'
+        sort_order:
+          $ref: '#/components/schemas/sort_order'
+    customer_id:
+      description: 'Search vendor credits by vendor credit customer ID'
+      type: integer
+      format: int64
+    custom_field:
+      description: 'Search vendor credits by custom field. Variants : <code>custom_field_startswith</code> and <code>custom_field_contains</code>'
+      type: string
+    create-a-vendor-credit-request:
+      required:
+        - vendor_id
+      type: object
+      properties:
+        vendor_id:
+          $ref: '#/components/schemas/vendor_id'
+        vat_treatment:
+          $ref: '#/components/schemas/vat_treatment'
+        vendor_credit_number:
+          description: 'Mandatory if auto number generation is disabled.'
+          type: string
+          example: DN-00002
+        gst_treatment:
+          $ref: '#/components/schemas/gst_treatment'
+        tax_treatment:
+          $ref: '#/components/schemas/tax_treatment'
+        gst_no:
+          $ref: '#/components/schemas/gst_no'
+        source_of_supply:
+          $ref: '#/components/schemas/source_of_supply'
+        destination_of_supply:
+          $ref: '#/components/schemas/destination_of_supply'
+        place_of_supply:
+          $ref: '#/components/schemas/place_of_supply'
+        pricebook_id:
+          $ref: '#/components/schemas/pricebook_id'
+        reference_number:
+          $ref: '#/components/schemas/reference_number'
+        is_update_customer:
+          $ref: '#/components/schemas/is_update_customer'
+        date:
+          $ref: '#/components/schemas/date'
+        exchange_rate:
+          $ref: '#/components/schemas/exchange_rate'
+        is_inclusive_tax:
+          $ref: '#/components/schemas/is_inclusive_tax'
+        location_id:
+          $ref: '#/components/schemas/location_id'
+        line_items:
+          $ref: '#/components/schemas/line_items'
+        notes:
+          $ref: '#/components/schemas/notes'
+        documents:
+          $ref: '#/components/schemas/documents'
+        custom_fields:
+          $ref: '#/components/schemas/custom_fields'
+    create-a-vendor-credit-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Vendor credit has been created.'
+          readOnly: true
+        vendor_credit:
+          $ref: '#/components/schemas/vendor_credit-response'
+    list-vendor-credits-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        vendorcredits:
+          type: array
+          items:
+            type: object
+            properties:
+              vendor_credit_id:
+                $ref: '#/components/schemas/vendor_credit_id'
+              vendor_credit_number:
+                $ref: '#/components/schemas/vendor_credit_number'
+              status:
+                $ref: '#/components/schemas/status'
+              reference_number:
+                $ref: '#/components/schemas/reference_number'
+              date:
+                $ref: '#/components/schemas/date'
+              total:
+                $ref: '#/components/schemas/total'
+              balance:
+                $ref: '#/components/schemas/balance'
+              vendor_id:
+                $ref: '#/components/schemas/vendor_id'
+              vendor_name:
+                $ref: '#/components/schemas/vendor_name'
+              currency_id:
+                $ref: '#/components/schemas/currency_id'
+              currency_code:
+                $ref: '#/components/schemas/currency_code'
+              created_time:
+                $ref: '#/components/schemas/created_time'
+              last_modified_time:
+                $ref: '#/components/schemas/last_modified_time'
+              has_attachment:
+                $ref: '#/components/schemas/has_attachment'
+              exchange_rate:
+                $ref: '#/components/schemas/exchange_rate'
+    update-vendor-credit-request:
+      required:
+        - vendor_id
+      type: object
+      properties:
+        vendor_id:
+          $ref: '#/components/schemas/vendor_id'
+        vat_treatment:
+          $ref: '#/components/schemas/vat_treatment'
+        vendor_credit_number:
+          description: 'Mandatory if auto number generation is disabled.'
+          type: string
+          example: DN-00002
+        gst_treatment:
+          $ref: '#/components/schemas/gst_treatment'
+        tax_treatment:
+          $ref: '#/components/schemas/tax_treatment'
+        gst_no:
+          $ref: '#/components/schemas/gst_no'
+        source_of_supply:
+          $ref: '#/components/schemas/source_of_supply'
+        destination_of_supply:
+          $ref: '#/components/schemas/destination_of_supply'
+        place_of_supply:
+          $ref: '#/components/schemas/place_of_supply'
+        pricebook_id:
+          $ref: '#/components/schemas/pricebook_id'
+        reference_number:
+          $ref: '#/components/schemas/reference_number'
+        is_update_customer:
+          $ref: '#/components/schemas/is_update_customer'
+        date:
+          $ref: '#/components/schemas/date'
+        exchange_rate:
+          $ref: '#/components/schemas/exchange_rate'
+        is_inclusive_tax:
+          $ref: '#/components/schemas/is_inclusive_tax'
+        location_id:
+          $ref: '#/components/schemas/location_id'
+        line_items:
+          $ref: '#/components/schemas/line_items'
+        notes:
+          $ref: '#/components/schemas/notes'
+        documents:
+          $ref: '#/components/schemas/documents'
+        custom_fields:
+          $ref: '#/components/schemas/custom_fields'
+    update-vendor-credit-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Vendor credit information has been updated.'
+          readOnly: true
+        vendor_credit:
+          type: object
+          properties:
+            vendor_credit_id:
+              $ref: '#/components/schemas/vendor_credit_id'
+            vendor_credit_number:
+              $ref: '#/components/schemas/vendor_credit_number'
+            date:
+              $ref: '#/components/schemas/date'
+            source_of_supply:
+              $ref: '#/components/schemas/source_of_supply'
+            destination_of_supply:
+              $ref: '#/components/schemas/destination_of_supply'
+            place_of_supply:
+              $ref: '#/components/schemas/place_of_supply'
+            gst_no:
+              $ref: '#/components/schemas/gst_no'
+            gst_treatment:
+              $ref: '#/components/schemas/gst_treatment'
+            tax_treatment:
+              $ref: '#/components/schemas/tax_treatment'
+            pricebook_id:
+              $ref: '#/components/schemas/pricebook_id'
+            is_reverse_charge_applied:
+              $ref: '#/components/schemas/is_reverse_charge_applied'
+            status:
+              $ref: '#/components/schemas/status'
+            reference_number:
+              $ref: '#/components/schemas/reference_number'
+            vendor_id:
+              $ref: '#/components/schemas/vendor_id'
+            vendor_name:
+              $ref: '#/components/schemas/vendor_name'
+            currency_id:
+              $ref: '#/components/schemas/currency_id'
+            currency_code:
+              $ref: '#/components/schemas/currency_code'
+            exchange_rate:
+              $ref: '#/components/schemas/exchange_rate'
+            price_precision:
+              $ref: '#/components/schemas/price_precision'
+            vat_treatment:
+              $ref: '#/components/schemas/vat_treatment'
+            taxes:
+              $ref: '#/components/schemas/taxes'
+            is_inclusive_tax:
+              $ref: '#/components/schemas/is_inclusive_tax'
+            location_id:
+              $ref: '#/components/schemas/location_id'
+            location_name:
+              $ref: '#/components/schemas/location_name'
+            line_items:
+              description: 'Line items of a vendor credit.'
+              type: object
+              properties:
+                item_id:
+                  $ref: '#/components/schemas/item_id'
+                line_item_id:
+                  $ref: '#/components/schemas/line_item_id'
+                sku:
+                  $ref: '#/components/schemas/sku'
+                location_id:
+                  $ref: '#/components/schemas/location_id'
+                location_name:
+                  $ref: '#/components/schemas/location_name'
+                account_id:
+                  $ref: '#/components/schemas/account_id'
+                product_type:
+                  $ref: '#/components/schemas/product_type'
+                reverse_charge_tax_id:
+                  $ref: '#/components/schemas/reverse_charge_tax_id'
+                reverse_charge_tax_name:
+                  $ref: '#/components/schemas/reverse_charge_tax_name'
+                reverse_charge_tax_percentage:
+                  $ref: '#/components/schemas/reverse_charge_tax_percentage'
+                reverse_charge_tax_amount:
+                  $ref: '#/components/schemas/reverse_charge_tax_amount'
+                account_name:
+                  $ref: '#/components/schemas/account_name'
+                name:
+                  $ref: '#/components/schemas/name'
+                description:
+                  $ref: '#/components/schemas/description'
+                item_order:
+                  $ref: '#/components/schemas/item_order'
+                quantity:
+                  $ref: '#/components/schemas/quantity'
+                unit:
+                  $ref: '#/components/schemas/unit'
+                bcy_rate:
+                  $ref: '#/components/schemas/bcy_rate'
+                rate:
+                  $ref: '#/components/schemas/rate'
+                tax_id:
+                  $ref: '#/components/schemas/tax_id'
+                tds_tax_id:
+                  $ref: '#/components/schemas/tds_tax_id'
+                tax_treatment_code:
+                  $ref: '#/components/schemas/tax_treatment_code'
+                tax_exemption_id:
+                  $ref: '#/components/schemas/tax_exemption_id'
+                tax_exemption_code:
+                  $ref: '#/components/schemas/tax_exemption_code'
+                tax_name:
+                  $ref: '#/components/schemas/tax_name'
+                tax_type:
+                  $ref: '#/components/schemas/tax_type'
+                tax_percentage:
+                  $ref: '#/components/schemas/tax_percentage'
+                item_total:
+                  $ref: '#/components/schemas/item_total'
+                item_total_inclusive_of_tax:
+                  $ref: '#/components/schemas/item_total_inclusive_of_tax'
+                hsn_or_sac:
+                  $ref: '#/components/schemas/hsn_or_sac'
+                acquisition_vat_id:
+                  $ref: '#/components/schemas/acquisition_vat_id'
+                acquisition_vat_name:
+                  $ref: '#/components/schemas/acquisition_vat_name'
+                acquisition_vat_percentage:
+                  $ref: '#/components/schemas/acquisition_vat_percentage'
+                acquisition_vat_amount:
+                  $ref: '#/components/schemas/acquisition_vat_amount'
+                reverse_charge_vat_id:
+                  $ref: '#/components/schemas/reverse_charge_vat_id'
+                reverse_charge_vat_name:
+                  $ref: '#/components/schemas/reverse_charge_vat_name'
+                reverse_charge_vat_percentage:
+                  $ref: '#/components/schemas/reverse_charge_vat_percentage'
+                reverse_charge_vat_amount:
+                  $ref: '#/components/schemas/reverse_charge_vat_amount'
+                stock_on_hand:
+                  $ref: '#/components/schemas/stock_on_hand'
+                tags:
+                  $ref: '#/components/schemas/tags'
+                item_custom_fields:
+                  $ref: '#/components/schemas/item_custom_fields'
+            acquisition_vat_summary:
+              $ref: '#/components/schemas/acquisition_vat_summary'
+            acquisition_vat_total:
+              $ref: '#/components/schemas/acquisition_vat_total'
+            reverse_charge_vat_summary:
+              $ref: '#/components/schemas/reverse_charge_vat_summary'
+            reverse_charge_vat_total:
+              $ref: '#/components/schemas/reverse_charge_vat_total'
+            documents:
+              $ref: '#/components/schemas/documents'
+            custom_fields:
+              $ref: '#/components/schemas/custom_fields'
+            sub_total:
+              $ref: '#/components/schemas/sub_total'
+            total:
+              $ref: '#/components/schemas/total'
+            total_credits_used:
+              $ref: '#/components/schemas/total_credits_used'
+            total_refunded_amount:
+              $ref: '#/components/schemas/total_refunded_amount'
+            balance:
+              $ref: '#/components/schemas/balance'
+            notes:
+              $ref: '#/components/schemas/notes'
+            comments:
+              $ref: '#/components/schemas/comments'
+            vendor_credit_refunds:
+              type: array
+              items:
+                type: object
+                properties:
+                  vendor_credit_refund_id:
+                    $ref: '#/components/schemas/vendor_credit_refund_id'
+                  vendor_credit_id:
+                    $ref: '#/components/schemas/vendor_credit_id'
+                  date:
+                    description: 'Date of the Vendor Credit Refund'
+                    type: string
+                  refund_mode:
+                    $ref: '#/components/schemas/refund_mode'
+                  reference_number:
+                    $ref: '#/components/schemas/reference_number'
+                  description:
+                    $ref: '#/components/schemas/description'
+                  amount_bcy:
+                    $ref: '#/components/schemas/amount_bcy'
+                  amount_fcy:
+                    $ref: '#/components/schemas/amount_fcy'
+            bills_credited:
+              $ref: '#/components/schemas/bills_credited'
+            created_time:
+              $ref: '#/components/schemas/created_time'
+            last_modified_time:
+              $ref: '#/components/schemas/last_modified_time'
+    get-vendor-credit-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        vendor_credit:
+          type: object
+          properties:
+            vendor_credit_id:
+              $ref: '#/components/schemas/vendor_credit_id'
+            vendor_credit_number:
+              $ref: '#/components/schemas/vendor_credit_number'
+            date:
+              $ref: '#/components/schemas/date'
+            status:
+              $ref: '#/components/schemas/status'
+            reference_number:
+              $ref: '#/components/schemas/reference_number'
+            source_of_supply:
+              $ref: '#/components/schemas/source_of_supply'
+            destination_of_supply:
+              $ref: '#/components/schemas/destination_of_supply'
+            place_of_supply:
+              $ref: '#/components/schemas/place_of_supply'
+            gst_no:
+              $ref: '#/components/schemas/gst_no'
+            gst_treatment:
+              $ref: '#/components/schemas/gst_treatment'
+            tax_treatment:
+              $ref: '#/components/schemas/tax_treatment'
+            pricebook_id:
+              $ref: '#/components/schemas/pricebook_id'
+            is_reverse_charge_applied:
+              $ref: '#/components/schemas/is_reverse_charge_applied'
+            vendor_id:
+              $ref: '#/components/schemas/vendor_id'
+            vendor_name:
+              $ref: '#/components/schemas/vendor_name'
+            currency_id:
+              $ref: '#/components/schemas/currency_id'
+            currency_code:
+              $ref: '#/components/schemas/currency_code'
+            exchange_rate:
+              $ref: '#/components/schemas/exchange_rate'
+            price_precision:
+              $ref: '#/components/schemas/price_precision'
+            vat_treatment:
+              $ref: '#/components/schemas/vat_treatment'
+            filed_in_vat_return_id:
+              $ref: '#/components/schemas/filed_in_vat_return_id'
+            filed_in_vat_return_name:
+              $ref: '#/components/schemas/filed_in_vat_return_name'
+            filed_in_vat_return_type:
+              $ref: '#/components/schemas/filed_in_vat_return_type'
+            is_inclusive_tax:
+              $ref: '#/components/schemas/is_inclusive_tax'
+            location_id:
+              $ref: '#/components/schemas/location_id'
+            location_name:
+              $ref: '#/components/schemas/location_name'
+            line_items:
+              description: 'Line items of a vendor credit.'
+              type: object
+              properties:
+                item_id:
+                  $ref: '#/components/schemas/item_id'
+                line_item_id:
+                  $ref: '#/components/schemas/line_item_id'
+                sku:
+                  $ref: '#/components/schemas/sku'
+                location_id:
+                  $ref: '#/components/schemas/location_id'
+                location_name:
+                  $ref: '#/components/schemas/location_name'
+                account_id:
+                  $ref: '#/components/schemas/account_id'
+                product_type:
+                  $ref: '#/components/schemas/product_type'
+                reverse_charge_tax_id:
+                  $ref: '#/components/schemas/reverse_charge_tax_id'
+                reverse_charge_tax_name:
+                  $ref: '#/components/schemas/reverse_charge_tax_name'
+                reverse_charge_tax_percentage:
+                  $ref: '#/components/schemas/reverse_charge_tax_percentage'
+                reverse_charge_tax_amount:
+                  $ref: '#/components/schemas/reverse_charge_tax_amount'
+                account_name:
+                  $ref: '#/components/schemas/account_name'
+                name:
+                  $ref: '#/components/schemas/name'
+                description:
+                  $ref: '#/components/schemas/description'
+                item_order:
+                  $ref: '#/components/schemas/item_order'
+                quantity:
+                  $ref: '#/components/schemas/quantity'
+                unit:
+                  $ref: '#/components/schemas/unit'
+                bcy_rate:
+                  $ref: '#/components/schemas/bcy_rate'
+                rate:
+                  $ref: '#/components/schemas/rate'
+                tax_id:
+                  $ref: '#/components/schemas/tax_id'
+                tax_treatment_code:
+                  $ref: '#/components/schemas/tax_treatment_code'
+                tax_exemption_id:
+                  $ref: '#/components/schemas/tax_exemption_id'
+                tax_exemption_code:
+                  $ref: '#/components/schemas/tax_exemption_code'
+                tax_name:
+                  $ref: '#/components/schemas/tax_name'
+                tax_type:
+                  $ref: '#/components/schemas/tax_type'
+                tax_percentage:
+                  $ref: '#/components/schemas/tax_percentage'
+                item_total:
+                  $ref: '#/components/schemas/item_total'
+                item_total_inclusive_of_tax:
+                  $ref: '#/components/schemas/item_total_inclusive_of_tax'
+                hsn_or_sac:
+                  $ref: '#/components/schemas/hsn_or_sac'
+                acquisition_vat_id:
+                  $ref: '#/components/schemas/acquisition_vat_id'
+                acquisition_vat_name:
+                  $ref: '#/components/schemas/acquisition_vat_name'
+                acquisition_vat_percentage:
+                  $ref: '#/components/schemas/acquisition_vat_percentage'
+                acquisition_vat_amount:
+                  $ref: '#/components/schemas/acquisition_vat_amount'
+                reverse_charge_vat_id:
+                  $ref: '#/components/schemas/reverse_charge_vat_id'
+                reverse_charge_vat_name:
+                  $ref: '#/components/schemas/reverse_charge_vat_name'
+                reverse_charge_vat_percentage:
+                  $ref: '#/components/schemas/reverse_charge_vat_percentage'
+                reverse_charge_vat_amount:
+                  $ref: '#/components/schemas/reverse_charge_vat_amount'
+                stock_on_hand:
+                  $ref: '#/components/schemas/stock_on_hand'
+                tags:
+                  $ref: '#/components/schemas/tags'
+                item_custom_fields:
+                  $ref: '#/components/schemas/item_custom_fields'
+                project_id:
+                  $ref: '#/components/schemas/project_id'
+                project_name:
+                  $ref: '#/components/schemas/project_name'
+            acquisition_vat_summary:
+              $ref: '#/components/schemas/acquisition_vat_summary'
+            acquisition_vat_total:
+              $ref: '#/components/schemas/acquisition_vat_total'
+            reverse_charge_vat_summary:
+              $ref: '#/components/schemas/reverse_charge_vat_summary'
+            reverse_charge_vat_total:
+              $ref: '#/components/schemas/reverse_charge_vat_total'
+            documents:
+              $ref: '#/components/schemas/documents'
+            custom_fields:
+              $ref: '#/components/schemas/custom_fields'
+            sub_total:
+              $ref: '#/components/schemas/sub_total'
+            total:
+              $ref: '#/components/schemas/total'
+            total_credits_used:
+              $ref: '#/components/schemas/total_credits_used'
+            total_refunded_amount:
+              $ref: '#/components/schemas/total_refunded_amount'
+            balance:
+              $ref: '#/components/schemas/balance'
+            notes:
+              $ref: '#/components/schemas/notes'
+            comments:
+              $ref: '#/components/schemas/comments'
+            vendor_credit_refunds:
+              $ref: '#/components/schemas/vendor_credit_refunds'
+            bills_credited:
+              $ref: '#/components/schemas/bills_credited'
+            created_time:
+              $ref: '#/components/schemas/created_time'
+            last_modified_time:
+              $ref: '#/components/schemas/last_modified_time'
+    delete-vendor-credit-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The vendor credit has been deleted.'
+          readOnly: true
+    convert-to-open-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The status of the vendor credit has been changed to open.'
+          readOnly: true
+    void-vendor-credit-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The vendor credit has been voided.'
+          readOnly: true
+    submit-a-vendor-credit-for-approval-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The vendor credit has been submitted for approval successfully.'
+          readOnly: true
+    approve-a-vendor-credit-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'You have approved the vendor credit.'
+          readOnly: true
+    list-bills-credited-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        bills_credited:
+          type: array
+          items:
+            type: object
+            properties:
+              vendor_credit_id:
+                $ref: '#/components/schemas/vendor_credit_id'
+              bill_id:
+                $ref: '#/components/schemas/bill_id'
+              vendor_credit_bill_id:
+                $ref: '#/components/schemas/vendor_credit_bill_id'
+              date:
+                $ref: '#/components/schemas/date'
+              bill_number:
+                $ref: '#/components/schemas/bill_number'
+    apply-credits-to-a-bill-request:
+      required:
+        - bills
+        - bill_id
+        - amount_applied
+      type: object
+      properties:
+        bills:
+          description: 'Amount applied from vendor credits to specified bills.'
+          type: array
+          items:
+            type: object
+            required:
+              - bill_id
+              - amount_applied
+            properties:
+              bill_id:
+                description: 'Bill Associated with the Vendor Credit'
+                type: string
+                example: '460000000057075'
+              amount_applied:
+                description: 'Amount applied to the bill.'
+                type: number
+                format: double
+                example: 10
+    apply-credits-to-a-bill-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Credits have been applied to the bill(s).'
+          readOnly: true
+        bills:
+          description: 'Amount applied from vendor credits to specified bills.'
+    delete-bills-credited-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Credits applied to the bill have been deleted.'
+          readOnly: true
+    refund-a-vendor-credit-request:
+      required:
+        - date
+        - amount
+        - account_id
+      type: object
+      properties:
+        date:
+          description: 'Date of Vendor Credit Refund'
+          type: string
+          example: '2014-08-30'
+        refund_mode:
+          $ref: '#/components/schemas/refund_mode'
+        reference_number:
+          $ref: '#/components/schemas/reference_number'
+        amount:
+          $ref: '#/components/schemas/amount'
+        exchange_rate:
+          $ref: '#/components/schemas/exchange_rate'
+        account_id:
+          $ref: '#/components/schemas/account_id'
+        description:
+          $ref: '#/components/schemas/description'
+    refund-a-vendor-credit-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The refund information for this vendor credit has been saved.'
+          readOnly: true
+        vendor_credit_refund:
+          $ref: '#/components/schemas/vendor_credit_refund'
+    list-refunds-of-a-vendor-credit-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        vendor_credit_refunds:
+          type: array
+          items:
+            type: object
+            properties:
+              vendor_credit_refund_id:
+                $ref: '#/components/schemas/vendor_credit_refund_id'
+              vendor_credit_id:
+                $ref: '#/components/schemas/vendor_credit_id'
+              date:
+                description: 'Date of the Vendor Credit Refund'
+                type: string
+                example: '2017-01-22'
+              refund_mode:
+                $ref: '#/components/schemas/refund_mode'
+              reference_number:
+                $ref: '#/components/schemas/reference_number'
+              amount:
+                $ref: '#/components/schemas/amount'
+              vendor_credit_number:
+                $ref: '#/components/schemas/vendor_credit_number'
+              customer_name:
+                $ref: '#/components/schemas/customer_name'
+              description:
+                description: 'Description of the Vendor Credit Refund'
+                type: string
+                example: 'Cheque deposit'
+              amount_bcy:
+                $ref: '#/components/schemas/amount_bcy'
+              amount_fcy:
+                $ref: '#/components/schemas/amount_fcy'
+    update-vendor-credit-refund-request:
+      required:
+        - date
+        - amount
+        - account_id
+      type: object
+      properties:
+        date:
+          $ref: '#/components/schemas/date'
+        refund_mode:
+          $ref: '#/components/schemas/refund_mode'
+        reference_number:
+          $ref: '#/components/schemas/reference_number'
+        amount:
+          $ref: '#/components/schemas/amount'
+        exchange_rate:
+          $ref: '#/components/schemas/exchange_rate'
+        account_id:
+          $ref: '#/components/schemas/account_id'
+        description:
+          $ref: '#/components/schemas/description'
+    update-vendor-credit-refund-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The refund information has been saved.'
+          readOnly: true
+        vendor_credit_refund:
+          $ref: '#/components/schemas/vendor_credit_refund'
+    get-vendor-credit-refund-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        vendor_credit_refund:
+          $ref: '#/components/schemas/vendor_credit_refund'
+    delete-vendor-credit-refund-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The refund has been successfully deleted.'
+          readOnly: true
+    list-vendor-credit-refunds-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        vendor_credit_refunds:
+          type: array
+          items:
+            type: object
+            properties:
+              vendor_credit_refund_id:
+                $ref: '#/components/schemas/vendor_credit_refund_id'
+              vendor_credit_id:
+                $ref: '#/components/schemas/vendor_credit_id'
+              date:
+                description: 'Date of the Vendor Credit Refund'
+                type: string
+                example: '2017-01-22'
+              refund_mode:
+                $ref: '#/components/schemas/refund_mode'
+              reference_number:
+                $ref: '#/components/schemas/reference_number'
+              amount:
+                $ref: '#/components/schemas/amount'
+              vendor_credit_number:
+                $ref: '#/components/schemas/vendor_credit_number'
+              customer_name:
+                $ref: '#/components/schemas/customer_name'
+              description:
+                description: 'Description of the Vendor Credit Refund'
+                type: string
+                example: 'Cheque deposit'
+              amount_bcy:
+                $ref: '#/components/schemas/amount_bcy'
+              amount_fcy:
+                $ref: '#/components/schemas/amount_fcy'
+    add-a-comment-request:
+      required:
+        - description
+      type: object
+      properties:
+        description:
+          description: 'Description of the Comment'
+          type: string
+          example: 'Credits applied to Bill 1'
+    add-a-comment-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Comments added.'
+          readOnly: true
+        comment:
+          type: object
+          properties:
+            comment_id:
+              $ref: '#/components/schemas/comment_id'
+            vendor_credit_id:
+              $ref: '#/components/schemas/vendor_credit_id'
+            description:
+              description: 'Description of the Comment'
+              type: string
+              example: 'Credits applied to Bill 1'
+            commented_by_id:
+              $ref: '#/components/schemas/commented_by_id'
+            commented_by:
+              $ref: '#/components/schemas/commented_by'
+            date:
+              description: 'Date of the Comment'
+              type: string
+              example: '2017-01-18'
+    list-vendor-credit-comments-and-history-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        comments:
+          type: array
+          items:
+            type: object
+            properties:
+              comment_id:
+                $ref: '#/components/schemas/comment_id'
+              vendor_credit_id:
+                $ref: '#/components/schemas/vendor_credit_id'
+              description:
+                description: 'Description of the Comment'
+                type: string
+                example: 'Credits applied to Bill 1'
+              commented_by_id:
+                $ref: '#/components/schemas/commented_by_id'
+              commented_by:
+                $ref: '#/components/schemas/commented_by'
+              comment_type:
+                $ref: '#/components/schemas/comment_type'
+              date:
+                description: 'Date of the Comment'
+                type: string
+                example: '2017-01-18'
+              date_description:
+                $ref: '#/components/schemas/date_description'
+              time:
+                $ref: '#/components/schemas/time'
+              operation_type:
+                $ref: '#/components/schemas/operation_type'
+              transaction_id:
+                $ref: '#/components/schemas/transaction_id'
+              transaction_type:
+                $ref: '#/components/schemas/transaction_type'
+    delete-a-comment-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The comment has been deleted.'
+          readOnly: true
+  securitySchemes:
+    Zoho_Auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: 'https://accounts.zoho.com/oauth/v2/auth'
+          scopes:
+            ZohoInventory.debitnotes.CREATE: 'Create Debitnotes'
+            ZohoInventory.debitnotes.UPDATE: 'Update Debitnotes'
+            ZohoInventory.debitnotes.READ: 'Read Debitnotes'
+            ZohoInventory.debitnotes.DELETE: 'Delete Debitnotes'

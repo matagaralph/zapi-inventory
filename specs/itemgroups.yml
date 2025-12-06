@@ -1,0 +1,1028 @@
+openapi: 3.0.0
+info:
+  title: 'Item Groups'
+  description: 'Item Group are the products that you sell or services that you render to various clients and can be purchased from various vendors in a business. Create and manage the item groups your business deals with and also create price lists for specific item and clients.'
+  contact: {}
+  version: 1.0.0
+servers:
+  - url: 'https://www.zohoapis.com/inventory/v1'
+    description: 'API Endpoint'
+tags:
+  - name: itemgroups
+    description: 'ItemGroups Module'
+paths:
+  /itemgroups:
+    post:
+      tags:
+        - itemgroups
+      operationId: 'create_item_group'
+      summary: 'Create an Item Group'
+      description: 'A new Item Group can a be created. While creating items, user can attach image for product group by passing form-data parameter <code>image</code> i.e., <code>-F image=bag_s.jpg</code>.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-an-item-group-request'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-an-item-group-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.CREATE
+    get:
+      tags:
+        - itemgroups
+      operationId: 'list_item_groups'
+      summary: 'List all Item Groups'
+      description: 'Lists all the Item Groups that are present in the Zoho Inventory organization.'
+      parameters:
+        - name: page
+          in: query
+          description: 'Page number to be fetched. Default value is 1.'
+          required: false
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: per_page
+          in: query
+          description: 'Number of records to be fetched per page. Default value is 200.'
+          required: false
+          schema:
+            type: integer
+            default: 200
+          example: 200
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-all-item-groups-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  '/itemgroups/{itemgroup_id}':
+    get:
+      tags:
+        - itemgroups
+      operationId: 'get_item_group'
+      summary: 'Retrieve an Item Group'
+      description: 'Fetches the details for an existing Item Group.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/retrieve-an-item-group-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.READ
+    put:
+      tags:
+        - itemgroups
+      operationId: 'update_item_group'
+      summary: 'Update an Item Group'
+      description: 'Updates the details of an existing Item Group.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-an-item-group-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-an-item-group-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.UPDATE
+    delete:
+      tags:
+        - itemgroups
+      operationId: 'delete_item_group'
+      summary: 'Delete an Item Group'
+      description: 'Deletes an existing Item Group from Zoho Inventory.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-an-item-group-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.DELETE
+    parameters:
+      - name: itemgroup_id
+        in: path
+        required: true
+        description: 'Unique identifier of the item group.'
+        schema:
+          type: string
+        example: '4815000000044220'
+      - $ref: '#/components/parameters/organization_id'
+  '/itemgroups/{itemgroup_id}/active':
+    post:
+      tags:
+        - itemgroups
+      operationId: 'mark_item_group_active'
+      summary: 'Mark as Active'
+      description: 'Marks an Item group as Active.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mark-as-active-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.CREATE
+    parameters:
+      - name: itemgroup_id
+        in: path
+        required: true
+        description: 'Unique identifier of the item group.'
+        schema:
+          type: string
+        example: '4815000000044220'
+      - $ref: '#/components/parameters/organization_id'
+  '/itemgroups/{itemgroup_id}/inactive':
+    post:
+      tags:
+        - itemgroups
+      operationId: 'mark_item_group_inactive'
+      summary: 'Mark as Inactive.'
+      description: 'Marks as Item Group as Inactive.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mark-as-inactive-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.CREATE
+    parameters:
+      - name: itemgroup_id
+        in: path
+        required: true
+        description: 'Unique identifier of the item group.'
+        schema:
+          type: string
+        example: '4815000000044220'
+      - $ref: '#/components/parameters/organization_id'
+components:
+  parameters:
+    organization_id:
+      name: organization_id
+      description: 'ID of the organization'
+      in: query
+      required: true
+      schema:
+        type: string
+      example: '10234695'
+  schemas:
+    group_id:
+      description: 'Unique ID generated by the server. This is used an a unique identifier.'
+      type: integer
+      format: int64
+      example: 4815000000044220
+    group_name:
+      description: 'Name of the Item Group.'
+      type: string
+      example: Bags
+    brand:
+      description: 'Brand of the Item Group.'
+      type: string
+      example: Brand
+    manufacturer:
+      description: 'Manufacturer of Item Group.'
+      type: string
+      example: Bagstore
+    unit:
+      description: 'Unit of measurement of the Item Group.'
+      type: string
+      example: qty
+    description:
+      description: 'Description of the Item Group.'
+      type: string
+      example: description
+    is_taxable:
+      description: 'Boolean to track the taxability of the item.'
+      type: boolean
+      example: true
+    tax_id:
+      description: 'Unique ID generated by the server for the tax associated with the item. This is used a unique identifier.'
+      type: integer
+      format: int64
+      example: 4815000000044043
+    tax_name:
+      description: 'Name of the tax applied on the Item Group.'
+      type: string
+      example: Sales
+    tax_percentage:
+      description: 'Percentage of the Tax'
+      type: number
+      format: double
+      example: 12
+    tax_type:
+      description: 'Type of the Tax.'
+      type: string
+      example: 'Service Tax'
+    attribute_id1:
+      description: 'Unique ID used by the server. This is used as an identifier.'
+      type: integer
+      format: int64
+      example: 4815000000044112
+    attribute_name1:
+      description: 'Name of the attribute present in the Item Group.'
+      type: string
+      example: Small
+    status:
+      description: 'Status of the Item Group.'
+      type: string
+      example: active
+    source:
+      description: 'The source of the Item Group.'
+      type: string
+    image_id:
+      description: 'Unique ID generated by the server for the Item image. This is used as an identifier.'
+      type: string
+      example: 2077500000000002000
+    image_name:
+      description: 'Name of the Item image.'
+      type: string
+      example: bag_s.jpg
+    item_id:
+      description: 'Unique ID generated by the server for the Item. This is used as an identifier.'
+      type: integer
+      format: int64
+      example: 4815000000044208
+    name:
+      description: 'Name of the Item.'
+      type: string
+      example: Bags-small
+    rate:
+      description: 'Sales price of the Item.'
+      type: number
+      format: double
+      example: 6
+    purchase_rate:
+      description: 'Purchase price of the Item.'
+      type: number
+      format: double
+      example: 6
+    reorder_level:
+      description: 'Reorder level of the item.'
+      type: number
+      format: double
+      example: 5
+    initial_stock:
+      description: 'The opening stock of the item.'
+      type: number
+      format: double
+      example: 50
+    initial_stock_rate:
+      description: 'The opening stock value of the item.'
+      type: number
+      format: double
+      example: 500
+    vendor_id:
+      description: 'Unique ID generated by the server for the Vendor. This is used as an identifier.'
+      type: integer
+      format: int64
+      example: 4815000000044080
+    vendor_name:
+      description: 'Name of the preferred Vendor for purchasing this item.'
+      type: string
+      example: Molly
+    stock_on_hand:
+      description: 'Stock available for a particular item.'
+      type: number
+      format: double
+      example: 50
+    sku:
+      description: 'The Stock Keeeping Unit (SKU) of an item. This is unique for every item in the Inventory.'
+      type: string
+      example: SK1234
+    upc:
+      description: 'The 12 digit Unique Product Code (UPC) of the item.'
+      type: integer
+      format: int64
+      example: 111111111111
+    ean:
+      description: 'Unique EAN value for the Item.'
+      type: integer
+      format: int64
+      example: 111111111112
+    isbn:
+      description: 'Unique ISBN value for the Item.'
+      type: string
+      example: 111111111113
+    part_number:
+      description: 'Part Number of the Item.'
+      type: string
+      example: 111111111114
+    attribute_option_id1:
+      description: "Unique ID generated by the server for the attribute's options. This is used as an identifier."
+      type: integer
+      format: int64
+      example: 4815000000044214
+    attribute_option_name1:
+      description: "Name of the attribute's option."
+      type: integer
+      format: int64
+      example: Small
+    customfield_id:
+      type: integer
+      description: 'Unique identifier of the custom field'
+      format: int64
+      example: '46000000012845'
+    value:
+      description: 'Value of the Custom Field'
+      type: string
+      example: Normal
+    custom_fields:
+      description: 'Custom fields for an itemgroup.'
+      type: array
+      items:
+        type: object
+        properties:
+          customfield_id:
+            $ref: '#/components/schemas/customfield_id'
+          value:
+            $ref: '#/components/schemas/value'
+    image_type:
+      description: 'Type of the image i.e., its file format.'
+      type: string
+      example: jpg
+    id:
+      description: 'Unique ID generated by the server for the attribute. This is used as an identifier.'
+      type: integer
+      format: int64
+      example: 4815000000044112
+    items:
+      description: 'The items present in the Item Group.'
+      type: array
+      items:
+        type: object
+        properties:
+          item_id:
+            $ref: '#/components/schemas/item_id'
+          name:
+            $ref: '#/components/schemas/name'
+          status:
+            $ref: '#/components/schemas/status'
+          rate:
+            $ref: '#/components/schemas/rate'
+          purchase_rate:
+            $ref: '#/components/schemas/purchase_rate'
+          reorder_level:
+            $ref: '#/components/schemas/reorder_level'
+          initial_stock:
+            $ref: '#/components/schemas/initial_stock'
+          initial_stock_rate:
+            $ref: '#/components/schemas/initial_stock_rate'
+          vendor_id:
+            $ref: '#/components/schemas/vendor_id'
+          vendor_name:
+            $ref: '#/components/schemas/vendor_name'
+          stock_on_hand:
+            $ref: '#/components/schemas/stock_on_hand'
+          sku:
+            $ref: '#/components/schemas/sku'
+          upc:
+            $ref: '#/components/schemas/upc'
+          ean:
+            $ref: '#/components/schemas/ean'
+          isbn:
+            $ref: '#/components/schemas/isbn'
+          part_number:
+            $ref: '#/components/schemas/part_number'
+          attribute_option_id1:
+            $ref: '#/components/schemas/attribute_option_id1'
+          attribute_option_name1:
+            $ref: '#/components/schemas/attribute_option_name1'
+          image_id:
+            $ref: '#/components/schemas/image_id'
+          image_name:
+            $ref: '#/components/schemas/image_name'
+          image_type:
+            $ref: '#/components/schemas/image_type'
+    options:
+      description: 'The options present for each attribute.'
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            $ref: '#/components/schemas/id'
+          name:
+            $ref: '#/components/schemas/name'
+    attributes:
+      description: 'All the attributes present in the Item Group. Each attribute will have its own option.'
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            $ref: '#/components/schemas/id'
+          name:
+            $ref: '#/components/schemas/name'
+          options:
+            $ref: '#/components/schemas/options'
+    product_type:
+      description: 'Type of the product.'
+      type: string
+      example: goods
+    tax_exemption_id:
+      type: integer
+      format: int64
+      example: null
+    created_time:
+      description: 'Created Time of the Transaction'
+      type: string
+      example: '2013-01-24'
+    last_modified_time:
+      description: 'Last Modified time of the Transaction'
+      type: string
+      example: '2013-01-24'
+    available_stock:
+      description: 'Stock based on Shipments and Receives'
+      type: number
+      format: decimal
+      example: 2
+    actual_available_stock:
+      description: 'Stock based on Shipments and Receives minus ordered stock'
+      type: number
+      format: decimal
+      example: 2
+    documents:
+      description: 'The documents associated with the items'
+      type: array
+      items:
+        type: string
+    create-an-item-group-request:
+      required:
+        - group_name
+        - unit
+      type: object
+      properties:
+        group_name:
+          $ref: '#/components/schemas/group_name'
+        brand:
+          $ref: '#/components/schemas/brand'
+        manufacturer:
+          $ref: '#/components/schemas/manufacturer'
+        unit:
+          $ref: '#/components/schemas/unit'
+        description:
+          $ref: '#/components/schemas/description'
+        tax_id:
+          $ref: '#/components/schemas/tax_id'
+        attribute_name1:
+          $ref: '#/components/schemas/attribute_name1'
+        items:
+          description: 'The items present in the Item Group.'
+          type: array
+          items:
+            type: object
+            required:
+              - name
+              - rate
+              - purchase_rate
+            properties:
+              name:
+                $ref: '#/components/schemas/name'
+              rate:
+                $ref: '#/components/schemas/rate'
+              purchase_rate:
+                $ref: '#/components/schemas/purchase_rate'
+              reorder_level:
+                $ref: '#/components/schemas/reorder_level'
+              initial_stock:
+                $ref: '#/components/schemas/initial_stock'
+              initial_stock_rate:
+                $ref: '#/components/schemas/initial_stock_rate'
+              vendor_id:
+                $ref: '#/components/schemas/vendor_id'
+              sku:
+                $ref: '#/components/schemas/sku'
+              upc:
+                $ref: '#/components/schemas/upc'
+              ean:
+                $ref: '#/components/schemas/ean'
+              isbn:
+                $ref: '#/components/schemas/isbn'
+              part_number:
+                $ref: '#/components/schemas/part_number'
+              attribute_option_name1:
+                $ref: '#/components/schemas/attribute_option_name1'
+              custom_fields:
+                $ref: '#/components/schemas/custom_fields'
+        attributes:
+          $ref: '#/components/schemas/attributes'
+    create-an-item-group-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The Item Group has been created.'
+          readOnly: true
+        group_id:
+          $ref: '#/components/schemas/group_id'
+        group_name:
+          $ref: '#/components/schemas/group_name'
+        documents:
+          $ref: '#/components/schemas/documents'
+        brand:
+          $ref: '#/components/schemas/brand'
+        manufacturer:
+          $ref: '#/components/schemas/manufacturer'
+        unit:
+          $ref: '#/components/schemas/unit'
+        description:
+          $ref: '#/components/schemas/description'
+        is_taxable:
+          $ref: '#/components/schemas/is_taxable'
+        tax_id:
+          $ref: '#/components/schemas/tax_id'
+        tax_name:
+          $ref: '#/components/schemas/tax_name'
+        tax_percentage:
+          $ref: '#/components/schemas/tax_percentage'
+        tax_type:
+          $ref: '#/components/schemas/tax_type'
+        attribute_id1:
+          $ref: '#/components/schemas/attribute_id1'
+        attribute_name1:
+          $ref: '#/components/schemas/attribute_name1'
+        status:
+          $ref: '#/components/schemas/status'
+        source:
+          $ref: '#/components/schemas/source'
+        image_id:
+          $ref: '#/components/schemas/image_id'
+        image_name:
+          $ref: '#/components/schemas/image_name'
+        image_type:
+          $ref: '#/components/schemas/image_type'
+        custom_fields:
+          $ref: '#/components/schemas/custom_fields'
+        items:
+          description: 'The items present in the Item Group.'
+          type: object
+          properties:
+            item_id:
+              $ref: '#/components/schemas/item_id'
+            name:
+              $ref: '#/components/schemas/name'
+            status:
+              $ref: '#/components/schemas/status'
+            rate:
+              $ref: '#/components/schemas/rate'
+            purchase_rate:
+              $ref: '#/components/schemas/purchase_rate'
+            reorder_level:
+              $ref: '#/components/schemas/reorder_level'
+            initial_stock:
+              $ref: '#/components/schemas/initial_stock'
+            initial_stock_rate:
+              $ref: '#/components/schemas/initial_stock_rate'
+            vendor_id:
+              $ref: '#/components/schemas/vendor_id'
+            vendor_name:
+              $ref: '#/components/schemas/vendor_name'
+            stock_on_hand:
+              $ref: '#/components/schemas/stock_on_hand'
+            sku:
+              $ref: '#/components/schemas/sku'
+            upc:
+              $ref: '#/components/schemas/upc'
+            ean:
+              $ref: '#/components/schemas/ean'
+            isbn:
+              $ref: '#/components/schemas/isbn'
+            part_number:
+              $ref: '#/components/schemas/part_number'
+            attribute_option_id1:
+              $ref: '#/components/schemas/attribute_option_id1'
+            attribute_option_name1:
+              $ref: '#/components/schemas/attribute_option_name1'
+            image_id:
+              $ref: '#/components/schemas/image_id'
+            image_name:
+              $ref: '#/components/schemas/image_name'
+            image_type:
+              $ref: '#/components/schemas/image_type'
+            actual_available_stock:
+              $ref: '#/components/schemas/actual_available_stock'
+            available_stock:
+              $ref: '#/components/schemas/available_stock'
+        attributes:
+          description: 'All the attributes present in the Item Group. Each attribute will have its own option.'
+          type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/id'
+            name:
+              $ref: '#/components/schemas/name'
+            options:
+              description: 'The options present for each attribute.'
+              type: object
+              properties:
+                id:
+                  $ref: '#/components/schemas/id'
+                name:
+                  $ref: '#/components/schemas/name'
+    list-all-item-groups-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        itemgroups:
+          type: array
+          items:
+            type: object
+            properties:
+              group_id:
+                $ref: '#/components/schemas/group_id'
+              group_name:
+                $ref: '#/components/schemas/group_name'
+              product_type:
+                $ref: '#/components/schemas/product_type'
+              brand:
+                $ref: '#/components/schemas/brand'
+              manufacturer:
+                $ref: '#/components/schemas/manufacturer'
+              unit:
+                $ref: '#/components/schemas/unit'
+              description:
+                $ref: '#/components/schemas/description'
+              is_taxable:
+                $ref: '#/components/schemas/is_taxable'
+              tax_id:
+                $ref: '#/components/schemas/tax_id'
+              tax_name:
+                $ref: '#/components/schemas/tax_name'
+              tax_percentage:
+                $ref: '#/components/schemas/tax_percentage'
+              tax_type:
+                $ref: '#/components/schemas/tax_type'
+              tax_exemption_id:
+                $ref: '#/components/schemas/tax_exemption_id'
+              attribute_id1:
+                $ref: '#/components/schemas/attribute_id1'
+              attribute_name1:
+                $ref: '#/components/schemas/attribute_name1'
+              status:
+                $ref: '#/components/schemas/status'
+              source:
+                $ref: '#/components/schemas/source'
+              image_id:
+                $ref: '#/components/schemas/image_id'
+              image_name:
+                $ref: '#/components/schemas/image_name'
+              image_type:
+                $ref: '#/components/schemas/image_type'
+              custom_fields:
+                $ref: '#/components/schemas/custom_fields'
+              items:
+                description: 'The items present in the Item Group.'
+                type: object
+                properties:
+                  item_id:
+                    $ref: '#/components/schemas/item_id'
+                  name:
+                    $ref: '#/components/schemas/name'
+                  status:
+                    $ref: '#/components/schemas/status'
+                  rate:
+                    $ref: '#/components/schemas/rate'
+                  purchase_rate:
+                    $ref: '#/components/schemas/purchase_rate'
+                  reorder_level:
+                    $ref: '#/components/schemas/reorder_level'
+                  initial_stock:
+                    $ref: '#/components/schemas/initial_stock'
+                  initial_stock_rate:
+                    $ref: '#/components/schemas/initial_stock_rate'
+                  vendor_id:
+                    $ref: '#/components/schemas/vendor_id'
+                  vendor_name:
+                    $ref: '#/components/schemas/vendor_name'
+                  stock_on_hand:
+                    $ref: '#/components/schemas/stock_on_hand'
+                  sku:
+                    $ref: '#/components/schemas/sku'
+                  upc:
+                    $ref: '#/components/schemas/upc'
+                  ean:
+                    $ref: '#/components/schemas/ean'
+                  isbn:
+                    $ref: '#/components/schemas/isbn'
+                  part_number:
+                    $ref: '#/components/schemas/part_number'
+                  attribute_option_id1:
+                    $ref: '#/components/schemas/attribute_option_id1'
+                  attribute_option_name1:
+                    $ref: '#/components/schemas/attribute_option_name1'
+                  image_id:
+                    $ref: '#/components/schemas/image_id'
+                  image_name:
+                    $ref: '#/components/schemas/image_name'
+                  image_type:
+                    $ref: '#/components/schemas/image_type'
+                  available_stock:
+                    $ref: '#/components/schemas/available_stock'
+                  actual_available_stock:
+                    $ref: '#/components/schemas/actual_available_stock'
+              created_time:
+                $ref: '#/components/schemas/created_time'
+              last_modified_time:
+                $ref: '#/components/schemas/last_modified_time'
+    retrieve-an-item-group-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        group_id:
+          $ref: '#/components/schemas/group_id'
+        group_name:
+          $ref: '#/components/schemas/group_name'
+        brand:
+          $ref: '#/components/schemas/brand'
+        manufacturer:
+          $ref: '#/components/schemas/manufacturer'
+        unit:
+          $ref: '#/components/schemas/unit'
+        description:
+          $ref: '#/components/schemas/description'
+        is_taxable:
+          $ref: '#/components/schemas/is_taxable'
+        tax_id:
+          $ref: '#/components/schemas/tax_id'
+        tax_name:
+          $ref: '#/components/schemas/tax_name'
+        tax_percentage:
+          $ref: '#/components/schemas/tax_percentage'
+        tax_type:
+          $ref: '#/components/schemas/tax_type'
+        attribute_id1:
+          $ref: '#/components/schemas/attribute_id1'
+        attribute_name1:
+          $ref: '#/components/schemas/attribute_name1'
+        status:
+          $ref: '#/components/schemas/status'
+        source:
+          $ref: '#/components/schemas/source'
+        image_id:
+          $ref: '#/components/schemas/image_id'
+        image_name:
+          $ref: '#/components/schemas/image_name'
+        image_type:
+          $ref: '#/components/schemas/image_type'
+        custom_fields:
+          $ref: '#/components/schemas/custom_fields'
+        items:
+          description: 'The items present in the Item Group.'
+          type: object
+          properties:
+            item_id:
+              $ref: '#/components/schemas/item_id'
+            name:
+              $ref: '#/components/schemas/name'
+            status:
+              $ref: '#/components/schemas/status'
+            rate:
+              $ref: '#/components/schemas/rate'
+            purchase_rate:
+              $ref: '#/components/schemas/purchase_rate'
+            reorder_level:
+              $ref: '#/components/schemas/reorder_level'
+            initial_stock:
+              $ref: '#/components/schemas/initial_stock'
+            initial_stock_rate:
+              $ref: '#/components/schemas/initial_stock_rate'
+            vendor_id:
+              $ref: '#/components/schemas/vendor_id'
+            vendor_name:
+              $ref: '#/components/schemas/vendor_name'
+            stock_on_hand:
+              $ref: '#/components/schemas/stock_on_hand'
+            sku:
+              $ref: '#/components/schemas/sku'
+            upc:
+              $ref: '#/components/schemas/upc'
+            ean:
+              $ref: '#/components/schemas/ean'
+            isbn:
+              $ref: '#/components/schemas/isbn'
+            part_number:
+              $ref: '#/components/schemas/part_number'
+            attribute_option_id1:
+              $ref: '#/components/schemas/attribute_option_id1'
+            attribute_option_name1:
+              $ref: '#/components/schemas/attribute_option_name1'
+            image_id:
+              $ref: '#/components/schemas/image_id'
+            image_name:
+              $ref: '#/components/schemas/image_name'
+            image_type:
+              $ref: '#/components/schemas/image_type'
+        attributes:
+          description: 'All the attributes present in the Item Group. Each attribute will have its own option.'
+          type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/id'
+            name:
+              $ref: '#/components/schemas/name'
+            options:
+              description: 'The options present for each attribute.'
+              type: object
+              properties:
+                id:
+                  $ref: '#/components/schemas/id'
+                name:
+                  $ref: '#/components/schemas/name'
+        options:
+          description: 'The options present for each attribute.'
+          type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/id'
+            name:
+              $ref: '#/components/schemas/name'
+    update-an-item-group-request:
+      required:
+        - group_name
+        - unit
+        - name
+        - rate
+        - purchase_rate
+        - sku
+      type: object
+      properties:
+        group_name:
+          $ref: '#/components/schemas/group_name'
+        brand:
+          $ref: '#/components/schemas/brand'
+        manufacturer:
+          $ref: '#/components/schemas/manufacturer'
+        unit:
+          $ref: '#/components/schemas/unit'
+        description:
+          $ref: '#/components/schemas/description'
+        tax_id:
+          $ref: '#/components/schemas/tax_id'
+        attribute_name1:
+          $ref: '#/components/schemas/attribute_name1'
+        custom_fields:
+          $ref: '#/components/schemas/custom_fields'
+        name:
+          description: 'Name of the Item.'
+          type: string
+          example: Bags-small
+        rate:
+          description: 'Sales price of the Item.'
+          type: number
+          format: double
+          example: 6
+        purchase_rate:
+          description: 'Purchase price of the Item.'
+          type: number
+          format: double
+          example: 6
+        sku:
+          description: 'The Stock Keeeping Unit (SKU) of an item. This is unique for every item in the Inventory.'
+          type: string
+          example: SK1234
+    update-an-item-group-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The Item Group details have been updated.'
+          readOnly: true
+        group_id:
+          $ref: '#/components/schemas/group_id'
+        group_name:
+          $ref: '#/components/schemas/group_name'
+        brand:
+          $ref: '#/components/schemas/brand'
+        manufacturer:
+          $ref: '#/components/schemas/manufacturer'
+        unit:
+          $ref: '#/components/schemas/unit'
+        description:
+          $ref: '#/components/schemas/description'
+        is_taxable:
+          $ref: '#/components/schemas/is_taxable'
+        tax_id:
+          $ref: '#/components/schemas/tax_id'
+        tax_name:
+          $ref: '#/components/schemas/tax_name'
+        tax_percentage:
+          $ref: '#/components/schemas/tax_percentage'
+        tax_type:
+          $ref: '#/components/schemas/tax_type'
+        attribute_id1:
+          $ref: '#/components/schemas/attribute_id1'
+        attribute_name1:
+          $ref: '#/components/schemas/attribute_name1'
+        custom_fields:
+          $ref: '#/components/schemas/custom_fields'
+        status:
+          $ref: '#/components/schemas/status'
+        source:
+          $ref: '#/components/schemas/source'
+        image_id:
+          $ref: '#/components/schemas/image_id'
+        image_name:
+          $ref: '#/components/schemas/image_name'
+        image_type:
+          $ref: '#/components/schemas/image_type'
+    delete-an-item-group-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Whooooosh! The item group and all its items have been deleted.'
+          readOnly: true
+    mark-as-active-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Back to business! The item group and all its items have been marked as active.'
+          readOnly: true
+    mark-as-inactive-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The item group and all its items have been marked as inactive.'
+          readOnly: true
+  securitySchemes:
+    Zoho_Auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: 'https://accounts.zoho.com/oauth/v2/auth'
+          scopes:
+            ZohoInventory.items.CREATE: 'Create Items'
+            ZohoInventory.items.READ: 'Read Items'
+            ZohoInventory.items.UPDATE: 'Update Items'
+            ZohoInventory.items.DELETE: 'Delete Items'

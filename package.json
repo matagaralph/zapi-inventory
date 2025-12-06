@@ -1,0 +1,74 @@
+{
+  "name": "zapi-inventory",
+  "private": false,
+  "version": "1.0.0",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./modules": {
+      "types": "./dist/modules/index.d.ts",
+      "import": "./dist/modules/index.js"
+    },
+    "./modules/*": {
+      "types": "./dist/modules/*.d.ts",
+      "import": "./dist/modules/*.js"
+    },
+    "./generated/*": {
+      "types": "./dist/generated/*.d.ts",
+      "import": "./dist/generated/*.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean:generated": "rimraf src/generated",
+    "lint": "oxlint",
+    "format": "prettier --write .",
+    "types:check": "tsc --noEmit",
+    "generate:specs": "bun clean:generated && bunx --bun openapi-typescript",
+    "generate:types": "bun --bun run scripts/generate-types.ts",
+    "sdk:generate": "bun generate:specs && bun generate:types",
+    "test": "bun test",
+    "build": "bun --bun scripts/build.ts",
+    "changeset": "changeset",
+    "changeset:version": "changeset version",
+    "release": "bun --bun run build && changeset publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/matagaralph/zapi-inventory.git"
+  },
+  "bugs": {
+    "url": "https://github.com/matagaralph/zapi-inventory/issues"
+  },
+  "keywords": [
+    "matagaralph",
+    "zoho inventory",
+    "zapi-inventory",
+    "zoho inventory api"
+  ],
+  "author": "Ralph Mataga",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16"
+  },
+  "dependencies": {
+    "xior": "^0.8.1"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "openapi-typescript": "^7.10.1",
+    "prettier": "^3.7.4",
+    "rimraf": "^6.1.2",
+    "@changesets/cli": "^2.29.8",
+    "oxlint": "^1.31.0",
+    "typescript": "^5.9.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

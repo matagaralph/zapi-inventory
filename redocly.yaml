@@ -1,0 +1,125 @@
+apis:
+  bill:
+    root: ./specs/bills.yml
+    x-openapi-ts:
+      output: ./src/generated/bill.d.ts
+
+  compositeitem:
+    root: ./specs/compositeitems.yml
+    x-openapi-ts:
+      output: ./src/generated/composite-item.d.ts
+
+  contactperson:
+    root: ./specs/contact-persons.yml
+    x-openapi-ts:
+      output: ./src/generated/contact-person.d.ts
+
+  contact:
+    root: ./specs/contacts.yml
+    x-openapi-ts:
+      output: ./src/generated/contact.d.ts
+
+  creditnote:
+    root: ./specs/credit-notes.yml
+    x-openapi-ts:
+      output: ./src/generated/credit-note.d.ts
+
+  currency:
+    root: ./specs/currency.yml
+    x-openapi-ts:
+      output: ./src/generated/currency.d.ts
+
+  customerpayment:
+    root: ./specs/customer-payments.yml
+    x-openapi-ts:
+      output: ./src/generated/customer-payment.d.ts
+
+  invoice:
+    root: ./specs/invoices.yml
+    x-openapi-ts:
+      output: ./src/generated/invoice.d.ts
+
+  itemadjustment:
+    root: ./specs/itemadjustments.yml
+    x-openapi-ts:
+      output: ./src/generated/item-adjustment.d.ts
+
+  itemgroup:
+    root: ./specs/itemgroups.yml
+    x-openapi-ts:
+      output: ./src/generated/item-group.d.ts
+
+  item:
+    root: ./specs/items.yml
+    x-openapi-ts:
+      output: ./src/generated/item.d.ts
+
+  location:
+    root: ./specs/locations.yml
+    x-openapi-ts:
+      output: ./src/generated/location.d.ts
+
+  organization:
+    root: ./specs/organizations.yml
+    x-openapi-ts:
+      output: ./src/generated/organization.d.ts
+
+  package:
+    root: ./specs/packages.yml
+    x-openapi-ts:
+      output: ./src/generated/package.d.ts
+
+  pricelist:
+    root: ./specs/pricelists.yml
+    x-openapi-ts:
+      output: ./src/generated/price-list.d.ts
+
+  purchaseorder:
+    root: ./specs/purchaseorders.yml
+    x-openapi-ts:
+      output: ./src/generated/purchase-order.d.ts
+
+  purchasereceive:
+    root: ./specs/purchasereceives.yml
+    x-openapi-ts:
+      output: ./src/generated/purchase-receive.d.ts
+
+  retainerinvoice:
+    root: ./specs/retainer-invoices.yml
+    x-openapi-ts:
+      output: ./src/generated/retainer-invoice.d.ts
+
+  salesorder:
+    root: ./specs/salesorders.yml
+    x-openapi-ts:
+      output: ./src/generated/sales-order.d.ts
+
+  salesreturn:
+    root: ./specs/salesreturns.yml
+    x-openapi-ts:
+      output: ./src/generated/sales-return.d.ts
+
+  shipmentorder:
+    root: ./specs/shipmentorders.yml
+    x-openapi-ts:
+      output: ./src/generated/shipment-order.d.ts
+
+  tax:
+    root: ./specs/taxes.yml
+    x-openapi-ts:
+      output: ./src/generated/tax.d.ts
+
+  transferorder:
+    root: ./specs/transferorders.yml
+    x-openapi-ts:
+      output: ./src/generated/transfer-order.d.ts
+
+  user:
+    root: ./specs/users.yml
+    x-openapi-ts:
+      output: ./src/generated/user.d.ts
+
+  vendorcredit:
+    root: ./specs/vendor-credits.yml
+    x-openapi-ts:
+      output: ./src/generated/vendor-credit.d.ts

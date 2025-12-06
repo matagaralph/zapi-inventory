@@ -1,0 +1,536 @@
+openapi: 3.0.0
+info:
+  title: 'Item Adjustments'
+  description: 'Item Adjustments are used to synchronize the inventory/stock to account for things that occur outside the normal business like theft, damaged goods, data entry error etc.'
+  contact: {}
+  version: 1.0.0
+servers:
+  - url: 'https://www.zohoapis.com/inventory/v1'
+    description: 'API Endpoint'
+tags:
+  - name: itemadjustments
+    description: 'ItemAdjustments Module'
+paths:
+  /inventoryadjustments:
+    post:
+      tags:
+        - itemadjustments
+      operationId: 'create_item_adjustment'
+      summary: 'Create an item adjustment'
+      description: 'Creates a new item adjustment in Zoho Inventory.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-an-item-adjustment-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-an-item-adjustment-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.inventoryadjustments.CREATE
+    get:
+      tags:
+        - itemadjustments
+      operationId: 'list_item_adjustments'
+      summary: 'List all the item adjustments'
+      description: 'Lists all the item adjustments present in Zoho Inventory.'
+      parameters:
+        - name: page
+          in: query
+          description: 'Page number to be fetched. Default value is 1.'
+          required: false
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: per_page
+          in: query
+          description: 'Number of records to be fetched per page. Default value is 200.'
+          required: false
+          schema:
+            type: integer
+            default: 200
+          example: 200
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-all-the-item-adjustments-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.inventoryadjustments.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  '/inventoryadjustments/{inventory_adjustment_id}':
+    get:
+      tags:
+        - itemadjustments
+      operationId: 'get_item_adjustment'
+      summary: 'Retrieve an item adjustment'
+      description: 'Fetches the details for an existing item adjustment.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/retrieve-an-item-adjustment-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.inventoryadjustments.READ
+    put:
+      tags:
+        - itemadjustments
+      operationId: 'update_item_adjustment'
+      summary: 'Update an item adjustment'
+      description: 'Update the details of an existing item adjustment by quantity.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-an-item-adjustment-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-an-item-adjustment-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.inventoryadjustments.UPDATE
+    delete:
+      tags:
+        - itemadjustments
+      operationId: 'delete_item_adjustment'
+      summary: 'Delete an item adjustment'
+      description: 'Deletes an existing item adjustment from Zoho Inventory.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-an-item-adjustment-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.inventoryadjustments.DELETE
+    parameters:
+      - name: inventory_adjustment_id
+        in: path
+        required: true
+        description: 'Unique identifier of the inventory adjustment.'
+        schema:
+          type: string
+        example: 4815000000044100
+      - $ref: '#/components/parameters/organization_id'
+components:
+  parameters:
+    organization_id:
+      name: organization_id
+      description: 'ID of the organization'
+      in: query
+      required: true
+      schema:
+        type: string
+      example: '10234695'
+  schemas:
+    gendoc-attributes-schema:
+      $ref: '#/components/schemas/inventory_adjustment-response'
+    inventory_adjustment-response:
+      type: object
+      properties:
+        inventory_adjustment_id:
+          $ref: '#/components/schemas/inventory_adjustment_id'
+        date:
+          $ref: '#/components/schemas/date'
+        reason:
+          $ref: '#/components/schemas/reason'
+        reason_id:
+          $ref: '#/components/schemas/reason_id'
+        description:
+          $ref: '#/components/schemas/description'
+        reference_number:
+          $ref: '#/components/schemas/reference_number'
+        adjustment_type:
+          $ref: '#/components/schemas/adjustment_type'
+        line_items:
+          $ref: '#/components/schemas/line_items'
+        location_id:
+          $ref: '#/components/schemas/location_id'
+        location_name:
+          $ref: '#/components/schemas/location_name'
+        total:
+          $ref: '#/components/schemas/total'
+    inventory_adjustment_id:
+      description: 'Unique ID generated by the server for the item adjustment. This is used as an identifier.'
+      type: integer
+      format: int64
+      example: 4815000000044100
+    date:
+      description: 'The date for the Item Adjustment.'
+      type: string
+      example: '2015-05-28'
+    reason:
+      description: 'The reason for the Item Adjustment.'
+      type: string
+      example: 'Damaged goods'
+    reason_id:
+      description: 'Unique ID generated by the server for the reason. This is used as an identifier.'
+      type: integer
+      format: int64
+      example: 4815000000044110
+    description:
+      description: 'Sample Description.'
+      type: string
+      example: 'Just a sample description.'
+    reference_number:
+      description: 'Reference number of the Item Adjustment.'
+      type: string
+      example: REF-IA-00001
+    adjustment_type:
+      description: 'The adjustment type should be either quantity or value.Allowed values are <code>quantity</code> and <code>value</code> only.'
+      type: string
+      enum:
+        - quantity
+      example: quantity
+    line_items:
+      description: 'An item adjustment can contain multiple line items. Each line item contains <code>item_id</code>,<code>name</code>,<code>description</code>,<code>quantity_adjusted</code>,<code>unit</code>,<code>adjustment_account_id</code>,<code>location_id</code>.'
+      type: array
+      items:
+        type: object
+        properties:
+          item_id:
+            $ref: '#/components/schemas/item_id'
+          line_item_id:
+            $ref: '#/components/schemas/line_item_id'
+          name:
+            $ref: '#/components/schemas/name'
+          description:
+            $ref: '#/components/schemas/description'
+          quantity_adjusted:
+            $ref: '#/components/schemas/quantity_adjusted'
+          item_total:
+            $ref: '#/components/schemas/item_total'
+          unit:
+            $ref: '#/components/schemas/unit'
+          is_combo_product:
+            $ref: '#/components/schemas/is_combo_product'
+          adjustment_account_id:
+            $ref: '#/components/schemas/adjustment_account_id'
+          adjustment_account_name:
+            $ref: '#/components/schemas/adjustment_account_name'
+          location_id:
+            $ref: '#/components/schemas/location_id'
+          location_name:
+            $ref: '#/components/schemas/location_name'
+    item_id:
+      description: 'Unique ID generated by the server for the item. This is used as an identifier.'
+      type: integer
+      format: int64
+      example: 4815000000044100
+    line_item_id:
+      description: 'Unique ID generated by the server for each line item. This is used as an identifier.'
+      type: integer
+      format: int64
+      example: 4815000000044897
+    name:
+      description: 'Name of the line item.'
+      type: string
+      example: Laptop-white/15inch/dell
+    quantity_adjusted:
+      description: 'The adjusted quantity of the line item.It depends on adjustment_type and should be given only when adjustment_type is given as quantity.'
+      type: number
+      format: double
+      example: 10
+    value_adjusted:
+      description: 'The adjusted value of the line item.It depends on adjustment_type and should be given only when adjustment_type is given as value.'
+      type: number
+      format: double
+      example: 250.5
+    item_total:
+      description: 'Total of line item.'
+      type: number
+      format: double
+      example: 244
+    unit:
+      description: 'Unit of line item.'
+      type: string
+      example: qty
+    is_combo_product:
+      type: boolean
+      description: 'Indicates if the product is a combo product'
+      example: false
+    adjustment_account_id:
+      description: 'Unique ID generated by the server for the Adjustment account.'
+      type: integer
+      format: int64
+      example: 4815000000000388
+    adjustment_account_name:
+      description: 'Name of the Adjustment Account.'
+      type: string
+      example: 'Cost of Goods Sold'
+    location_id:
+      description: 'Location ID'
+      type: string
+      example: '460000000038080'
+    location_name:
+      description: 'Name of the location'
+      type: string
+      example: 'Head Office'
+    total:
+      description: 'Total value of the Item Adjustment.'
+      type: number
+      format: double
+      example: 350
+    create-an-item-adjustment-request:
+      required:
+        - date
+        - reason
+        - adjustment_type
+        - line_items
+      type: object
+      properties:
+        date:
+          $ref: '#/components/schemas/date'
+        reason:
+          $ref: '#/components/schemas/reason'
+        description:
+          $ref: '#/components/schemas/description'
+        reference_number:
+          $ref: '#/components/schemas/reference_number'
+        adjustment_type:
+          $ref: '#/components/schemas/adjustment_type'
+        location_id:
+          $ref: '#/components/schemas/location_id'
+        line_items:
+          description: 'An item adjustment can contain multiple line items. Each line item contains <code>item_id</code>,<code>name</code>,<code>description</code>,<code>quantity_adjusted</code>,<code>unit</code>,<code>adjustment_account_id</code>,<code>location_id</code>.'
+          type: array
+          items:
+            type: object
+            required:
+              - item_id
+              - quantity_adjusted
+            properties:
+              item_id:
+                $ref: '#/components/schemas/item_id'
+              name:
+                $ref: '#/components/schemas/name'
+              description:
+                $ref: '#/components/schemas/description'
+              quantity_adjusted:
+                $ref: '#/components/schemas/quantity_adjusted'
+              item_total:
+                $ref: '#/components/schemas/item_total'
+              unit:
+                $ref: '#/components/schemas/unit'
+              is_combo_product:
+                $ref: '#/components/schemas/is_combo_product'
+              adjustment_account_id:
+                $ref: '#/components/schemas/adjustment_account_id'
+              adjustment_account_name:
+                $ref: '#/components/schemas/adjustment_account_name'
+              location_id:
+                $ref: '#/components/schemas/location_id'
+    create-an-item-adjustment-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Inventory Adjustment has been added'
+          readOnly: true
+        inventory_adjustment:
+          $ref: '#/components/schemas/inventory_adjustment-response'
+    list-all-the-item-adjustments-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        inventory_adjustments:
+          type: array
+          items:
+            type: object
+            properties:
+              inventory_adjustment_id:
+                $ref: '#/components/schemas/inventory_adjustment_id'
+              date:
+                $ref: '#/components/schemas/date'
+              reason:
+                $ref: '#/components/schemas/reason'
+              reason_id:
+                $ref: '#/components/schemas/reason_id'
+              description:
+                $ref: '#/components/schemas/description'
+              reference_number:
+                $ref: '#/components/schemas/reference_number'
+              adjustment_type:
+                $ref: '#/components/schemas/adjustment_type'
+              total:
+                $ref: '#/components/schemas/total'
+    update-an-item-adjustment-request:
+      required:
+        - date
+        - reason
+        - adjustment_type
+        - line_items
+      type: object
+      properties:
+        date:
+          $ref: '#/components/schemas/date'
+        reason:
+          $ref: '#/components/schemas/reason'
+        description:
+          $ref: '#/components/schemas/description'
+        reference_number:
+          $ref: '#/components/schemas/reference_number'
+        adjustment_type:
+          $ref: '#/components/schemas/adjustment_type'
+        location_id:
+          $ref: '#/components/schemas/location_id'
+        line_items:
+          description: 'An item adjustment can contain multiple line items. Each line item contains <code>item_id</code>,<code>line_item_id</code>,<code>name</code>,<code>description</code>,<code>quantity_adjusted</code>,<code>unit</code>,<code>adjustment_account_id</code>,<code>location_id</code>.'
+          type: array
+          items:
+            type: object
+            required:
+              - item_id
+              - quantity_adjusted
+            properties:
+              line_item_id:
+                $ref: '#/components/schemas/line_item_id'
+              item_id:
+                $ref: '#/components/schemas/item_id'
+              name:
+                $ref: '#/components/schemas/name'
+              description:
+                $ref: '#/components/schemas/description'
+              quantity_adjusted:
+                $ref: '#/components/schemas/quantity_adjusted'
+              item_total:
+                $ref: '#/components/schemas/item_total'
+              unit:
+                $ref: '#/components/schemas/unit'
+              is_combo_product:
+                $ref: '#/components/schemas/is_combo_product'
+              adjustment_account_id:
+                $ref: '#/components/schemas/adjustment_account_id'
+              adjustment_account_name:
+                $ref: '#/components/schemas/adjustment_account_name'
+              location_id:
+                $ref: '#/components/schemas/location_id'
+    update-an-item-adjustment-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        inventory_adjustment:
+          type: object
+          properties:
+            inventory_adjustment_id:
+              $ref: '#/components/schemas/inventory_adjustment_id'
+            date:
+              $ref: '#/components/schemas/date'
+            reason:
+              $ref: '#/components/schemas/reason'
+            reason_id:
+              $ref: '#/components/schemas/reason_id'
+            description:
+              $ref: '#/components/schemas/description'
+            reference_number:
+              $ref: '#/components/schemas/reference_number'
+            adjustment_type:
+              $ref: '#/components/schemas/adjustment_type'
+            line_items:
+              $ref: '#/components/schemas/line_items'
+            location_id:
+              $ref: '#/components/schemas/location_id'
+            location_name:
+              $ref: '#/components/schemas/location_name'
+            total:
+              $ref: '#/components/schemas/total'
+    retrieve-an-item-adjustment-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        inventory_adjustment:
+          type: object
+          properties:
+            inventory_adjustment_id:
+              $ref: '#/components/schemas/inventory_adjustment_id'
+            date:
+              $ref: '#/components/schemas/date'
+            reason:
+              $ref: '#/components/schemas/reason'
+            reason_id:
+              $ref: '#/components/schemas/reason_id'
+            description:
+              $ref: '#/components/schemas/description'
+            reference_number:
+              $ref: '#/components/schemas/reference_number'
+            adjustment_type:
+              $ref: '#/components/schemas/adjustment_type'
+            line_items:
+              $ref: '#/components/schemas/line_items'
+            location_id:
+              $ref: '#/components/schemas/location_id'
+            location_name:
+              $ref: '#/components/schemas/location_name'
+            total:
+              $ref: '#/components/schemas/total'
+    delete-an-item-adjustment-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Inventory Adjustment(s) has been deleted'
+          readOnly: true
+  securitySchemes:
+    Zoho_Auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: 'https://accounts.zoho.com/oauth/v2/auth'
+          scopes:
+            ZohoInventory.inventoryadjustments.CREATE: 'Create Inventoryadjustments'
+            ZohoInventory.inventoryadjustments.READ: 'Read Inventoryadjustments'
+            ZohoInventory.inventoryadjustments.UPDATE: 'Update Inventoryadjustments'
+            ZohoInventory.inventoryadjustments.DELETE: 'Delete Inventoryadjustments'

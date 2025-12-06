@@ -1,0 +1,604 @@
+openapi: 3.0.0
+info:
+  title: 'Contact Persons'
+  description: 'A contact person is an individual who acts as a representative of an organisation for communication purpose. For example, a Manager can be a contact person for an organisation.'
+  contact: {}
+  version: 1.0.0
+servers:
+  - url: 'https://www.zohoapis.com/inventory/v1'
+    description: 'API Endpoint'
+tags:
+  - name: contact-persons
+    description: 'Contact-Persons Module'
+paths:
+  /contacts/contactpersons:
+    post:
+      tags:
+        - contact-persons
+      operationId: 'create_contact_person'
+      summary: 'Create a contact person'
+      description: 'Create a contact person for contact.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-a-contact-person-request'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-a-contact-person-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.contacts.CREATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  '/contacts/contactpersons/{contact_person_id}':
+    put:
+      tags:
+        - contact-persons
+      operationId: 'update_contact_person'
+      summary: 'Update a contact person'
+      description: 'Update details of an existing contact person.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-a-contact-person-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-a-contact-person-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.contacts.UPDATE
+    delete:
+      tags:
+        - contact-persons
+      operationId: 'delete_contact_person'
+      summary: 'Delete a contact person'
+      description: 'Delete an existing contact person.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-a-contact-person-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.contacts.DELETE
+    parameters:
+      - name: contact_person_id
+        in: path
+        required: true
+        description: 'Unique identifier of the contact person.'
+        schema:
+          type: string
+        example: 460000000026051
+      - $ref: '#/components/parameters/organization_id'
+  '/contacts/{contact_id}/contactpersons':
+    get:
+      tags:
+        - contact-persons
+      operationId: 'list_contact_persons'
+      summary: 'List contact persons'
+      description: 'List all contacts with pagination.'
+      parameters:
+        - name: page
+          in: query
+          description: 'Page number to be fetched. Default value is 1.'
+          required: false
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: per_page
+          in: query
+          description: 'Number of records to be fetched per page. Default value is 200.'
+          required: false
+          schema:
+            type: integer
+            default: 200
+          example: 200
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-contact-persons-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.contacts.READ
+    parameters:
+      - name: contact_id
+        in: path
+        required: true
+        description: 'Unique identifier of the contact.'
+        schema:
+          type: string
+        example: 460000000026049
+      - $ref: '#/components/parameters/organization_id'
+  '/contacts/{contact_id}/contactpersons/{contact_person_id}':
+    get:
+      tags:
+        - contact-persons
+      operationId: 'get_contact_person'
+      summary: 'Get a contact person'
+      description: 'Get the details of a contact person.'
+      parameters:
+        - name: contact_person_id
+          in: path
+          required: true
+          description: 'Unique identifier of the contact person.'
+          schema:
+            type: string
+          example: 460000000026051
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-a-contact-person-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.contacts.READ
+    parameters:
+      - name: contact_id
+        in: path
+        required: true
+        description: 'Unique identifier of the contact.'
+        schema:
+          type: string
+        example: 460000000026049
+      - $ref: '#/components/parameters/organization_id'
+  '/contacts/contactpersons/{contact_person_id}/primary':
+    post:
+      tags:
+        - contact-persons
+      operationId: 'mark_contact_person_as_primary'
+      summary: 'Mark as primary contact person'
+      description: 'Mark a contact person as primary for contact.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mark-as-primary-contact-person-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.contacts.CREATE
+    parameters:
+      - name: contact_person_id
+        in: path
+        required: true
+        description: 'Unique identifier of the contact person.'
+        schema:
+          type: string
+        example: 460000000026051
+      - $ref: '#/components/parameters/organization_id'
+components:
+  parameters:
+    organization_id:
+      name: organization_id
+      description: 'ID of the organization'
+      in: query
+      required: true
+      schema:
+        type: string
+      example: '10234695'
+  schemas:
+    gendoc-attributes-schema:
+      $ref: '#/components/schemas/contact_person-response'
+    contact_person-response:
+      type: object
+      properties:
+        contact_id:
+          $ref: '#/components/schemas/contact_id'
+        contact_person_id:
+          $ref: '#/components/schemas/contact_person_id'
+        salutation:
+          $ref: '#/components/schemas/salutation'
+        first_name:
+          $ref: '#/components/schemas/first_name'
+        last_name:
+          $ref: '#/components/schemas/last_name'
+        email:
+          $ref: '#/components/schemas/email'
+        phone:
+          $ref: '#/components/schemas/phone'
+        mobile:
+          $ref: '#/components/schemas/mobile'
+        is_primary_contact:
+          $ref: '#/components/schemas/is_primary_contact'
+        skype:
+          $ref: '#/components/schemas/skype'
+        designation:
+          $ref: '#/components/schemas/designation'
+        department:
+          $ref: '#/components/schemas/department'
+        is_added_in_portal:
+          $ref: '#/components/schemas/is_added_in_portal'
+        communication_preference:
+          $ref: '#/components/schemas/communication_preference'
+    salutation:
+      description: 'Salutation for the contact. Maximum length allowed [25]'
+      type: string
+      example: Mr
+    contact_id:
+      description: 'ID of the contact person'
+      type: string
+      example: 460000000026049
+    page_context:
+      description: 'The context of a particular page.'
+      type: object
+      properties:
+        page:
+          $ref: '#/components/schemas/page'
+        per_page:
+          $ref: '#/components/schemas/per_page'
+        has_more_page:
+          $ref: '#/components/schemas/has_more_page'
+        sort_column:
+          $ref: '#/components/schemas/sort_column'
+        sort_order:
+          $ref: '#/components/schemas/sort_order'
+    page:
+      description: 'Number of pages'
+      type: integer
+      example: 1
+    per_page:
+      description: 'Values per page'
+      type: integer
+      example: 200
+    has_more_page:
+      description: 'Check if there are more pages'
+      type: boolean
+      example: false
+    sort_order:
+      description: 'The order for sorting contacts'
+      type: string
+      example: A
+    sort_column:
+      description: 'Param Description.Allowed Values: <code>contact_person_id</code> It is a sorting done based on a column value'
+      type: string
+      example: contact_person_id
+    contact_person_id:
+      description: 'The ID of the contact person'
+      type: string
+      example: 460000000026051
+    first_name:
+      description: 'First Name of the contact. Maximum length allowed [100]'
+      type: string
+      example: Will
+    last_name:
+      description: 'Last Name of the contact. Maximum length allowed [100]'
+      type: string
+      example: Smith
+    is_primary_contact:
+      description: 'To mark contact person as primary for communication.'
+      type: boolean
+      example: true
+    email:
+      description: 'Email ID of the contact person. Maximum length allowed [100]'
+      type: string
+      example: willsmith@bowmanfurniture.com
+    phone:
+      description: 'Phone number of the contact person. Maximum length [50]'
+      type: string
+      example: +1-925-921-9201
+    mobile:
+      description: 'Mobile/Cell number of the contact person. Maximum length [50]'
+      type: string
+      example: +1-4054439562
+    skype:
+      description: 'skype address of the contact person. Maximum length [50]'
+      type: string
+      example: zoho
+    designation:
+      description: 'designation of the contact person in the organisation. Maximum length [50]'
+      type: string
+      example: 'Sales Engineer'
+    department:
+      description: 'department to which the contact person belongs. Maximum length [50]'
+      type: string
+      example: Sales
+    enable_portal:
+      description: 'option to enable or disable portal access the contact person. allowed values <code>true</code>,<code>false</code>'
+      type: boolean
+      example: true
+    is_added_in_portal:
+      description: 'tells whether the contact person has portal access or not'
+      type: boolean
+      example: true
+    is_sms_enabled:
+      description: 'Used to check if SMS communication preference is enabled for the contact person.'
+      type: boolean
+      example: true
+      x-node_available_in:
+        - 'SMS integration'
+    is_whatsapp_enabled:
+      description: 'Used to check if WhatsApp communication preference is enabled for the contact person.'
+      type: boolean
+      example: true
+      x-node_available_in:
+        - 'WhatsApp integration'
+    communication_preference:
+      description: 'Preferred modes of communication for the contact person.'
+      type: object
+      properties:
+        is_sms_enabled:
+          $ref: '#/components/schemas/is_sms_enabled'
+        is_whatsapp_enabled:
+          $ref: '#/components/schemas/is_whatsapp_enabled'
+    contact_persons:
+      description: 'Contact persons of a contact.'
+      type: object
+      properties:
+        salutation:
+          $ref: '#/components/schemas/salutation'
+        first_name:
+          $ref: '#/components/schemas/first_name'
+        last_name:
+          $ref: '#/components/schemas/last_name'
+        email:
+          $ref: '#/components/schemas/email'
+        phone:
+          $ref: '#/components/schemas/phone'
+        mobile:
+          $ref: '#/components/schemas/mobile'
+        is_primary_contact:
+          $ref: '#/components/schemas/is_primary_contact'
+        communication_preference:
+          $ref: '#/components/schemas/communication_preference'
+    create-a-contact-person-request:
+      required:
+        - first_name
+      type: object
+      properties:
+        contact_id:
+          $ref: '#/components/schemas/contact_id'
+        salutation:
+          $ref: '#/components/schemas/salutation'
+        first_name:
+          $ref: '#/components/schemas/first_name'
+        last_name:
+          $ref: '#/components/schemas/last_name'
+        email:
+          $ref: '#/components/schemas/email'
+        phone:
+          $ref: '#/components/schemas/phone'
+        mobile:
+          $ref: '#/components/schemas/mobile'
+        skype:
+          $ref: '#/components/schemas/skype'
+        designation:
+          $ref: '#/components/schemas/designation'
+        department:
+          $ref: '#/components/schemas/department'
+        enable_portal:
+          $ref: '#/components/schemas/enable_portal'
+        communication_preference:
+          $ref: '#/components/schemas/communication_preference'
+    create-a-contact-person-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The contact person has been Created'
+          readOnly: true
+        contact_person:
+          type: array
+          items:
+            $ref: '#/components/schemas/contact_person-response'
+    update-a-contact-person-request:
+      required:
+        - contact_id
+        - first_name
+      type: object
+      properties:
+        contact_id:
+          $ref: '#/components/schemas/contact_id'
+        salutation:
+          $ref: '#/components/schemas/salutation'
+        first_name:
+          $ref: '#/components/schemas/first_name'
+        last_name:
+          $ref: '#/components/schemas/last_name'
+        email:
+          $ref: '#/components/schemas/email'
+        phone:
+          $ref: '#/components/schemas/phone'
+        mobile:
+          $ref: '#/components/schemas/mobile'
+        skype:
+          $ref: '#/components/schemas/skype'
+        designation:
+          $ref: '#/components/schemas/designation'
+        department:
+          $ref: '#/components/schemas/department'
+        enable_portal:
+          $ref: '#/components/schemas/enable_portal'
+        communication_preference:
+          $ref: '#/components/schemas/communication_preference'
+    update-a-contact-person-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The contactperson details has been updated.'
+          readOnly: true
+        contact_person:
+          type: array
+          items:
+            type: object
+            properties:
+              contact_id:
+                $ref: '#/components/schemas/contact_id'
+              contact_person_id:
+                $ref: '#/components/schemas/contact_person_id'
+              salutation:
+                $ref: '#/components/schemas/salutation'
+              first_name:
+                $ref: '#/components/schemas/first_name'
+              last_name:
+                $ref: '#/components/schemas/last_name'
+              email:
+                $ref: '#/components/schemas/email'
+              phone:
+                $ref: '#/components/schemas/phone'
+              mobile:
+                $ref: '#/components/schemas/mobile'
+              is_primary_contact:
+                $ref: '#/components/schemas/is_primary_contact'
+              skype:
+                $ref: '#/components/schemas/skype'
+              designation:
+                $ref: '#/components/schemas/designation'
+              department:
+                $ref: '#/components/schemas/department'
+              is_added_in_portal:
+                $ref: '#/components/schemas/is_added_in_portal'
+              communication_preference:
+                $ref: '#/components/schemas/communication_preference'
+    delete-a-contact-person-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The contact person has been deleted.'
+          readOnly: true
+    list-contact-persons-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        contact_persons:
+          type: array
+          items:
+            type: object
+            properties:
+              contact_id:
+                $ref: '#/components/schemas/contact_id'
+              contact_person_id:
+                $ref: '#/components/schemas/contact_person_id'
+              salutation:
+                $ref: '#/components/schemas/salutation'
+              first_name:
+                $ref: '#/components/schemas/first_name'
+              last_name:
+                $ref: '#/components/schemas/last_name'
+              email:
+                $ref: '#/components/schemas/email'
+              phone:
+                $ref: '#/components/schemas/phone'
+              mobile:
+                $ref: '#/components/schemas/mobile'
+              is_primary_contact:
+                $ref: '#/components/schemas/is_primary_contact'
+              communication_preference:
+                $ref: '#/components/schemas/communication_preference'
+              skype:
+                $ref: '#/components/schemas/skype'
+              designation:
+                $ref: '#/components/schemas/designation'
+              department:
+                $ref: '#/components/schemas/department'
+              is_added_in_portal:
+                $ref: '#/components/schemas/is_added_in_portal'
+    get-a-contact-person-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        contact_person:
+          type: object
+          properties:
+            contact_id:
+              $ref: '#/components/schemas/contact_id'
+            contact_person_id:
+              $ref: '#/components/schemas/contact_person_id'
+            salutation:
+              $ref: '#/components/schemas/salutation'
+            first_name:
+              $ref: '#/components/schemas/first_name'
+            last_name:
+              $ref: '#/components/schemas/last_name'
+            email:
+              $ref: '#/components/schemas/email'
+            phone:
+              $ref: '#/components/schemas/phone'
+            mobile:
+              $ref: '#/components/schemas/mobile'
+            is_primary_contact:
+              $ref: '#/components/schemas/is_primary_contact'
+            skype:
+              $ref: '#/components/schemas/skype'
+            designation:
+              $ref: '#/components/schemas/designation'
+            department:
+              $ref: '#/components/schemas/department'
+            is_added_in_portal:
+              $ref: '#/components/schemas/is_added_in_portal'
+            communication_preference:
+              $ref: '#/components/schemas/communication_preference'
+    mark-as-primary-contact-person-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'This contact person has been marked as your primary contact person.'
+          readOnly: true
+  securitySchemes:
+    Zoho_Auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: 'https://accounts.zoho.com/oauth/v2/auth'
+          scopes:
+            ZohoInventory.contacts.CREATE: 'Create Contacts'
+            ZohoInventory.contacts.UPDATE: 'Update Contacts'
+            ZohoInventory.contacts.READ: 'Read Contacts'
+            ZohoInventory.contacts.DELETE: 'Delete Contacts'

@@ -1,0 +1,53 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/ci-setup
+
+      - name: Generate SDK
+        run: bun run sdk:generate
+
+      - name: Build package
+        run: bun run build
+
+      - name: Check build output
+        run: ls -la dist/
+
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/ci-setup
+      - name: Lint
+        run: bun lint
+      - name: Bun tests
+        run: bun test
+
+  package-test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/ci-setup
+
+      - name: Generate SDK
+        run: bun run sdk:generate
+
+      - name: Build
+        run: bun run build
+
+      - name: Pack and test package
+        run: |
+          npm pack
+          mkdir test-install
+          cd test-install
+          bun init -y
+          bun add ../zapi-inventory-*.tgz
+          echo "import { ZohoInventory } from 'zapi-inventory'; console.log('Import works!', ZohoInventory);" > test.js
+          bun run test.js

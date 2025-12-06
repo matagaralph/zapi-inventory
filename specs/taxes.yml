@@ -1,0 +1,1295 @@
+openapi: 3.0.0
+info:
+  title: Taxes
+  description: 'Taxes are collected by the government to manage state expenses. A company and an individual must pay multiple taxes and disclose the income details.'
+  contact: {}
+  version: 1.0.0
+servers:
+  - url: 'https://www.zohoapis.com/inventory/v1'
+    description: 'API Endpoint'
+tags:
+  - name: taxes
+    description: 'Taxes Module'
+paths:
+  /settings/taxes:
+    post:
+      tags:
+        - taxes
+      operationId: 'create_tax'
+      summary: 'Create a tax'
+      description: 'Create a tax which can be associated with an item.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-a-tax-request'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-a-tax-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.CREATE
+    get:
+      tags:
+        - taxes
+      operationId: 'list_taxes'
+      summary: 'List taxes'
+      description: 'List of simple and compound taxes with pagination.'
+      parameters:
+        - name: page
+          in: query
+          description: 'Page number to be fetched. Default value is 1.'
+          required: false
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: per_page
+          in: query
+          description: 'Number of records to be fetched per page. Default value is 200.'
+          required: false
+          schema:
+            type: integer
+            default: 200
+          example: 200
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-taxes-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  '/settings/taxes/{tax_id}':
+    put:
+      tags:
+        - taxes
+      operationId: 'update_tax'
+      summary: 'Update a tax'
+      description: 'Update the details of a simple or compound tax.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-a-tax-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-a-tax-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.UPDATE
+    get:
+      tags:
+        - taxes
+      operationId: 'get_tax'
+      summary: 'Get a tax'
+      description: 'Get the details of a simple or compound tax.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-a-tax-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.READ
+    delete:
+      tags:
+        - taxes
+      operationId: 'delete_tax'
+      summary: 'Delete a tax'
+      description: 'Delete a simple or compound tax.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-a-tax-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.DELETE
+    parameters:
+      - name: tax_id
+        in: path
+        required: true
+        description: 'Unique identifier of the tax.'
+        schema:
+          type: string
+        example: '982000000566009'
+      - $ref: '#/components/parameters/organization_id'
+  '/settings/taxgroups/{tax_group_id}':
+    get:
+      tags:
+        - taxes
+      operationId: 'get_tax_group'
+      summary: 'Get a tax group'
+      description: 'Get the details of a tax group.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-a-tax-group-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.READ
+    put:
+      tags:
+        - taxes
+      operationId: 'update_tax_group'
+      summary: 'Update a tax group'
+      description: 'Update the details of the tax group.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-a-tax-group-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-a-tax-group-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.UPDATE
+    delete:
+      tags:
+        - taxes
+      operationId: 'delete_tax_group'
+      summary: 'Delete a tax group'
+      description: 'Delete a tax group. Tax group that is associated to transactions cannot be deleted.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-a-tax-group-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.DELETE
+    parameters:
+      - name: tax_group_id
+        in: path
+        required: true
+        description: 'Unique identifier of the tax group.'
+        schema:
+          type: string
+        example: '982000000566009'
+      - $ref: '#/components/parameters/organization_id'
+  /settings/taxgroups:
+    post:
+      tags:
+        - taxes
+      operationId: 'create_tax_group'
+      summary: 'Create a tax group'
+      description: 'Create a tax group associating multiple taxes.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-a-tax-group-request'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-a-tax-group-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.CREATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /settings/taxauthorities:
+    post:
+      tags:
+        - taxes
+      operationId: 'create_tax_authority'
+      summary: 'Create a tax authority [US and CA Edition only]'
+      description: 'Create a tax authority.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-a-tax-authority-us-and-ca-edition-only-request'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-a-tax-authority-us-and-ca-edition-only-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.CREATE
+    get:
+      tags:
+        - taxes
+      operationId: 'list_tax_authorities'
+      summary: 'List tax authorities [US Edition only]'
+      description: 'List of tax authorities.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-tax-authorities-us-edition-only-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  '/settings/taxauthorities/{tax_authority_id}':
+    put:
+      tags:
+        - taxes
+      operationId: 'update_tax_authority'
+      summary: 'Update a tax authority [US and CA Edition only]'
+      description: 'Update the details of a tax authority.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-a-tax-authority-us-and-ca-edition-only-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-a-tax-authority-us-and-ca-edition-only-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.UPDATE
+    get:
+      tags:
+        - taxes
+      operationId: 'get_tax_authority'
+      summary: 'Get a tax authority [US and CA Edition only]'
+      description: 'Get the details of a tax authority.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-a-tax-authority-us-and-ca-edition-only-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.READ
+    delete:
+      tags:
+        - taxes
+      operationId: 'delete_tax_authority'
+      summary: 'Delete a tax authority [US and CA Edition only]'
+      description: 'Delete a tax authority.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-a-tax-authority-us-and-ca-edition-only-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.DELETE
+    parameters:
+      - name: tax_authority_id
+        in: path
+        required: true
+        description: 'Unique identifier of the tax authority.'
+        schema:
+          type: string
+        example: '6863420423859038'
+      - $ref: '#/components/parameters/organization_id'
+  /settings/taxexemptions:
+    post:
+      tags:
+        - taxes
+      operationId: 'create_tax_exemption'
+      summary: 'Create a tax exemption [US Edition only]'
+      description: 'Create a tax exemption.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-a-tax-exemption-us-edition-only-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-a-tax-exemption-us-edition-only-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.CREATE
+    get:
+      tags:
+        - taxes
+      operationId: 'list_tax_exemptions'
+      summary: 'List tax exemptions [US Edition only]'
+      description: 'List of tax exemptions.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-tax-exemptions-us-edition-only-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  '/settings/taxexemptions/{tax_exemption_id}':
+    put:
+      tags:
+        - taxes
+      operationId: 'update_tax_exemption'
+      summary: 'Update a tax exemption [US Edition only]'
+      description: 'Update the details of a tax exemption.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-a-tax-exemption-us-edition-only-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-a-tax-exemption-us-edition-only-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.UPDATE
+    get:
+      tags:
+        - taxes
+      operationId: 'get_tax_exemption'
+      summary: 'Get a tax exemption [US Edition only]'
+      description: 'Get the details of a tax exemption.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-a-tax-exemption-us-edition-only-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.READ
+    delete:
+      tags:
+        - taxes
+      operationId: 'delete_tax_exemption'
+      summary: 'Delete a tax exemption [US Edition only]'
+      description: 'Delete a tax exemption.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-a-tax-exemption-us-edition-only-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.DELETE
+    parameters:
+      - name: tax_exemption_id
+        in: path
+        required: true
+        description: 'Unique identifier of the tax exemption.'
+        schema:
+          type: string
+        example: '460000000076002'
+      - $ref: '#/components/parameters/organization_id'
+components:
+  parameters:
+    organization_id:
+      name: organization_id
+      description: 'ID of the organization'
+      in: query
+      required: true
+      schema:
+        type: string
+      example: '10234695'
+  schemas:
+    gendoc-attributes-schema:
+      $ref: '#/components/schemas/tax-response'
+    tax-response:
+      type: object
+      properties:
+        tax_id:
+          $ref: '#/components/schemas/tax_id'
+        tax_name:
+          $ref: '#/components/schemas/tax_name'
+        tax_percentage:
+          $ref: '#/components/schemas/tax_percentage'
+        tax_type:
+          $ref: '#/components/schemas/tax_type'
+        tax_factor:
+          $ref: '#/components/schemas/tax_factor'
+        tds_payable_account_id:
+          $ref: '#/components/schemas/tds_payable_account_id'
+        tax_authority_id:
+          $ref: '#/components/schemas/tax_authority_id'
+        tax_authority_name:
+          $ref: '#/components/schemas/tax_authority_name'
+        is_value_added:
+          $ref: '#/components/schemas/is_value_added'
+        tax_specific_type:
+          $ref: '#/components/schemas/tax_specific_type'
+        country:
+          $ref: '#/components/schemas/country'
+        country_code:
+          $ref: '#/components/schemas/country_code'
+        purchase_tax_expense_account_id:
+          $ref: '#/components/schemas/purchase_tax_expense_account_id'
+    tax_id:
+      description: 'Unique ID of the tax'
+      type: string
+      example: '982000000566009'
+    tax_name:
+      description: 'Name of the tax to be created.'
+      type: string
+      example: 'Sales Group'
+    tax_percentage:
+      description: 'Number of percentage taxable.'
+      type: number
+      format: double
+      example: 10.5
+    purchase_tax_expense_account_id:
+      description: 'Account ID in which Purchase Tax will be Computed'
+      type: integer
+      format: int64
+      x-node_available_in:
+        - au
+        - ca
+      x-node_unavailable_in: []
+    tax_type:
+      description: 'Type to determine whether it is a simple or compound tax. <code>Allowed Values: tax and compound_tax</code>'
+      type: string
+      example: tax
+    taxes:
+      description: 'Comma Seperated list of tax IDs that are to be associated to the tax group.'
+      type: string
+      example: '982000000566009'
+    tax_factor:
+      description: 'Tax Factor'
+      type: string
+      example: rate
+      x-node_available_in:
+        - mx
+      x-node_unavailable_in: []
+    tax_account_id:
+      type: string
+      example: '132086000000107333'
+      x-node_available_in:
+        - mx
+      x-node_unavailable_in: []
+    output_tax_account_name:
+      type: string
+      example: string
+      x-node_available_in:
+        - mx
+      x-node_unavailable_in: []
+    purchase_tax_account_name:
+      type: string
+      example: string
+      x-node_available_in:
+        - mx
+      x-node_unavailable_in: []
+    purchase_tax_account_id:
+      description: 'ID of the tax account, in case of withholding tax.'
+      type: string
+      example: '132086000000107337'
+      x-node_available_in:
+        - mx
+      x-node_unavailable_in: []
+    tds_payable_account_id:
+      description: 'Input Tax ID. The amount of money charged to you as Tax on your purchases.'
+      type: string
+      example: '132086000000107337'
+      x-node_available_in:
+        - mx
+      x-node_unavailable_in: []
+    tax_account_tracking:
+      type: string
+      example: string
+      x-node_available_in:
+        - mx
+      x-node_unavailable_in: []
+    tax_group_id:
+      description: 'the id of the tax group'
+      type: string
+      example: '982000000566009'
+    tax_group_name:
+      description: 'Name of the tax group to be created.'
+      type: string
+      example: 'Sales Group'
+    tax_group_percentage:
+      description: 'Number of percentage taxable.'
+      type: number
+      format: double
+      example: 10.5
+    page:
+      description: 'Number of pages'
+      type: integer
+      example: 1
+    per_page:
+      description: 'Per page values'
+      type: integer
+      example: 200
+    report_name:
+      description: 'The report name'
+      type: string
+      example: Taxes
+    has_more_page:
+      description: 'Check if has more pages'
+      type: boolean
+      example: false
+    sort_order:
+      description: 'The order for sorting'
+      type: string
+      example: D
+    sort_column:
+      description: 'Sort taxes.Allowed Values: <code>tax_name</code>, <code>taxes</code>, <code>date</code>, <code> due_date</code>, <code>total</code>, <code>balance</code> and  <code>created_time</code>'
+      type: string
+      example: created_time
+    applied_filter:
+      description: 'The filer applied for sorting'
+      type: string
+      example: Status.All
+    tax_authority_id:
+      description: 'ID of the tax authority. Tax authority depends on the location of the customer. For example, if the customer is located in NY, then the tax authority is NY tax authority.'
+      type: string
+      example: '6863420423859038'
+      x-node_available_in:
+        - us
+        - mx
+      x-node_unavailable_in: []
+    country_code:
+      description: 'Two letter country code for the EU country to which the tax belongs.'
+      type: string
+      example: UK
+      x-node_available_in:
+        - uk
+        - eu
+        - global
+      x-node_unavailable_in: []
+    tax_authority_name:
+      description: 'Name of the TAX authority'
+      type: string
+      example: 'Illinois Department of Revenue'
+    is_value_added:
+      description: 'Check if Tax is Value Added'
+      type: boolean
+      example: false
+    tax_specific_type:
+      description: 'Type of Tax For Indian Edition. Allowed Values : <code>igst</code> ,<code>cgst</code> ,<code>sgst</code> ,<code>nil</code>, <code> cess </code>.</br>Type of Tax for Mexico Edition. Allowed Values : <code>isr</code>, <code>iva</code>, <code>ieps</code>.'
+      type: string
+      x-node_available_in:
+        - in
+        - mx
+      x-node_unavailable_in: []
+    is_default_tax:
+      description: 'Check if Tax is default'
+      type: boolean
+      example: true
+    description:
+      description: Description.
+      type: string
+      example: 'The New York State Department of  Taxation and Finance'
+    registration_number:
+      description: 'Registration Number of the Tax Authority'
+      type: string
+      x-node_available_in:
+        - ca
+      x-node_unavailable_in: []
+    registration_number_label:
+      type: string
+      description: 'The registration number label of the tax authority'
+      x-node_available_in:
+        - ca
+      x-node_unavailable_in: []
+    tax_exemption_code:
+      description: 'Code of the Tax Exemption'
+      type: string
+      example: RESELLER
+      x-node_available_in:
+        - in
+      x-node_unavailable_in: []
+    tax_exemption_id:
+      description: 'ID of the Tax Exemption'
+      type: string
+      example: '460000000076002'
+      x-node_available_in:
+        - in
+      x-node_unavailable_in: []
+    type:
+      description: 'Type of the tax exemption, can be <code>customer</code> or <code>item</code>.'
+      type: string
+      example: customer
+    tax_authority:
+      type: object
+      properties:
+        tax_authority_id:
+          $ref: '#/components/schemas/tax_authority_id'
+        tax_authority_name:
+          $ref: '#/components/schemas/tax_authority_name'
+        description:
+          $ref: '#/components/schemas/description'
+        registration_number:
+          $ref: '#/components/schemas/registration_number'
+        registration_number_label:
+          $ref: '#/components/schemas/registration_number_label'
+    is_editable:
+      description: 'To check if tax/tax rate is editable'
+      type: boolean
+      example: true
+    country:
+      description: 'Country to which the tax belongs.'
+      type: string
+      x-node_available_in:
+        - uk
+        - eu
+        - global
+      x-node_unavailable_in: []
+    update_draft_invoice:
+      description: 'Check if Draft Invoices should be updated'
+      type: boolean
+      example: false
+    update_draft_so:
+      description: 'Check if Draft Sales Orders should be updated'
+      type: boolean
+      example: false
+    tax:
+      type: array
+      items:
+        $ref: '#/components/schemas/tax-response'
+    create-a-tax-request:
+      type: object
+      properties:
+        tax_name:
+          $ref: '#/components/schemas/tax_name'
+        tax_percentage:
+          $ref: '#/components/schemas/tax_percentage'
+        tax_type:
+          $ref: '#/components/schemas/tax_type'
+        tax_factor:
+          $ref: '#/components/schemas/tax_factor'
+        tax_specific_type:
+          $ref: '#/components/schemas/tax_specific_type'
+        tax_authority_name:
+          $ref: '#/components/schemas/tax_authority_name'
+        tax_authority_id:
+          $ref: '#/components/schemas/tax_authority_id'
+        country_code:
+          $ref: '#/components/schemas/country_code'
+        purchase_tax_expense_account_id:
+          $ref: '#/components/schemas/purchase_tax_expense_account_id'
+        is_value_added:
+          $ref: '#/components/schemas/is_value_added'
+        update_draft_invoice:
+          $ref: '#/components/schemas/update_draft_invoice'
+        update_draft_so:
+          $ref: '#/components/schemas/update_draft_so'
+        is_editable:
+          $ref: '#/components/schemas/is_editable'
+    create-a-tax-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The tax has been added.'
+          readOnly: true
+        tax:
+          $ref: '#/components/schemas/tax'
+    list-taxes-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        taxes:
+          description: 'Comma Seperated list of tax IDs that are to be associated to the tax group.'
+          type: array
+          items:
+            type: object
+            properties:
+              tax_id:
+                $ref: '#/components/schemas/tax_id'
+              tax_name:
+                $ref: '#/components/schemas/tax_name'
+              tax_percentage:
+                $ref: '#/components/schemas/tax_percentage'
+              tax_type:
+                $ref: '#/components/schemas/tax_type'
+              tax_factor:
+                $ref: '#/components/schemas/tax_factor'
+              tax_specific_type:
+                $ref: '#/components/schemas/tax_specific_type'
+              tax_authority_id:
+                $ref: '#/components/schemas/tax_authority_id'
+              tax_authority_name:
+                $ref: '#/components/schemas/tax_authority_name'
+              is_value_added:
+                $ref: '#/components/schemas/is_value_added'
+              is_default_tax:
+                $ref: '#/components/schemas/is_default_tax'
+              is_editable:
+                $ref: '#/components/schemas/is_editable'
+              output_tax_account_name:
+                $ref: '#/components/schemas/output_tax_account_name'
+              purchase_tax_account_name:
+                $ref: '#/components/schemas/purchase_tax_account_name'
+              tax_account_id:
+                $ref: '#/components/schemas/tax_account_id'
+              purchase_tax_account_id:
+                $ref: '#/components/schemas/purchase_tax_account_id'
+        page_context:
+          type: object
+          properties:
+            page:
+              $ref: '#/components/schemas/page'
+            per_page:
+              $ref: '#/components/schemas/per_page'
+            has_more_page:
+              $ref: '#/components/schemas/has_more_page'
+            report_name:
+              $ref: '#/components/schemas/report_name'
+            applied_filter:
+              $ref: '#/components/schemas/applied_filter'
+            sort_column:
+              $ref: '#/components/schemas/sort_column'
+            sort_order:
+              $ref: '#/components/schemas/sort_order'
+    update-a-tax-request:
+      type: object
+      properties:
+        tax_name:
+          $ref: '#/components/schemas/tax_name'
+        tax_percentage:
+          $ref: '#/components/schemas/tax_percentage'
+        tax_type:
+          $ref: '#/components/schemas/tax_type'
+        tax_factor:
+          $ref: '#/components/schemas/tax_factor'
+        tax_specific_type:
+          $ref: '#/components/schemas/tax_specific_type'
+        tax_authority_name:
+          $ref: '#/components/schemas/tax_authority_name'
+        tax_authority_id:
+          $ref: '#/components/schemas/tax_authority_id'
+        country_code:
+          $ref: '#/components/schemas/country_code'
+        purchase_tax_expense_account_id:
+          $ref: '#/components/schemas/purchase_tax_expense_account_id'
+        is_value_added:
+          $ref: '#/components/schemas/is_value_added'
+        update_draft_invoice:
+          $ref: '#/components/schemas/update_draft_invoice'
+        update_draft_so:
+          $ref: '#/components/schemas/update_draft_so'
+        is_editable:
+          $ref: '#/components/schemas/is_editable'
+        tds_payable_account_id:
+          $ref: '#/components/schemas/tds_payable_account_id'
+    update-a-tax-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Tax information has been saved.'
+          readOnly: true
+        tax:
+          type: object
+          properties:
+            tax_id:
+              $ref: '#/components/schemas/tax_id'
+            tax_name:
+              $ref: '#/components/schemas/tax_name'
+            tax_percentage:
+              $ref: '#/components/schemas/tax_percentage'
+            tax_type:
+              $ref: '#/components/schemas/tax_type'
+            tax_authority_id:
+              $ref: '#/components/schemas/tax_authority_id'
+            tax_authority_name:
+              $ref: '#/components/schemas/tax_authority_name'
+            is_value_added:
+              $ref: '#/components/schemas/is_value_added'
+    get-a-tax-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        tax:
+          $ref: '#/components/schemas/tax'
+    delete-a-tax-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The record has been deleted.'
+          readOnly: true
+    get-a-tax-group-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        tax_group:
+          type: object
+          properties:
+            tax_group_id:
+              $ref: '#/components/schemas/tax_group_id'
+            tax_group_name:
+              $ref: '#/components/schemas/tax_group_name'
+            tax_group_percentage:
+              $ref: '#/components/schemas/tax_group_percentage'
+            taxes:
+              description: 'Comma Seperated list of tax IDs that are to be associated to the tax group.'
+              type: array
+              items:
+                type: object
+                properties:
+                  tax_id:
+                    $ref: '#/components/schemas/tax_id'
+                  tax_name:
+                    $ref: '#/components/schemas/tax_name'
+                  tax_percentage:
+                    $ref: '#/components/schemas/tax_percentage'
+                  tax_type:
+                    $ref: '#/components/schemas/tax_type'
+                  tax_factor:
+                    $ref: '#/components/schemas/tax_factor'
+                  tax_authority_id:
+                    $ref: '#/components/schemas/tax_authority_id'
+                  tax_authority_name:
+                    $ref: '#/components/schemas/tax_authority_name'
+    update-a-tax-group-request:
+      type: object
+      properties:
+        tax_group_name:
+          $ref: '#/components/schemas/tax_group_name'
+        taxes:
+          $ref: '#/components/schemas/taxes'
+    update-a-tax-group-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        tax_group:
+          type: object
+          properties:
+            tax_group_id:
+              $ref: '#/components/schemas/tax_group_id'
+            tax_group_name:
+              $ref: '#/components/schemas/tax_group_name'
+            tax_group_percentage:
+              $ref: '#/components/schemas/tax_group_percentage'
+            taxes:
+              description: 'Comma Seperated list of tax IDs that are to be associated to the tax group.'
+              type: array
+              items:
+                type: object
+                properties:
+                  tax_id:
+                    $ref: '#/components/schemas/tax_id'
+                  tax_name:
+                    $ref: '#/components/schemas/tax_name'
+                  tax_percentage:
+                    $ref: '#/components/schemas/tax_percentage'
+                  tax_type:
+                    $ref: '#/components/schemas/tax_type'
+                  tax_factor:
+                    $ref: '#/components/schemas/tax_factor'
+                  tax_authority_id:
+                    $ref: '#/components/schemas/tax_authority_id'
+                  tax_authority_name:
+                    $ref: '#/components/schemas/tax_authority_name'
+    delete-a-tax-group-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'The tax group has been deleted.'
+          readOnly: true
+    create-a-tax-group-request:
+      type: object
+      properties:
+        tax_group_name:
+          $ref: '#/components/schemas/tax_group_name'
+        taxes:
+          $ref: '#/components/schemas/taxes'
+    create-a-tax-group-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        tax_group:
+          type: object
+          properties:
+            tax_group_id:
+              $ref: '#/components/schemas/tax_group_id'
+            tax_group_name:
+              $ref: '#/components/schemas/tax_group_name'
+            tax_group_percentage:
+              $ref: '#/components/schemas/tax_group_percentage'
+            taxes:
+              description: 'Comma Seperated list of tax IDs that are to be associated to the tax group.'
+              type: array
+              items:
+                type: object
+                properties:
+                  tax_id:
+                    $ref: '#/components/schemas/tax_id'
+                  tax_name:
+                    $ref: '#/components/schemas/tax_name'
+                  tax_percentage:
+                    $ref: '#/components/schemas/tax_percentage'
+                  tax_type:
+                    $ref: '#/components/schemas/tax_type'
+                  tax_factor:
+                    $ref: '#/components/schemas/tax_factor'
+                  tax_authority_id:
+                    $ref: '#/components/schemas/tax_authority_id'
+                  tax_authority_name:
+                    $ref: '#/components/schemas/tax_authority_name'
+    create-a-tax-authority-us-and-ca-edition-only-request:
+      required:
+        - tax_authority_name
+      type: object
+      properties:
+        tax_authority_name:
+          $ref: '#/components/schemas/tax_authority_name'
+        description:
+          $ref: '#/components/schemas/description'
+        registration_number:
+          $ref: '#/components/schemas/registration_number'
+        registration_number_label:
+          $ref: '#/components/schemas/registration_number_label'
+    create-a-tax-authority-us-and-ca-edition-only-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Tax Authority has been added.'
+          readOnly: true
+        tax_authority:
+          $ref: '#/components/schemas/tax_authority'
+    list-tax-authorities-us-edition-only-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        tax_authorities:
+          type: array
+          items:
+            type: object
+            properties:
+              tax_authority_id:
+                $ref: '#/components/schemas/tax_authority_id'
+              tax_authority_name:
+                $ref: '#/components/schemas/tax_authority_name'
+              description:
+                $ref: '#/components/schemas/description'
+              registration_number:
+                $ref: '#/components/schemas/registration_number'
+              registration_number_label:
+                $ref: '#/components/schemas/registration_number_label'
+    update-a-tax-authority-us-and-ca-edition-only-request:
+      type: object
+      properties:
+        tax_authority_name:
+          $ref: '#/components/schemas/tax_authority_name'
+        description:
+          $ref: '#/components/schemas/description'
+        registration_number:
+          $ref: '#/components/schemas/registration_number'
+        registration_number_label:
+          $ref: '#/components/schemas/registration_number_label'
+    update-a-tax-authority-us-and-ca-edition-only-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Tax Authority information has been updated.'
+          readOnly: true
+        tax_authority:
+          $ref: '#/components/schemas/tax_authority'
+    get-a-tax-authority-us-and-ca-edition-only-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        tax_authority:
+          $ref: '#/components/schemas/tax_authority'
+    delete-a-tax-authority-us-and-ca-edition-only-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Tax authority has been deleted.'
+          readOnly: true
+    create-a-tax-exemption-us-edition-only-request:
+      required:
+        - tax_exemption_code
+        - type
+      type: object
+      properties:
+        tax_exemption_code:
+          $ref: '#/components/schemas/tax_exemption_code'
+        description:
+          description: Description
+          type: string
+          example: 'Tax exempted because the contact is a reseller.'
+        type:
+          $ref: '#/components/schemas/type'
+    create-a-tax-exemption-us-edition-only-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Tax Exemption has been added.'
+          readOnly: true
+        tax_exemption:
+          type: object
+          properties:
+            tax_exemption_id:
+              $ref: '#/components/schemas/tax_exemption_id'
+            tax_exemption_code:
+              $ref: '#/components/schemas/tax_exemption_code'
+            description:
+              description: Description
+              type: string
+              example: 'Tax exempted because the contact is a reseller.'
+            type:
+              $ref: '#/components/schemas/type'
+    list-tax-exemptions-us-edition-only-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        tax_exemptions:
+          type: array
+          items:
+            type: object
+            properties:
+              tax_exemption_id:
+                $ref: '#/components/schemas/tax_exemption_id'
+              tax_exemption_code:
+                $ref: '#/components/schemas/tax_exemption_code'
+              description:
+                description: Description.
+                type: string
+                example: 'Tax exempted because the contact is a reseller.'
+              type:
+                description: 'Type of the tax exemption, can be <code>customer</code> or <code>item</code>.'
+                type: string
+                example: customer
+    update-a-tax-exemption-us-edition-only-request:
+      required:
+        - tax_exemption_code
+        - type
+      type: object
+      properties:
+        tax_exemption_code:
+          $ref: '#/components/schemas/tax_exemption_code'
+        description:
+          description: Description
+          type: string
+          example: 'Tax exempted because the contact is a reseller.'
+        type:
+          $ref: '#/components/schemas/type'
+    update-a-tax-exemption-us-edition-only-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Tax Exemption has been updated.'
+          readOnly: true
+        tax_exemption:
+          type: object
+          properties:
+            tax_exemption_id:
+              $ref: '#/components/schemas/tax_exemption_id'
+            tax_exemption_code:
+              $ref: '#/components/schemas/tax_exemption_code'
+            description:
+              description: Description
+              type: string
+              example: 'Tax exempted because the contact is a reseller.'
+            type:
+              $ref: '#/components/schemas/type'
+    get-a-tax-exemption-us-edition-only-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        tax_exemption:
+          type: object
+          properties:
+            tax_exemption_id:
+              $ref: '#/components/schemas/tax_exemption_id'
+            tax_exemption_code:
+              $ref: '#/components/schemas/tax_exemption_code'
+            description:
+              description: 'Description of the Tax Exemption.'
+              type: string
+              example: 'Tax exempted because the contact is a reseller.'
+            type:
+              description: 'Type of the tax exemption, can be <code>customer</code> or <code>item</code>.'
+              type: string
+              example: customer
+    delete-a-tax-exemption-us-edition-only-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: 'Tax exemption has been deleted successfully.'
+          readOnly: true
+  securitySchemes:
+    Zoho_Auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: 'https://accounts.zoho.com/oauth/v2/auth'
+          scopes:
+            ZohoInventory.settings.CREATE: 'Create Settings'
+            ZohoInventory.settings.UPDATE: 'Update Settings'
+            ZohoInventory.settings.READ: 'Read Settings'
+            ZohoInventory.settings.DELETE: 'Delete Settings'
