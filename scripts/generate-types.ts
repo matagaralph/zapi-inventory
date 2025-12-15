@@ -5,14 +5,20 @@ import path from 'path';
 const GENERATED_DIR = path.join(process.cwd(), 'src', 'generated');
 const OUTPUT_DIR = path.join(process.cwd(), 'src', 'types');
 
+const DEEP_REQUIRED_TYPE = `
+type DeepRequired<T> = T extends object 
+  ? { [K in keyof T]-?: DeepRequired<NonNullable<T[K]>> } 
+  : T;
+`;
+
 function normalizeModuleName(file: string): string {
   return file.replace('.d.ts', '').split(/[-_]/g).join('');
 }
 
 function toPascalCase(raw: string): string {
   return raw
-    .replace(/-a-/g, '-') // drop -a-
-    .replace(/-an-/g, '-') // drop -an-
+    .replace(/-a-/g, '-')
+    .replace(/-an-/g, '-')
     .split(/[-_]/g)
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join('');
@@ -59,7 +65,13 @@ function processModuleFile(alias: string, content: string): string[] {
     if (seen.has(finalName)) continue;
     seen.add(finalName);
 
-    out.push(`export type ${finalName} = ${alias}['schemas']['${raw}'];`);
+    if (finalName.endsWith('Response')) {
+      out.push(
+        `export type ${finalName} = DeepRequired<${alias}['schemas']['${raw}']>;`
+      );
+    } else {
+      out.push(`export type ${finalName} = ${alias}['schemas']['${raw}'];`);
+    }
   }
 
   return out;
@@ -96,7 +108,7 @@ function generate() {
 
     const final = [
       `import type { components as ${alias} } from '../generated/${modulePath}';`,
-      '',
+      DEEP_REQUIRED_TYPE,
       ...exports,
       '',
     ].join('\n');
