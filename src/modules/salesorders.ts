@@ -1,6 +1,5 @@
 import type { ApiClient } from '../client';
 import type {
-  BulkConfirmSalesordersResponse,
   CreateSalesOrderRequest,
   CreateSalesOrderResponse,
   ListAllSalesOrdersResponse,
@@ -76,16 +75,28 @@ export class SalesOrderModule {
     return res.sales_order;
   }
 
-  async delete(salesorderId: string): Promise<void> {
-    await this.client.delete({
-      path: ['salesorders', salesorderId],
-    });
-  }
+  async markAsConfirmed(salesorderIds: string[]): Promise<void> {
+    if (salesorderIds.length === 1) {
+      const salesorderId = salesorderIds[0] as string;
+      await this.client.post({
+        path: ['salesorders', salesorderId, 'status', 'confirmed'],
+      });
+      return;
+    }
+    const CHUNK_SIZE = 25;
+    const chunks: string[][] = [];
+    for (let i = 0; i < salesorderIds.length; i += CHUNK_SIZE) {
+      chunks.push(salesorderIds.slice(i, i + CHUNK_SIZE));
+    }
 
-  async markAsConfirmed(salesorderId: string): Promise<void> {
-    await this.client.post({
-      path: ['salesorders', salesorderId, 'status', 'confirmed'],
-    });
+    const confirmPromises = chunks.map((chunk) =>
+      this.client.post({
+        path: ['salesorders', 'status', 'confirmed'],
+        params: { salesorder_ids: chunk.join(',') },
+      })
+    );
+
+    await Promise.all(confirmPromises);
   }
 
   async markAsVoid(salesorderId: string): Promise<void> {
@@ -94,20 +105,28 @@ export class SalesOrderModule {
     });
   }
 
-  async bulkConfirm(
-    salesorderIds: string[]
-  ): Promise<BulkConfirmSalesordersResponse> {
-    const res = await this.client.post<BulkConfirmSalesordersResponse>({
-      path: ['salesorders', 'status', 'confirmed'],
-      params: { salesorder_ids: salesorderIds.join(',') },
-    });
-    return res;
-  }
+  async delete(salesorderIds: string[]): Promise<void> {
+    const CHUNK_SIZE = 25;
 
-  async bulkDelete(salesorderIds: string[]): Promise<void> {
-    await this.client.delete({
-      path: ['salesorders'],
-      params: { salesorder_ids: salesorderIds.join(',') },
-    });
+    if (salesorderIds.length === 1) {
+      return this.client.delete({
+        path: ['salesorders', salesorderIds[0] as string],
+      });
+    }
+
+    const chunks: string[][] = [];
+    for (let i = 0; i < salesorderIds.length; i += CHUNK_SIZE) {
+      chunks.push(salesorderIds.slice(i, i + CHUNK_SIZE));
+    }
+    const deletePromises = chunks.map((chunk) =>
+      this.client.delete({
+        path: ['salesorders'],
+        params: {
+          salesorder_ids: chunk.join(','),
+        },
+      })
+    );
+
+    await Promise.all(deletePromises);
   }
 }

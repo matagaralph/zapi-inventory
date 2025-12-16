@@ -71,13 +71,25 @@ export class ItemModule {
   async getMany(
     itemIds: string[]
   ): Promise<BulkFetchItemDetailsResponse['items']> {
-    const res = await this.client.get<BulkFetchItemDetailsResponse>({
-      path: ['itemdetails'],
-      params: {
-        item_ids: itemIds.join(','),
-      },
-    });
-    return res.items;
+    type ItemType = BulkFetchItemDetailsResponse['items'][number];
+
+    const CHUNK_SIZE = 100;
+    const allItems: ItemType[] = [];
+
+    for (let i = 0; i < itemIds.length; i += CHUNK_SIZE) {
+      const chunk = itemIds.slice(i, i + CHUNK_SIZE);
+
+      const result = await this.client.get<BulkFetchItemDetailsResponse>({
+        path: ['itemdetails'],
+        params: {
+          item_ids: chunk.join(','),
+        },
+      });
+
+      allItems.push(...result.items);
+    }
+
+    return allItems;
   }
 
   /**
