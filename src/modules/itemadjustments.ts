@@ -2,7 +2,6 @@ import type { ApiClient } from '../client';
 import type {
   CreateItemAdjustmentRequest,
   CreateItemAdjustmentResponse,
-  DeleteItemAdjustmentResponse,
   ListAllTheItemAdjustmentsResponse,
   RetrieveItemAdjustmentResponse,
   UpdateItemAdjustmentRequest,
@@ -20,14 +19,12 @@ export class ItemAdjustmentModule {
    * Lists all the item adjustments in Zoho Inventory.
    * If opts.limit is provided, return at most that many items.
    */
-  async list(
-    opts: {
-      limit?: number;
-    } = {}
-  ): Promise<ListAllTheItemAdjustmentsResponse['inventory_adjustments']> {
+  async list(opts?: {
+    limit?: number;
+  }): Promise<ListAllTheItemAdjustmentsResponse['inventory_adjustments']> {
     return this.client.getList({
       path: ['inventoryadjustments'],
-      limit: opts.limit,
+      limit: opts?.limit,
       extractor: (res: ListAllTheItemAdjustmentsResponse) =>
         res.inventory_adjustments ?? [],
     });
@@ -80,13 +77,9 @@ export class ItemAdjustmentModule {
   /**
    * Delete an item adjustment.
    */
-  async delete(
-    inventoryAdjustmentId: string
-  ): Promise<DeleteItemAdjustmentResponse> {
-    const res = await this.client.delete<DeleteItemAdjustmentResponse>({
+  delete(inventoryAdjustmentId: string): Promise<void> {
+    return this.client.delete({
       path: ['inventoryadjustments', inventoryAdjustmentId],
     });
-
-    return res;
   }
 }

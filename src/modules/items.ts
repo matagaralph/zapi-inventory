@@ -6,12 +6,7 @@ import type {
   RetrieveItemResponse,
   UpdateItemRequest,
   UpdateItemResponse,
-  DeleteItemResponse,
   BulkFetchItemDetailsResponse,
-  UpdateItemCustomfieldResponse,
-  DeleteItemImageResponse,
-  MarkAsActiveResponse,
-  MarkAsInactiveResponse,
 } from '../types/item';
 import type { CustomField } from './types';
 
@@ -27,36 +22,24 @@ export class ItemModule {
    */
   async list(opts?: {
     limit?: number;
-    filterByStatus?: 'active' | 'inactive';
-    categoryId?: string;
-    vendorId?: string;
-    integrationName?: string;
-    integrationId?: string;
+    filter_by_status?: 'active' | 'inactive';
+    category_id?: string;
+    vendor_id?: string;
+    integration_name?: string;
+    integration_id?: string;
     manufacturer?: string;
     brand?: string;
-    eanContains?: string;
-    skuContains?: string;
-    nameContains?: string;
-    sortColumn?: 'created_time' | 'last_modified_time';
-    sortOrder?: 'ascending' | 'descending';
+    ean_contains?: string;
+    sku_contains?: string;
+    name_contains?: string;
+    sort_column?: 'created_time' | 'last_modified_time';
+    sort_order?: 'A' | 'D';
   }): Promise<ListAllTheItemsResponse['items']> {
+    const { limit, ...params } = opts ?? {};
     return this.client.getList({
       path: ['items'],
-      params: {
-        sort_column: opts?.sortColumn ?? 'created_time',
-        sort_order: opts?.sortOrder === 'ascending' ? 'A' : 'D',
-        status: opts?.filterByStatus || '',
-        category_id: opts?.categoryId || '',
-        vendor_id: opts?.vendorId || '',
-        integration_name: opts?.integrationName || '',
-        integration_id: opts?.integrationId || '',
-        manufacturer: opts?.manufacturer || '',
-        brand: opts?.brand || '',
-        ean_contains: opts?.eanContains || '',
-        sku_contains: opts?.skuContains || '',
-        name_contains: opts?.nameContains || '',
-      },
-      limit: opts?.limit,
+      params,
+      limit,
       extractor: (res: ListAllTheItemsResponse) => res.items ?? [],
     });
   }
@@ -114,8 +97,8 @@ export class ItemModule {
   /**
    * Delete an item.
    */
-  async delete(itemId: string): Promise<DeleteItemResponse> {
-    return this.client.delete<DeleteItemResponse>({
+  delete(itemId: string): Promise<void> {
+    return this.client.delete({
       path: ['items', itemId],
     });
   }
@@ -123,11 +106,8 @@ export class ItemModule {
   /**
    * Update custom field in existing items.
    */
-  async updateCustomField(
-    itemId: string,
-    customFields: CustomField
-  ): Promise<UpdateItemCustomfieldResponse> {
-    return this.client.put<UpdateItemCustomfieldResponse>({
+  updateCustomField(itemId: string, customFields: CustomField): Promise<void> {
+    return this.client.put({
       path: ['item', itemId, 'customfields'],
       body: customFields,
     });
@@ -136,8 +116,8 @@ export class ItemModule {
   /**
    * Delete an item image.
    */
-  async deleteImage(itemId: string): Promise<DeleteItemImageResponse> {
-    return this.client.delete<DeleteItemImageResponse>({
+  deleteImage(itemId: string): Promise<void> {
+    return this.client.delete({
       path: ['items', itemId, 'image'],
     });
   }
@@ -145,8 +125,8 @@ export class ItemModule {
   /**
    * Mark as active.
    */
-  async markActive(itemId: string): Promise<MarkAsActiveResponse> {
-    return this.client.post<MarkAsActiveResponse>({
+  markActive(itemId: string): Promise<void> {
+    return this.client.post({
       path: ['items', itemId, 'active'],
     });
   }
@@ -154,8 +134,8 @@ export class ItemModule {
   /**
    * Mark as inactive.
    */
-  async markInactive(itemId: string): Promise<MarkAsInactiveResponse> {
-    return this.client.post<MarkAsInactiveResponse>({
+  markInactive(itemId: string): Promise<void> {
+    return this.client.post({
       path: ['items', itemId, 'inactive'],
     });
   }

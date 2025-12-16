@@ -36,6 +36,27 @@ const PATTERNS = [
   { regex: /^([\w-]+)$/, name: (b: any) => toPascalCase(b) },
 ];
 
+function isStandardError(content: string, key: string): boolean {
+  const regex = new RegExp(`"${key}"\\s*:\\s*({[\\s\\S]*?});?`);
+  const match = content.match(regex);
+
+  if (!match) return false;
+
+  let body = match[1];
+  body = body.replace(/\/\*[\s\S]*?\*\//g, '');
+  body = body.replace(/\/\/.*/g, '');
+  body = body.replace(/\s/g, '');
+
+  const validSignatures = new Set([
+    '{readonlycode?:number;readonlymessage?:string;}',
+    '{readonlymessage?:string;readonlycode?:number;}',
+    '{readonlycode:number;readonlymessage:string;}',
+    '{readonlymessage:string;readonlycode:number;}',
+  ]);
+
+  return validSignatures.has(body);
+}
+
 function processModuleFile(alias: string, content: string): string[] {
   const out: string[] = [];
   const seen = new Set<string>();
@@ -66,6 +87,9 @@ function processModuleFile(alias: string, content: string): string[] {
     seen.add(finalName);
 
     if (finalName.endsWith('Response')) {
+      if (isStandardError(content, raw)) {
+        continue;
+      }
       out.push(
         `export type ${finalName} = DeepRequired<${alias}['schemas']['${raw}']>;`
       );

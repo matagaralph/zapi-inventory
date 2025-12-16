@@ -1,16 +1,10 @@
 import type { ApiClient } from '../client';
 import type {
   CreateUserRequest,
-  CreateUserResponse,
   ListUsersResponse,
   UpdateUserRequest,
-  UpdateUserResponse,
   GetUserResponse,
-  DeleteUserResponse,
   GetCurrentUserResponse,
-  InviteUserResponse,
-  MarkUserAsActiveResponse,
-  MarkUserAsInactiveResponse,
 } from '../types/user';
 
 export class UserModule {
@@ -26,23 +20,22 @@ export class UserModule {
    */
   async list(opts?: {
     limit?: number;
-    filterBy?: string;
+    filter_by?: string;
   }): Promise<ListUsersResponse['users']> {
+    const { limit, ...params } = opts ?? {};
     return this.client.getList({
       path: ['users'],
-      params: opts?.filterBy ? { filter_by: opts.filterBy } : {},
-      limit: opts?.limit,
+      params,
+      limit,
       extractor: (res: ListUsersResponse) => res.users ?? [],
     });
   }
 
-  async create(user: CreateUserRequest): Promise<CreateUserResponse> {
-    const res = await this.client.post<CreateUserResponse>({
+  create(user: CreateUserRequest): Promise<void> {
+    return this.client.post<void>({
       path: ['users'],
       body: user,
     });
-
-    return res;
   }
 
   async get(userId: string): Promise<GetUserResponse['user']> {
@@ -61,47 +54,34 @@ export class UserModule {
     return res.user;
   }
 
-  async update(
-    userId: string,
-    user: UpdateUserRequest
-  ): Promise<UpdateUserResponse> {
-    const res = await this.client.put<UpdateUserResponse>({
+  async update(userId: string, user: UpdateUserRequest): Promise<void> {
+    return this.client.put({
       path: ['users', userId],
       body: user,
     });
-
-    return res;
   }
 
-  async delete(userId: string): Promise<DeleteUserResponse> {
-    const res = await this.client.delete<DeleteUserResponse>({
+  async delete(userId: string): Promise<void> {
+    return this.client.delete({
       path: ['users', userId],
     });
-
-    return res;
   }
 
-  async invite(userId: string): Promise<InviteUserResponse> {
-    const res = await this.client.get<InviteUserResponse>({
+  invite(userId: string): Promise<void> {
+    return this.client.get({
       path: ['users', userId, 'invite'],
     });
-
-    return res;
   }
 
-  async markAsActive(userId: string): Promise<MarkUserAsActiveResponse> {
-    const res = await this.client.post<MarkUserAsActiveResponse>({
+  markAsActive(userId: string): Promise<void> {
+    return this.client.post({
       path: ['users', userId, 'active'],
     });
-
-    return res;
   }
 
-  async markAsInactive(userId: string): Promise<MarkUserAsInactiveResponse> {
-    const res = await this.client.post<MarkUserAsInactiveResponse>({
+  markAsInactive(userId: string): Promise<void> {
+    return this.client.post({
       path: ['users', userId, 'inactive'],
     });
-
-    return res;
   }
 }

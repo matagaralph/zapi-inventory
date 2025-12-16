@@ -2,10 +2,7 @@ import type { ApiClient } from '../client';
 import type {
   CreateItemGroupRequest,
   CreateItemGroupResponse,
-  DeleteItemGroupResponse,
   ListAllItemGroupsResponse,
-  MarkAsActiveResponse,
-  MarkAsInactiveResponse,
   RetrieveItemGroupResponse,
   UpdateItemGroupRequest,
   UpdateItemGroupResponse,
@@ -23,12 +20,13 @@ export class ItemGroupModule {
    */
   async list(opts?: {
     limit?: number;
-    filterBy?: string;
+    filter_by?: string;
   }): Promise<ListAllItemGroupsResponse['itemgroups']> {
+    const { limit, ...params } = opts ?? {};
     return this.client.getList({
       path: ['itemgroups'],
-      params: {},
-      limit: opts?.limit,
+      params,
+      limit: limit,
       extractor: (res: ListAllItemGroupsResponse) => res.itemgroups ?? [],
     });
   }
@@ -73,33 +71,27 @@ export class ItemGroupModule {
     return res;
   }
 
-  async delete(itemGroupId: string): Promise<DeleteItemGroupResponse> {
-    const res = await this.client.delete<DeleteItemGroupResponse>({
+  delete(itemGroupId: string): Promise<void> {
+    return this.client.delete({
       path: ['itemgroups', itemGroupId],
     });
-
-    return res;
   }
 
   /**
    * Mark an Item Group as active.
    */
-  async markAsActive(itemGroupId: string): Promise<MarkAsActiveResponse> {
-    const res = await this.client.post<MarkAsActiveResponse>({
+  markAsActive(itemGroupId: string): Promise<void> {
+    return this.client.post({
       path: ['itemgroups', itemGroupId, 'active'],
     });
-
-    return res;
   }
 
   /**
    * Mark an Item Group as inactive.
    */
-  async markAsInactive(itemGroupId: string): Promise<MarkAsInactiveResponse> {
-    const res = await this.client.post<MarkAsInactiveResponse>({
+  markAsInactive(itemGroupId: string): Promise<void> {
+    return this.client.post({
       path: ['itemgroups', itemGroupId, 'inactive'],
     });
-
-    return res;
   }
 }

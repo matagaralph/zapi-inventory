@@ -1,21 +1,16 @@
 import type { ApiClient } from '../client';
 import type {
-  EnableLocationResponse,
   CreateLocationRequest,
   CreateLocationResponse,
   ListAllLocationResponse,
   UpdateLocationRequest,
   UpdateLocationResponse,
-  DeleteLocationResponse,
-  MarkAsActiveResponse,
-  MarkAsInactiveResponse,
-  MarkAsPrimaryResponse,
 } from '../types/location';
 
 export class LocationModule {
   constructor(private client: ApiClient) {}
 
-  async enable(): Promise<EnableLocationResponse> {
+  enable(): Promise<void> {
     return this.client.post({
       path: ['settings', 'locations', 'enable'],
     });
@@ -52,25 +47,25 @@ export class LocationModule {
     return res.locations;
   }
 
-  async delete(locationId: string): Promise<DeleteLocationResponse> {
+  delete(locationId: string): Promise<void> {
     return this.client.delete({
       path: ['locations', locationId],
     });
   }
 
-  async markActive(locationId: string): Promise<MarkAsActiveResponse> {
+  markActive(locationId: string): Promise<void> {
     return this.client.post({
       path: ['locations', locationId, 'active'],
     });
   }
 
-  async markInactive(locationId: string): Promise<MarkAsInactiveResponse> {
+  markInactive(locationId: string): Promise<void> {
     return this.client.post({
       path: ['locations', locationId, 'inactive'],
     });
   }
 
-  async markPrimary(locationId: string): Promise<MarkAsPrimaryResponse> {
+  markPrimary(locationId: string): Promise<void> {
     return this.client.post({
       path: ['locations', locationId, 'markasprimary'],
     });

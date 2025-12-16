@@ -4,14 +4,8 @@ import type {
   AddCommentResponse,
   ApplyCreditsToBillRequest,
   ApplyCreditsToBillResponse,
-  ApproveVendorCreditResponse,
-  ConvertToOpenResponse,
   CreateVendorCreditRequest,
   CreateVendorCreditResponse,
-  DeleteBillsCreditedResponse,
-  DeleteCommentResponse,
-  DeleteVendorCreditRefundResponse,
-  DeleteVendorCreditResponse,
   GetVendorCreditRefundResponse,
   GetVendorCreditResponse,
   ListBillsCreditedResponse,
@@ -21,12 +15,10 @@ import type {
   ListVendorCreditsResponse,
   RefundVendorCreditRequest,
   RefundVendorCreditResponse,
-  SubmitVendorCreditForApprovalResponse,
   UpdateVendorCreditRefundRequest,
   UpdateVendorCreditRefundResponse,
   UpdateVendorCreditRequest,
   UpdateVendorCreditResponse,
-  VoidVendorCreditResponse,
 } from '../types/vendorcredit';
 
 export class VendorCreditModule {
@@ -83,33 +75,31 @@ export class VendorCreditModule {
     return res.vendor_credit;
   }
 
-  async delete(vendorCreditId: string): Promise<DeleteVendorCreditResponse> {
+  delete(vendorCreditId: string): Promise<void> {
     return this.client.delete({
       path: ['vendorcredits', vendorCreditId],
     });
   }
 
-  async markOpen(vendorCreditId: string): Promise<ConvertToOpenResponse> {
+  markOpen(vendorCreditId: string): Promise<void> {
     return this.client.post({
       path: ['vendorcredits', vendorCreditId, 'status', 'open'],
     });
   }
 
-  async markVoid(vendorCreditId: string): Promise<VoidVendorCreditResponse> {
+  markVoid(vendorCreditId: string): Promise<void> {
     return this.client.post({
       path: ['vendorcredits', vendorCreditId, 'status', 'void'],
     });
   }
 
-  async submit(
-    vendorCreditId: string
-  ): Promise<SubmitVendorCreditForApprovalResponse> {
+  submit(vendorCreditId: string): Promise<void> {
     return this.client.post({
       path: ['vendorcredits', vendorCreditId, 'submit'],
     });
   }
 
-  async approve(vendorCreditId: string): Promise<ApproveVendorCreditResponse> {
+  approve(vendorCreditId: string): Promise<void> {
     return this.client.post({
       path: ['vendorcredits', vendorCreditId, 'approve'],
     });
@@ -134,10 +124,10 @@ export class VendorCreditModule {
     });
   }
 
-  async deleteCreditedBill(
+  deleteCreditedBill(
     vendorCreditId: string,
     vendorCreditBillId: string
-  ): Promise<DeleteBillsCreditedResponse> {
+  ): Promise<void> {
     return this.client.delete({
       path: ['vendorcredits', vendorCreditId, 'bills', vendorCreditBillId],
     });
@@ -185,10 +175,10 @@ export class VendorCreditModule {
     return res.vendor_credit_refund;
   }
 
-  async deleteRefund(
+  deleteRefund(
     vendorCreditId: string,
     vendorCreditRefundId: string
-  ): Promise<DeleteVendorCreditRefundResponse> {
+  ): Promise<void> {
     return this.client.delete({
       path: ['vendorcredits', vendorCreditId, 'refunds', vendorCreditRefundId],
     });
@@ -226,10 +216,7 @@ export class VendorCreditModule {
     return res.comment;
   }
 
-  async deleteComment(
-    vendorCreditId: string,
-    commentId: string
-  ): Promise<DeleteCommentResponse> {
+  deleteComment(vendorCreditId: string, commentId: string): Promise<void> {
     return this.client.delete({
       path: ['vendorcredits', vendorCreditId, 'comments', commentId],
     });

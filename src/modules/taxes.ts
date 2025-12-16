@@ -7,14 +7,12 @@ import type {
   TaxResponse,
   UpdateTaxRequest,
   UpdateTaxResponse,
-  DeleteTaxResponse,
   // Groups
   CreateTaxGroupRequest,
   CreateTaxGroupResponse,
   GetTaxGroupResponse,
   UpdateTaxGroupRequest,
   UpdateTaxGroupResponse,
-  DeleteTaxGroupResponse,
   // Authorities
   ListTaxAuthoritiesUsEditionOnlyResponse,
   CreateTaxAuthorityUsAndCaEditionOnlyRequest,
@@ -22,7 +20,6 @@ import type {
   GetTaxAuthorityUsAndCaEditionOnlyResponse,
   UpdateTaxAuthorityUsAndCaEditionOnlyRequest,
   UpdateTaxAuthorityUsAndCaEditionOnlyResponse,
-  DeleteTaxAuthorityUsAndCaEditionOnlyResponse,
   // Exemptions
   ListTaxExemptionsUsEditionOnlyResponse,
   CreateTaxExemptionUsEditionOnlyRequest,
@@ -30,7 +27,6 @@ import type {
   GetTaxExemptionUsEditionOnlyResponse,
   UpdateTaxExemptionUsEditionOnlyRequest,
   UpdateTaxExemptionUsEditionOnlyResponse,
-  DeleteTaxExemptionUsEditionOnlyResponse,
 } from '../types/tax';
 
 export class TaxModule {
@@ -77,8 +73,8 @@ export class TaxModule {
     return res.tax;
   }
 
-  async delete(taxId: string): Promise<DeleteTaxResponse> {
-    return this.client.delete<DeleteTaxResponse>({
+  delete(taxId: string): Promise<void> {
+    return this.client.delete({
       path: ['settings', 'taxes', taxId],
     });
   }
@@ -113,8 +109,8 @@ export class TaxModule {
     return res.tax_group;
   }
 
-  async deleteTaxGroup(taxGroupId: string): Promise<DeleteTaxGroupResponse> {
-    return this.client.delete<DeleteTaxGroupResponse>({
+  deleteTaxGroup(taxGroupId: string): Promise<void> {
+    return this.client.delete({
       path: ['settings', 'taxgroups', taxGroupId],
     });
   }
@@ -163,10 +159,8 @@ export class TaxModule {
     return res.tax_authority;
   }
 
-  async deleteTaxAuthority(
-    authorityId: string
-  ): Promise<DeleteTaxAuthorityUsAndCaEditionOnlyResponse> {
-    return this.client.delete<DeleteTaxAuthorityUsAndCaEditionOnlyResponse>({
+  deleteTaxAuthority(authorityId: string): Promise<void> {
+    return this.client.delete({
       path: ['settings', 'taxauthorities', authorityId],
     });
   }
@@ -214,10 +208,8 @@ export class TaxModule {
     return res.tax_exemption;
   }
 
-  async deleteTaxExemption(
-    exemptionId: string
-  ): Promise<DeleteTaxExemptionUsEditionOnlyResponse> {
-    return this.client.delete<DeleteTaxExemptionUsEditionOnlyResponse>({
+  deleteTaxExemption(exemptionId: string): Promise<void> {
+    return this.client.delete({
       path: ['settings', 'taxexemptions', exemptionId],
     });
   }

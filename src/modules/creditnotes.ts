@@ -1,20 +1,10 @@
 import type { ApiClient } from '../client';
 import type {
   AddCommentRequest,
-  AddCommentResponse,
   ApplyCreditsToInvoicesRequest,
-  ApplyCreditsToInvoicesResponse,
-  ApproveCreditNoteResponse,
-  ConvertCreditNoteToDraftResponse,
-  ConvertCreditNoteToOpenResponse,
   CreateCreditNoteRequest,
   CreateCreditNoteResponse,
-  DeleteCommentResponse,
-  DeleteCreditNoteRefundResponse,
-  DeleteCreditNoteResponse,
-  DeleteCreditsAppliedToInvoiceResponse,
   EmailCreditNoteRequest,
-  EmailCreditNoteResponse,
   EmailHistoryResponse,
   GetCreditNoteRefundResponse,
   GetCreditNoteResponse,
@@ -26,17 +16,12 @@ import type {
   ListTheCreditNoteTemplatesResponse,
   RefundCreditNoteRequest,
   RefundCreditNoteResponse,
-  SubmitCreditNoteForApprovalResponse,
   UpdateBillingAddressRequest,
-  UpdateBillingAddressResponse,
   UpdateCreditNoteRefundRequest,
   UpdateCreditNoteRefundResponse,
   UpdateCreditNoteRequest,
   UpdateCreditNoteResponse,
-  UpdateCreditNoteTemplateResponse,
   UpdateShippingAddressRequest,
-  UpdateShippingAddressResponse,
-  VoidCreditNoteResponse,
 } from '../types/creditnote';
 
 export class CreditNoteModule {
@@ -49,21 +34,17 @@ export class CreditNoteModule {
   /**
    * List all Credit Notes
    */
-  async list(opts?: {
-    filterBy?: string;
-    sortColumn?: string;
-    searchText?: string;
-    page?: number;
+  list(opts?: {
+    filter_by?: string;
+    sort_column?: string;
+    search_text?: string;
     limit?: number;
   }): Promise<ListAllCreditNotesResponse['creditnotes']> {
+    const { limit, ...params } = opts ?? {};
     return this.client.getList({
       path: ['creditnotes'],
-      limit: opts?.limit,
-      params: {
-        filter_by: opts?.filterBy ?? '',
-        sort_column: opts?.sortColumn ?? '',
-        search_text: opts?.searchText ?? '',
-      },
+      limit: limit,
+      params,
       extractor: (res: ListAllCreditNotesResponse) => res.creditnotes ?? [],
     });
   }
@@ -73,11 +54,11 @@ export class CreditNoteModule {
    */
   async create(
     creditNote: CreateCreditNoteRequest,
-    params?: { invoice_id?: string; ignore_auto_number_generation?: boolean }
+    opts?: { invoice_id?: string; ignore_auto_number_generation?: boolean }
   ): Promise<CreateCreditNoteResponse['creditnote']> {
     const res = await this.client.post<CreateCreditNoteResponse>({
       path: ['creditnotes'],
-      params,
+      params: opts,
       body: creditNote,
     });
 
@@ -89,11 +70,11 @@ export class CreditNoteModule {
    */
   async get(
     creditNoteId: string,
-    params?: { print?: boolean; accept?: 'json' | 'pdf' | 'html' }
+    opts?: { print?: boolean; accept?: 'json' | 'pdf' | 'html' }
   ): Promise<GetCreditNoteResponse['creditnote']> {
     const res = await this.client.get<GetCreditNoteResponse>({
       path: ['creditnotes', creditNoteId],
-      params,
+      params: opts,
     });
 
     return res.creditnote;
@@ -105,11 +86,11 @@ export class CreditNoteModule {
   async update(
     creditNoteId: string,
     creditNote: UpdateCreditNoteRequest,
-    params?: { ignore_auto_number_generation?: boolean }
+    opts?: { ignore_auto_number_generation?: boolean }
   ): Promise<UpdateCreditNoteResponse['creditnote']> {
     const res = await this.client.put<UpdateCreditNoteResponse>({
       path: ['creditnotes', creditNoteId],
-      params,
+      params: opts,
       body: creditNote,
     });
 
@@ -119,29 +100,25 @@ export class CreditNoteModule {
   /**
    * Delete a credit note
    */
-  async delete(creditNoteId: string): Promise<DeleteCreditNoteResponse> {
-    const res = await this.client.delete<DeleteCreditNoteResponse>({
+  delete(creditNoteId: string): Promise<void> {
+    return this.client.delete({
       path: ['creditnotes', creditNoteId],
     });
-
-    return res;
   }
 
   /**
    * Email a credit note
    */
-  async email(
+  email(
     creditNoteId: string,
-    data: EmailCreditNoteRequest,
-    params?: { customer_id?: string; attachments?: string }
-  ): Promise<EmailCreditNoteResponse> {
-    const res = await this.client.post<EmailCreditNoteResponse>({
+    emailCreditNote: EmailCreditNoteRequest,
+    opts?: { customer_id?: string; attachments?: string }
+  ): Promise<void> {
+    return this.client.post({
       path: ['creditnotes', creditNoteId, 'email'],
-      params,
-      body: data,
+      params: opts,
+      body: emailCreditNote,
     });
-
-    return res;
   }
 
   /**
@@ -149,11 +126,11 @@ export class CreditNoteModule {
    */
   async getEmailContent(
     creditNoteId: string,
-    params?: { email_template_id?: string }
+    opts?: { email_template_id?: string }
   ): Promise<GetEmailContentResponse['data']> {
     const res = await this.client.get<GetEmailContentResponse>({
       path: ['creditnotes', creditNoteId, 'email'],
-      params,
+      params: opts,
     });
 
     return res.data;
@@ -162,62 +139,46 @@ export class CreditNoteModule {
   /**
    * Mark the credit note as Void
    */
-  async markAsVoid(creditNoteId: string): Promise<VoidCreditNoteResponse> {
-    const res = await this.client.post<VoidCreditNoteResponse>({
+  async markAsVoid(creditNoteId: string): Promise<void> {
+    return this.client.post({
       path: ['creditnotes', creditNoteId, 'void'],
     });
-
-    return res;
   }
 
   /**
    * Convert a voided credit note to Draft
    */
-  async markAsDraft(
-    creditNoteId: string
-  ): Promise<ConvertCreditNoteToDraftResponse> {
-    const res = await this.client.post<ConvertCreditNoteToDraftResponse>({
+  async markAsDraft(creditNoteId: string): Promise<void> {
+    return this.client.post({
       path: ['creditnotes', creditNoteId, 'draft'],
     });
-
-    return res;
   }
 
   /**
    * Convert a credit note in Draft status to Open
    */
-  async markAsOpen(
-    creditNoteId: string
-  ): Promise<ConvertCreditNoteToOpenResponse> {
-    const res = await this.client.post<ConvertCreditNoteToOpenResponse>({
+  async markAsOpen(creditNoteId: string): Promise<void> {
+    return this.client.post({
       path: ['creditnotes', creditNoteId, 'converttoopen'],
     });
-
-    return res;
   }
 
   /**
    * Submit a credit note for approval
    */
-  async submit(
-    creditNoteId: string
-  ): Promise<SubmitCreditNoteForApprovalResponse> {
-    const res = await this.client.post<SubmitCreditNoteForApprovalResponse>({
+  async submit(creditNoteId: string): Promise<void> {
+    return this.client.post({
       path: ['creditnotes', creditNoteId, 'submit'],
     });
-
-    return res;
   }
 
   /**
    * Approve a credit note
    */
-  async approve(creditNoteId: string): Promise<ApproveCreditNoteResponse> {
-    const res = await this.client.post<ApproveCreditNoteResponse>({
+  approve(creditNoteId: string): Promise<void> {
+    return this.client.post({
       path: ['creditnotes', creditNoteId, 'approve'],
     });
-
-    return res;
   }
 
   /**
@@ -236,31 +197,27 @@ export class CreditNoteModule {
   /**
    * Update billing address
    */
-  async updateBillingAddress(
+  updateBillingAddress(
     creditNoteId: string,
     address: UpdateBillingAddressRequest
-  ): Promise<UpdateBillingAddressResponse> {
-    const res = await this.client.put<UpdateBillingAddressResponse>({
+  ): Promise<void> {
+    return this.client.put({
       path: ['creditnotes', creditNoteId, 'address', 'billing'],
       body: address,
     });
-
-    return res;
   }
 
-  async updateShippingAddress(
+  updateShippingAddress(
     creditnoteId: string,
-    data: UpdateShippingAddressRequest
-  ): Promise<UpdateShippingAddressResponse> {
+    shippingAddress: UpdateShippingAddressRequest
+  ): Promise<void> {
     return this.client.put({
       path: ['creditnotes', creditnoteId, 'address', 'shipping'],
-      body: data,
+      body: shippingAddress,
     });
   }
 
-  async listTemplates(): Promise<
-    ListTheCreditNoteTemplatesResponse['templates']
-  > {
+  listTemplates(): Promise<ListTheCreditNoteTemplatesResponse['templates']> {
     return this.client.getList({
       path: ['creditnotes', 'templates'],
       extractor: (res: ListTheCreditNoteTemplatesResponse) =>
@@ -268,10 +225,7 @@ export class CreditNoteModule {
     });
   }
 
-  async updateTemplate(
-    creditnoteId: string,
-    templateId: string
-  ): Promise<UpdateCreditNoteTemplateResponse> {
+  updateTemplate(creditnoteId: string, templateId: string): Promise<void> {
     return this.client.put({
       path: ['creditnotes', creditnoteId, 'templates', templateId],
     });
@@ -286,20 +240,20 @@ export class CreditNoteModule {
     return res.invoices_credited ?? [];
   }
 
-  async applyToInvoices(
+  applyToInvoices(
     creditnoteId: string,
     data: ApplyCreditsToInvoicesRequest
-  ): Promise<ApplyCreditsToInvoicesResponse> {
+  ): Promise<void> {
     return this.client.post({
       path: ['creditnotes', creditnoteId, 'invoices'],
       body: data,
     });
   }
 
-  async deleteCreditsFromInvoice(
+  deleteCreditsFromInvoice(
     creditnoteId: string,
     creditnoteInvoiceId: string
-  ): Promise<DeleteCreditsAppliedToInvoiceResponse> {
+  ): Promise<void> {
     return this.client.delete({
       path: ['creditnotes', creditnoteId, 'invoices', creditnoteInvoiceId],
     });
@@ -313,29 +267,23 @@ export class CreditNoteModule {
         path: ['creditnotes', creditnoteId, 'comments'],
       }
     );
-    return res.comments ?? [];
+    return res.comments;
   }
 
-  async addComment(
-    creditnoteId: string,
-    comment: AddCommentRequest
-  ): Promise<AddCommentResponse> {
-    return await this.client.post<AddCommentResponse>({
+  addComment(creditnoteId: string, comment: AddCommentRequest): Promise<void> {
+    return this.client.post({
       path: ['creditnotes', creditnoteId, 'comments'],
       body: comment,
     });
   }
 
-  async deleteComment(
-    creditnoteId: string,
-    commentId: string
-  ): Promise<DeleteCommentResponse> {
+  deleteComment(creditnoteId: string, commentId: string): Promise<void> {
     return this.client.delete({
       path: ['creditnotes', creditnoteId, 'comments', commentId],
     });
   }
 
-  async listAllRefunds(
+  listAllRefunds(
     params?: Record<string, string | number>
   ): Promise<ListCreditNoteRefundsResponse['creditnote_refunds']> {
     return this.client.getList({
@@ -391,10 +339,7 @@ export class CreditNoteModule {
     return res.creditnote_refund;
   }
 
-  async deleteRefund(
-    creditnoteId: string,
-    refundId: string
-  ): Promise<DeleteCreditNoteRefundResponse> {
+  deleteRefund(creditnoteId: string, refundId: string): Promise<void> {
     return this.client.delete({
       path: ['creditnotes', creditnoteId, 'refunds', refundId],
     });

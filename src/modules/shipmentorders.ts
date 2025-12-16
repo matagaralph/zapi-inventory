@@ -5,8 +5,6 @@ import type {
   CreateShipmentOrderResponse,
   UpdateShipmentOrderResponse,
   RetrieveShipmentOrderResponse,
-  DeleteShipmentOrderResponse,
-  MarkAsDeliveredResponse,
 } from '../types/shipmentorder';
 
 export class ShipmentOrderModule {
@@ -72,15 +70,13 @@ export class ShipmentOrderModule {
     return res.shipmentorder;
   }
 
-  async delete(shipmentOrderId: string): Promise<DeleteShipmentOrderResponse> {
+  delete(shipmentOrderId: string): Promise<void> {
     return this.client.delete({
       path: ['shipmentorders', shipmentOrderId],
     });
   }
 
-  async markDelivered(
-    shipmentOrderId: string
-  ): Promise<MarkAsDeliveredResponse> {
+  markDelivered(shipmentOrderId: string): Promise<void> {
     return this.client.post({
       path: ['shipmentorders', shipmentOrderId, 'status', 'delivered'],
     });

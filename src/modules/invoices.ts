@@ -1,26 +1,10 @@
 import type { ApiClient } from '../client';
 import type {
-  AddAttachmentToInvoiceResponse,
-  AddCommentResponse,
   ApplyCreditsRequest,
-  ApplyCreditsResponse,
-  BulkExportInvoicesResponse,
-  BulkPrintInvoicesResponse,
-  CancelWriteOffResponse,
   CreateCommentRequest,
   CreateInvoiceRequest,
   CreateInvoiceResponse,
-  DeleteAppliedCreditResponse,
-  DeleteAttachmentResponse,
-  DeleteCommentResponse,
-  DeleteInvoiceResponse,
-  DeletePaymentResponse,
-  DisablePaymentReminderResponse,
   EmailInvoiceRequest,
-  EmailInvoiceResponse,
-  EmailInvoicesResponse,
-  EnablePaymentReminderResponse,
-  GetInvoiceAttachmentResponse,
   GetInvoiceEmailContentResponse,
   GetInvoiceResponse,
   GetPaymentReminderMailContentResponse,
@@ -29,21 +13,12 @@ import type {
   ListInvoicePaymentsResponse,
   ListInvoicesResponse,
   ListInvoiceTemplatesResponse,
-  MarkAsDraftResponse,
-  MarkInvoiceAsSentResponse,
-  UpdateAttachmentPreferenceResponse,
   UpdateBillingAddressRequest,
-  UpdateBillingAddressResponse,
   UpdateCommentRequest,
   UpdateCommentResponse,
-  UpdateInvoiceCustomfieldResponse,
   UpdateInvoiceRequest,
   UpdateInvoiceResponse,
-  UpdateInvoiceTemplateResponse,
   UpdateShippingAddressRequest,
-  UpdateShippingAddressResponse,
-  VoidInvoiceResponse,
-  WriteOffInvoiceResponse,
 } from '../types/invoice';
 
 export class InvoiceModule {
@@ -100,35 +75,35 @@ export class InvoiceModule {
     return res.invoice;
   }
 
-  async delete(invoiceId: string): Promise<DeleteInvoiceResponse> {
+  delete(invoiceId: string): Promise<void> {
     return this.client.delete({
       path: ['invoices', invoiceId],
     });
   }
 
-  async updateCustomFields(
+  updateCustomFields(
     invoiceId: string,
     data: Record<string, any>
-  ): Promise<UpdateInvoiceCustomfieldResponse> {
+  ): Promise<void> {
     return this.client.put({
       path: ['invoice', invoiceId, 'customfields'],
       body: data,
     });
   }
 
-  async markSent(invoiceId: string): Promise<MarkInvoiceAsSentResponse> {
+  markSent(invoiceId: string): Promise<void> {
     return this.client.post({
       path: ['invoices', invoiceId, 'status', 'sent'],
     });
   }
 
-  async markVoid(invoiceId: string): Promise<VoidInvoiceResponse> {
+  markVoid(invoiceId: string): Promise<void> {
     return this.client.post({
       path: ['invoices', invoiceId, 'status', 'void'],
     });
   }
 
-  async markDraft(invoiceId: string): Promise<MarkAsDraftResponse> {
+  markDraft(invoiceId: string): Promise<void> {
     return this.client.post({
       path: ['invoices', invoiceId, 'status', 'draft'],
     });
@@ -146,28 +121,26 @@ export class InvoiceModule {
     });
   }
 
-  async email(
+  email(
     invoiceId: string,
     data: EmailInvoiceRequest,
-    params?: {
+    opts?: {
       send_customer_statement?: boolean;
       send_attachment?: boolean;
       attachments?: string;
     }
-  ): Promise<EmailInvoiceResponse> {
+  ): Promise<void> {
     return this.client.post({
       path: ['invoices', invoiceId, 'email'],
-      params,
+      params: opts,
       body: data,
     });
   }
 
-  async emailBulk(params: {
-    invoice_ids: string;
-  }): Promise<EmailInvoicesResponse> {
+  emailBulk(opts?: { invoice_ids: string }): Promise<void> {
     return this.client.post({
       path: ['invoices', 'email'],
-      params,
+      params: opts,
     });
   }
 
@@ -179,48 +152,44 @@ export class InvoiceModule {
     });
   }
 
-  async disablePaymentReminder(
-    invoiceId: string
-  ): Promise<DisablePaymentReminderResponse> {
+  disablePaymentReminder(invoiceId: string): Promise<void> {
     return this.client.post({
       path: ['invoices', invoiceId, 'paymentreminder', 'disable'],
     });
   }
 
-  async enablePaymentReminder(
-    invoiceId: string
-  ): Promise<EnablePaymentReminderResponse> {
+  enablePaymentReminder(invoiceId: string): Promise<void> {
     return this.client.post({
       path: ['invoices', invoiceId, 'paymentreminder', 'enable'],
     });
   }
 
-  async writeOff(invoiceId: string): Promise<WriteOffInvoiceResponse> {
+  writeOff(invoiceId: string): Promise<void> {
     return this.client.post({
       path: ['invoices', invoiceId, 'writeoff'],
     });
   }
 
-  async cancelWriteOff(invoiceId: string): Promise<CancelWriteOffResponse> {
+  cancelWriteOff(invoiceId: string): Promise<void> {
     return this.client.post({
       path: ['invoices', invoiceId, 'writeoff', 'cancel'],
     });
   }
 
-  async updateBillingAddress(
+  updateBillingAddress(
     invoiceId: string,
     data: UpdateBillingAddressRequest
-  ): Promise<UpdateBillingAddressResponse> {
+  ): Promise<void> {
     return this.client.put({
       path: ['invoices', invoiceId, 'address', 'billing'],
       body: data,
     });
   }
 
-  async updateShippingAddress(
+  updateShippingAddress(
     invoiceId: string,
     data: UpdateShippingAddressRequest
-  ): Promise<UpdateShippingAddressResponse> {
+  ): Promise<void> {
     return this.client.put({
       path: ['invoices', invoiceId, 'address', 'shipping'],
       body: data,
@@ -234,10 +203,7 @@ export class InvoiceModule {
     });
   }
 
-  async updateTemplate(
-    invoiceId: string,
-    templateId: string
-  ): Promise<UpdateInvoiceTemplateResponse> {
+  updateTemplate(invoiceId: string, templateId: string): Promise<void> {
     return this.client.put({
       path: ['invoices', invoiceId, 'templates', templateId],
     });
@@ -252,10 +218,7 @@ export class InvoiceModule {
     return res.payments ?? [];
   }
 
-  async deletePayment(
-    invoiceId: string,
-    paymentId: string
-  ): Promise<DeletePaymentResponse> {
+  deletePayment(invoiceId: string, paymentId: string): Promise<void> {
     return this.client.delete({
       path: ['invoices', invoiceId, 'payments', paymentId],
     });
@@ -270,56 +233,53 @@ export class InvoiceModule {
     return res.credits ?? [];
   }
 
-  async applyCredits(
-    invoiceId: string,
-    data: ApplyCreditsRequest
-  ): Promise<ApplyCreditsResponse> {
+  applyCredits(invoiceId: string, data: ApplyCreditsRequest): Promise<void> {
     return this.client.post({
       path: ['invoices', invoiceId, 'credits'],
       body: data,
     });
   }
 
-  async deleteAppliedCredit(
+  deleteAppliedCredit(
     invoiceId: string,
     appliedCreditId: string
-  ): Promise<DeleteAppliedCreditResponse> {
+  ): Promise<void> {
     return this.client.delete({
       path: ['invoices', invoiceId, 'creditsapplied', appliedCreditId],
     });
   }
 
-  async getAttachment(
+  getAttachment(
     invoiceId: string,
-    params?: { preview?: boolean }
-  ): Promise<GetInvoiceAttachmentResponse> {
+    opts?: { preview?: boolean }
+  ): Promise<void> {
     return this.client.get({
       path: ['invoices', invoiceId, 'attachment'],
-      params,
+      params: opts,
     });
   }
 
-  async updateAttachmentPreference(
+  updateAttachmentPreference(
     invoiceId: string,
-    params: { can_send_in_mail: boolean }
-  ): Promise<UpdateAttachmentPreferenceResponse> {
+    opts?: { can_send_in_mail: boolean }
+  ): Promise<void> {
     return this.client.put({
       path: ['invoices', invoiceId, 'attachment'],
-      params,
+      params: opts,
     });
   }
 
-  async addAttachment(
+  addAttachment(
     invoiceId: string,
-    params: { can_send_in_mail?: boolean; attachment?: string }
-  ): Promise<AddAttachmentToInvoiceResponse> {
+    opts?: { can_send_in_mail?: boolean; attachment?: string }
+  ): Promise<void> {
     return this.client.post({
       path: ['invoices', invoiceId, 'attachment'],
-      params,
+      params: opts,
     });
   }
 
-  async deleteAttachment(invoiceId: string): Promise<DeleteAttachmentResponse> {
+  deleteAttachment(invoiceId: string): Promise<void> {
     return this.client.delete({
       path: ['invoices', invoiceId, 'attachment'],
     });
@@ -334,15 +294,11 @@ export class InvoiceModule {
     return res.comments ?? [];
   }
 
-  async addComment(
-    invoiceId: string,
-    data: CreateCommentRequest
-  ): Promise<AddCommentResponse> {
-    const res = await this.client.post<AddCommentResponse>({
+  addComment(invoiceId: string, data: CreateCommentRequest): Promise<void> {
+    return this.client.post({
       path: ['invoices', invoiceId, 'comments'],
       body: data,
     });
-    return res;
   }
 
   async updateComment(
@@ -357,27 +313,20 @@ export class InvoiceModule {
     return res;
   }
 
-  async deleteComment(
-    invoiceId: string,
-    commentId: string
-  ): Promise<DeleteCommentResponse> {
+  deleteComment(invoiceId: string, commentId: string): Promise<void> {
     return this.client.delete({
       path: ['invoices', invoiceId, 'comments', commentId],
     });
   }
 
-  async bulkExport(params: {
-    invoice_ids: string;
-  }): Promise<BulkExportInvoicesResponse> {
+  bulkExport(params: { invoice_ids: string }): Promise<void> {
     return this.client.get({
       path: ['invoices', 'pdf'],
       params,
     });
   }
 
-  async bulkPrint(params: {
-    invoice_ids: string;
-  }): Promise<BulkPrintInvoicesResponse> {
+  bulkPrint(params: { invoice_ids: string }): Promise<void> {
     return this.client.get({
       path: ['invoices', 'print'],
       params,

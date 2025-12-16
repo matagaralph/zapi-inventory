@@ -2,7 +2,6 @@ import type { ApiClient } from '../client';
 import type {
   CreatePaymentRequest,
   CreatePaymentResponse,
-  DeletePaymentResponse,
   ListCustomerPaymentsResponse,
   RetrievePaymentResponse,
   UpdatePaymentRequest,
@@ -18,45 +17,29 @@ export class CustomerPaymentModule {
 
   /**
    * Lists all the Customer Payments.
-   * If opts.limit is provided, return at most that many items.
    */
-  async list(
-    opts: {
-      customerName?: string;
-      referenceNumber?: string;
-      date?: string; // Format: yyyy-mm-dd
-      amount?: number;
-      notes?: string;
-      paymentMode?: string;
-      filterBy?: string;
-      sortColumn?:
-        | 'date'
-        | 'created_time'
-        | 'total'
-        | 'reference_number'
-        | 'customer_name';
-      sortOrder?: 'ascending' | 'descending';
-      limit?: number;
-    } = {}
-  ): Promise<ListCustomerPaymentsResponse['customerpayments']> {
-    const params: Record<string, any> = {};
-
-    if (opts.customerName) params.customer_name = opts.customerName;
-    if (opts.referenceNumber) params.reference_number = opts.referenceNumber;
-    if (opts.date) params.date = opts.date;
-    if (opts.amount) params.amount = opts.amount;
-    if (opts.notes) params.notes = opts.notes;
-    if (opts.paymentMode) params.payment_mode = opts.paymentMode;
-    if (opts.filterBy) params.filter_by = opts.filterBy;
-
-    if (opts.sortColumn) params.sort_column = opts.sortColumn;
-    if (opts.sortOrder)
-      params.sort_order = opts.sortOrder === 'ascending' ? 'A' : 'D';
-
+  async list(opts?: {
+    customer_name?: string;
+    reference_number?: string;
+    date?: string; // Format: yyyy-mm-dd
+    amount?: number;
+    notes?: string;
+    payment_mode?: string;
+    filter_by?: string;
+    sort_column?:
+      | 'date'
+      | 'created_time'
+      | 'total'
+      | 'reference_number'
+      | 'customer_name';
+    sort_order?: 'A' | 'D';
+    limit?: number;
+  }): Promise<ListCustomerPaymentsResponse['customerpayments']> {
+    const { limit, ...params } = opts ?? {};
     return this.client.getList({
       path: ['customerpayments'],
       params,
-      limit: opts.limit,
+      limit: limit,
       extractor: (res: ListCustomerPaymentsResponse) =>
         res.customerpayments ?? [],
     });
@@ -107,11 +90,9 @@ export class CustomerPaymentModule {
   /**
    * Delete a payment.
    */
-  async delete(paymentId: string): Promise<DeletePaymentResponse> {
-    const res = await this.client.delete<DeletePaymentResponse>({
+  delete(paymentId: string): Promise<void> {
+    return this.client.delete({
       path: ['customerpayments', paymentId],
     });
-
-    return res;
   }
 }

@@ -5,9 +5,6 @@ import type {
   ListAllPricebooksResponse,
   UpdatePricebookRequest,
   UpdatePricebookResponse,
-  DeleteThePricebookResponse,
-  MarkAsActiveResponse,
-  MarkAsInactiveResponse,
 } from '../types/pricelist';
 
 export class PriceListModule {
@@ -44,19 +41,19 @@ export class PriceListModule {
     return res.pricebook;
   }
 
-  async delete(pricebookId: string): Promise<DeleteThePricebookResponse> {
+  delete(pricebookId: string): Promise<void> {
     return this.client.delete({
       path: ['pricebooks', pricebookId],
     });
   }
 
-  async markActive(pricebookId: string): Promise<MarkAsActiveResponse> {
+  markActive(pricebookId: string): Promise<void> {
     return this.client.post({
       path: ['pricebooks', pricebookId, 'active'],
     });
   }
 
-  async markInactive(pricebookId: string): Promise<MarkAsInactiveResponse> {
+  markInactive(pricebookId: string): Promise<void> {
     return this.client.post({
       path: ['pricebooks', pricebookId, 'inactive'],
     });

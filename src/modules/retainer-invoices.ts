@@ -6,27 +6,13 @@ import type {
   UpdateRetainerinvoiceRequest,
   UpdateRetainerinvoiceResponse,
   GetRetainerInvoiceResponse,
-  DeleteRetainerInvoiceResponse,
-  MarkRetainerInvoiceAsSentResponse,
-  UpdateRetainerInvoiceTemplateResponse,
-  VoidRetainerInvoiceResponse,
-  MarkAsDraftResponse,
-  SubmitRetainerInvoiceForApprovalResponse,
-  ApproveRetainerInvoiceResponse,
   EmailRetainerInvoiceRequest,
-  EmailRetainerInvoiceResponse,
   GetRetainerInvoiceEmailContentResponse,
   UpdateBillingAddressRequest,
-  UpdateBillingAddressResponse,
   ListRetainerInvoiceTemplatesResponse,
-  GetRetainerInvoiceAttachmentResponse,
   AddAttachmentToRetainerInvoiceRequest,
-  AddAttachmentToRetainerInvoiceResponse,
-  DeleteAttachmentResponse,
   ListRetainerInvoiceCommentsAndHistoryResponse,
   AddCommentRequest,
-  AddCommentResponse,
-  DeleteCommentResponse,
   UpdateCommentRequest,
   UpdateCommentResponse,
 } from '../types/retainerinvoice';
@@ -77,56 +63,43 @@ export class RetainerInvoiceModule {
     return res.retainerinvoice;
   }
 
-  async delete(
-    retainerInvoiceId: string
-  ): Promise<DeleteRetainerInvoiceResponse> {
+  delete(retainerInvoiceId: string): Promise<void> {
     return this.client.delete({
       path: ['retainerinvoices', retainerInvoiceId],
     });
   }
 
-  async markSent(
-    retainerInvoiceId: string
-  ): Promise<MarkRetainerInvoiceAsSentResponse> {
+  markSent(retainerInvoiceId: string): Promise<void> {
     return this.client.post({
       path: ['retainerinvoices', retainerInvoiceId, 'sent'],
     });
   }
 
-  async markVoid(
-    retainerInvoiceId: string
-  ): Promise<VoidRetainerInvoiceResponse> {
+  markVoid(retainerInvoiceId: string): Promise<void> {
     return this.client.post({
       path: ['retainerinvoices', retainerInvoiceId, 'void'],
     });
   }
 
-  async markDraft(retainerInvoiceId: string): Promise<MarkAsDraftResponse> {
+  markDraft(retainerInvoiceId: string): Promise<void> {
     return this.client.post({
       path: ['retainerinvoices', retainerInvoiceId, 'draft'],
     });
   }
 
-  async submit(
-    retainerInvoiceId: string
-  ): Promise<SubmitRetainerInvoiceForApprovalResponse> {
+  submit(retainerInvoiceId: string): Promise<void> {
     return this.client.post({
       path: ['retainerinvoices', retainerInvoiceId, 'submit'],
     });
   }
 
-  async approve(
-    retainerInvoiceId: string
-  ): Promise<ApproveRetainerInvoiceResponse> {
+  approve(retainerInvoiceId: string): Promise<void> {
     return this.client.post({
       path: ['retainerinvoices', retainerInvoiceId, 'approve'],
     });
   }
 
-  async updateTemplate(
-    retainerInvoiceId: string,
-    templateId: string
-  ): Promise<UpdateRetainerInvoiceTemplateResponse> {
+  updateTemplate(retainerInvoiceId: string, templateId: string): Promise<void> {
     return this.client.put({
       path: ['retainerinvoices', retainerInvoiceId, 'templates', templateId],
     });
@@ -140,26 +113,26 @@ export class RetainerInvoiceModule {
     });
   }
 
-  async email(
+  email(
     retainerInvoiceId: string,
     data: EmailRetainerInvoiceRequest,
-    params?: {
+    opts?: {
       send_customer_statement?: boolean;
       send_attachment?: boolean;
       attachments?: string;
     }
-  ): Promise<EmailRetainerInvoiceResponse> {
+  ): Promise<void> {
     return this.client.post({
       path: ['retainerinvoices', retainerInvoiceId, 'email'],
-      params,
+      params: opts,
       body: data,
     });
   }
 
-  async updateBillingAddress(
+  updateBillingAddress(
     retainerInvoiceId: string,
     data: UpdateBillingAddressRequest
-  ): Promise<UpdateBillingAddressResponse> {
+  ): Promise<void> {
     return this.client.put({
       path: ['retainerinvoices', retainerInvoiceId, 'address', 'billing'],
       body: data,
@@ -176,28 +149,26 @@ export class RetainerInvoiceModule {
     });
   }
 
-  async getAttachment(
-    retainerInvoiceId: string
-  ): Promise<GetRetainerInvoiceAttachmentResponse> {
+  getAttachment(retainerInvoiceId: string): Promise<void> {
     return this.client.get({
       path: ['retainerinvoices', retainerInvoiceId, 'attachment'],
     });
   }
 
-  async addAttachment(
+  addAttachment(
     retainerInvoiceId: string,
     data: AddAttachmentToRetainerInvoiceRequest
-  ): Promise<AddAttachmentToRetainerInvoiceResponse> {
+  ): Promise<void> {
     return this.client.post({
       path: ['retainerinvoices', retainerInvoiceId, 'attachment'],
       body: data,
     });
   }
 
-  async deleteAttachment(
+  deleteAttachment(
     retainerInvoiceId: string,
     documentId: string
-  ): Promise<DeleteAttachmentResponse> {
+  ): Promise<void> {
     return this.client.delete({
       path: ['retainerinvoices', retainerInvoiceId, 'attachment', documentId],
     });
@@ -213,11 +184,11 @@ export class RetainerInvoiceModule {
     return res.comments ?? [];
   }
 
-  async addComment(
+  addComment(
     retainerInvoiceId: string,
     data: AddCommentRequest
-  ): Promise<AddCommentResponse> {
-    return await this.client.post<AddCommentResponse>({
+  ): Promise<void> {
+    return this.client.post({
       path: ['retainerinvoices', retainerInvoiceId, 'comments'],
       body: data,
     });
@@ -235,10 +206,7 @@ export class RetainerInvoiceModule {
     return res.comment;
   }
 
-  async deleteComment(
-    retainerInvoiceId: string,
-    commentId: string
-  ): Promise<DeleteCommentResponse> {
+  deleteComment(retainerInvoiceId: string, commentId: string): Promise<void> {
     return this.client.delete({
       path: ['retainerinvoices', retainerInvoiceId, 'comments', commentId],
     });

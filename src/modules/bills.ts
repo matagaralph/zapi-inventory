@@ -1,17 +1,13 @@
 import type { ApiClient } from '../client';
-import type { CustomField } from './types';
 import type {
-  ListAllBillsResponse,
   CreateBillRequest,
   CreateBillResponse,
+  ListAllBillsResponse,
   RetrieveBillResponse,
   UpdateBillRequest,
   UpdateBillResponse,
-  DeleteBillResponse,
-  UpdateBillCustomfieldResponse,
-  MarkAsOpenResponse,
-  MarkAsVoidResponse,
 } from '../types/bill';
+import type { CustomField } from './types';
 
 export class BillModule {
   private client: ApiClient;
@@ -23,9 +19,7 @@ export class BillModule {
   /**
    * List all Bills.
    */
-  async list(opts?: {
-    limit?: number;
-  }): Promise<ListAllBillsResponse['bills']> {
+  list(opts?: { limit?: number }): Promise<ListAllBillsResponse['bills']> {
     return this.client.getList({
       path: ['bills'],
       limit: opts?.limit,
@@ -71,8 +65,8 @@ export class BillModule {
   /**
    * Delete a Bill.
    */
-  async delete(billId: string): Promise<DeleteBillResponse> {
-    return this.client.delete<DeleteBillResponse>({
+  delete(billId: string): Promise<void> {
+    return this.client.delete({
       path: ['bills', billId],
     });
   }
@@ -80,12 +74,12 @@ export class BillModule {
   /**
    * Update custom field in existing bills.
    */
-  async updateCustomField(
+  updateCustomField(
     billId: string,
     customFields: CustomField[]
-  ): Promise<UpdateBillCustomfieldResponse> {
-    return this.client.put<UpdateBillCustomfieldResponse>({
-      path: ['bill', billId, 'customfields'],
+  ): Promise<void> {
+    return this.client.put({
+      path: ['bills', billId, 'customfields'],
       body: customFields,
     });
   }
@@ -93,8 +87,8 @@ export class BillModule {
   /**
    * Mark as Open.
    */
-  async markAsOpen(billId: string): Promise<MarkAsOpenResponse> {
-    return this.client.post<MarkAsOpenResponse>({
+  markAsOpen(billId: string): Promise<void> {
+    return this.client.post({
       path: ['bills', billId, 'status', 'open'],
     });
   }
@@ -102,8 +96,8 @@ export class BillModule {
   /**
    * Mark as Void.
    */
-  async markAsVoid(billId: string): Promise<MarkAsVoidResponse> {
-    return this.client.post<MarkAsVoidResponse>({
+  markAsVoid(billId: string): Promise<void> {
+    return this.client.post({
       path: ['bills', billId, 'status', 'void'],
     });
   }

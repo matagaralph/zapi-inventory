@@ -3,7 +3,6 @@ import type {
   CreateCurrencyRequest,
   CreateCurrencyResponse,
   CurrencyResponse,
-  DeleteCurrencyResponse,
   ListCurrencyResponse,
   UpdateCurrencyRequest,
   UpdateCurrencyResponse,
@@ -20,14 +19,15 @@ export class CurrencyModule {
    * Get list of currencies configured.
    * If opts.limit is provided, return at most that many items.
    */
-  async list(opts?: {
+  list(opts?: {
     limit?: number;
-    filterBy?: string;
+    filter_by?: string;
   }): Promise<ListCurrencyResponse['currencies']> {
+    const { limit, ...params } = opts ?? {};
     return this.client.getList({
       path: ['settings', 'currencies'],
-      params: opts?.filterBy ? { filter_by: opts.filterBy } : {},
-      limit: opts?.limit,
+      params,
+      limit,
       extractor: (res: ListCurrencyResponse) => res.currencies ?? [],
     });
   }
@@ -62,11 +62,9 @@ export class CurrencyModule {
     return res.currency;
   }
 
-  async delete(currencyId: string): Promise<DeleteCurrencyResponse> {
-    const res = await this.client.delete<DeleteCurrencyResponse>({
+  delete(currencyId: string): Promise<void> {
+    return this.client.delete({
       path: ['settings', 'currencies', currencyId],
     });
-
-    return res;
   }
 }

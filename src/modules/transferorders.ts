@@ -6,8 +6,6 @@ import type {
   UpdateTransferOrderRequest,
   UpdateTransferOrderResponse,
   RetrieveTransferOrderResponse,
-  DeleteTransferOrderResponse,
-  MarkAsReceivedResponse,
 } from '../types/transferorder';
 
 export class TransferOrderModule {
@@ -53,13 +51,13 @@ export class TransferOrderModule {
     return res.transfer_order;
   }
 
-  async delete(transferOrderId: string): Promise<DeleteTransferOrderResponse> {
+  delete(transferOrderId: string): Promise<void> {
     return this.client.delete({
       path: ['transferorders', transferOrderId],
     });
   }
 
-  async markReceived(transferOrderId: string): Promise<MarkAsReceivedResponse> {
+  markReceived(transferOrderId: string): Promise<void> {
     return this.client.post({
       path: ['transferorders', transferOrderId, 'markastransferred'],
     });

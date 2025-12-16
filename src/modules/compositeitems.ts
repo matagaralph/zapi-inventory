@@ -1,19 +1,15 @@
 import type { ApiClient } from '../client';
 import type {
-  ListAllCompositeItemsResponse,
-  CreatingCompositeItemRequest,
-  CreatingCompositeItemResponse,
-  RetrievingCompositeItemResponse,
-  UpdatingCompositeItemRequest,
-  UpdatingCompositeItemResponse,
-  DeletingCompositeItemResponse,
-  MarkAsActiveResponse,
-  MarkAsInactiveResponse,
   BundlingHistoryResponse,
   CreateBundleRequest,
   CreateBundleResponse,
+  CreatingCompositeItemRequest,
+  CreatingCompositeItemResponse,
+  ListAllCompositeItemsResponse,
   RetrieveBundleResponse,
-  DeleteBundleResponse,
+  RetrievingCompositeItemResponse,
+  UpdatingCompositeItemRequest,
+  UpdatingCompositeItemResponse,
 } from '../types/compositeitem';
 
 export class CompositeItemModule {
@@ -76,10 +72,8 @@ export class CompositeItemModule {
   /**
    * Delete a Composite Item.
    */
-  async delete(
-    compositeItemId: string
-  ): Promise<DeletingCompositeItemResponse> {
-    return this.client.delete<DeletingCompositeItemResponse>({
+  delete(compositeItemId: string): Promise<void> {
+    return this.client.delete({
       path: ['compositeitems', compositeItemId],
     });
   }
@@ -87,8 +81,8 @@ export class CompositeItemModule {
   /**
    * Mark Composite Item as Active.
    */
-  async markActive(compositeItemId: string): Promise<MarkAsActiveResponse> {
-    return this.client.post<MarkAsActiveResponse>({
+  markActive(compositeItemId: string): Promise<void> {
+    return this.client.post({
       path: ['compositeitems', compositeItemId, 'active'],
     });
   }
@@ -96,8 +90,8 @@ export class CompositeItemModule {
   /**
    * Mark Composite Item as Inactive.
    */
-  async markInactive(compositeItemId: string): Promise<MarkAsInactiveResponse> {
-    return this.client.post<MarkAsInactiveResponse>({
+  markInactive(compositeItemId: string): Promise<void> {
+    return this.client.post({
       path: ['compositeitems', compositeItemId, 'inactive'],
     });
   }
@@ -107,15 +101,14 @@ export class CompositeItemModule {
    * Filterable by composite_item_id.
    */
   async listBundles(opts?: {
-    compositeItemId?: string;
+    composite_item_id?: string;
     limit?: number;
   }): Promise<BundlingHistoryResponse['bundles']> {
-    const params: Record<string, any> = {};
-    if (opts?.compositeItemId) params.composite_item_id = opts.compositeItemId;
+    const { limit, ...params } = opts ?? {};
     return this.client.getList({
       path: ['bundles'],
       params,
-      limit: opts?.limit,
+      limit,
       extractor: (res: BundlingHistoryResponse) => res.bundles ?? [],
     });
   }
@@ -126,7 +119,6 @@ export class CompositeItemModule {
   async createBundle(
     bundle: CreateBundleRequest
   ): Promise<CreateBundleResponse> {
-    // The create bundle response is flattened (properties at root) per the schema
     return this.client.post<CreateBundleResponse>({
       path: ['bundles'],
       body: bundle,
@@ -146,8 +138,8 @@ export class CompositeItemModule {
   /**
    * Delete Assembly (Bundle).
    */
-  async deleteBundle(bundleId: string): Promise<DeleteBundleResponse> {
-    return this.client.delete<DeleteBundleResponse>({
+  deleteBundle(bundleId: string): Promise<void> {
+    return this.client.delete({
       path: ['bundles', bundleId],
     });
   }

@@ -6,8 +6,6 @@ import type {
   RetrievingPackageResponse,
   UpdatingPackageRequest,
   UpdatingPackageResponse,
-  DeletingPackageResponse,
-  BulkPrintPackagesResponse,
 } from '../types/package';
 
 export class PackageModule {
@@ -51,15 +49,13 @@ export class PackageModule {
     return res.package;
   }
 
-  async delete(packageId: string): Promise<DeletingPackageResponse> {
+  delete(packageId: string): Promise<void> {
     return this.client.delete({
       path: ['packages', packageId],
     });
   }
 
-  async bulkPrint(params: {
-    package_ids: string;
-  }): Promise<BulkPrintPackagesResponse> {
+  bulkPrint(params: { package_ids: string }): Promise<void> {
     return this.client.get({
       path: ['packages', 'bulkprint'],
       params,

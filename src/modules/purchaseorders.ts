@@ -6,9 +6,6 @@ import type {
   RetrievePurchaseOrderResponse,
   UpdatePurchaseOrderRequest,
   UpdatePurchaseOrderResponse,
-  DeletePurchaseOrderResponse,
-  MarkAsIssuedResponse,
-  MarkAsCancelledResponse,
 } from '../types/purchaseorder';
 
 export class PurchaseOrderModule {
@@ -49,36 +46,30 @@ export class PurchaseOrderModule {
   async update(
     purchaseOrderId: string,
     purchaseOrder: UpdatePurchaseOrderRequest,
-    ignoreAutoNumberGeneration?: boolean
+    opts?: { ignore_auto_number_generation: boolean }
   ): Promise<UpdatePurchaseOrderResponse['purchase_order']> {
-    const params = ignoreAutoNumberGeneration
-      ? { ignore_auto_number_generation: true }
-      : undefined;
-
     const res = await this.client.put<UpdatePurchaseOrderResponse>({
       path: ['purchaseorders', purchaseOrderId],
-      params,
+      params: opts,
       body: purchaseOrder,
     });
 
     return res.purchase_order;
   }
 
-  async delete(purchaseOrderId: string): Promise<DeletePurchaseOrderResponse> {
+  delete(purchaseOrderId: string): Promise<void> {
     return this.client.delete({
       path: ['purchaseorders', purchaseOrderId],
     });
   }
 
-  async markIssued(purchaseOrderId: string): Promise<MarkAsIssuedResponse> {
+  markIssued(purchaseOrderId: string): Promise<void> {
     return this.client.post({
       path: ['purchaseorders', purchaseOrderId, 'issued'],
     });
   }
 
-  async markCancelled(
-    purchaseOrderId: string
-  ): Promise<MarkAsCancelledResponse> {
+  markCancelled(purchaseOrderId: string): Promise<void> {
     return this.client.post({
       path: ['purchaseorders', purchaseOrderId, 'cancelled'],
     });

@@ -3,12 +3,10 @@ import type {
   ContactPersonResponse,
   CreateContactPersonRequest,
   CreateContactPersonResponse,
+  GetContactPersonResponse,
+  ListContactPersonsResponse,
   UpdateContactPersonRequest,
   UpdateContactPersonResponse,
-  DeleteContactPersonResponse,
-  ListContactPersonsResponse,
-  GetContactPersonResponse,
-  MarkAsPrimaryContactPersonResponse,
 } from '../types/contactperson';
 
 export class ContactPersonModule {
@@ -75,8 +73,8 @@ export class ContactPersonModule {
   /**
    * Delete a contact person.
    */
-  async delete(contactPersonId: string): Promise<DeleteContactPersonResponse> {
-    return this.client.delete<DeleteContactPersonResponse>({
+  delete(contactPersonId: string): Promise<void> {
+    return this.client.delete({
       path: ['contacts', 'contactpersons', contactPersonId],
     });
   }
@@ -84,10 +82,8 @@ export class ContactPersonModule {
   /**
    * Mark as primary contact person.
    */
-  async markAsPrimary(
-    contactPersonId: string
-  ): Promise<MarkAsPrimaryContactPersonResponse> {
-    return this.client.post<MarkAsPrimaryContactPersonResponse>({
+  markAsPrimary(contactPersonId: string): Promise<void> {
+    return this.client.post({
       path: ['contacts', 'contactpersons', contactPersonId, 'primary'],
     });
   }

@@ -5,7 +5,6 @@ import type {
   RetrievePurchaseReceiveResponse,
   UpdatePurchaseReceiveRequest,
   UpdatePurchaseReceiveResponse,
-  DeletePurchaseReceiveResponse,
 } from '../types/purchasereceive';
 
 export class PurchaseReceiveModule {
@@ -41,9 +40,7 @@ export class PurchaseReceiveModule {
     return res.purchase_receive;
   }
 
-  async delete(
-    purchaseReceiveId: string
-  ): Promise<DeletePurchaseReceiveResponse> {
+  delete(purchaseReceiveId: string): Promise<void> {
     return this.client.delete({
       path: ['purchasereceives', purchaseReceiveId],
     });

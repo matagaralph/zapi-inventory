@@ -6,10 +6,8 @@ import type {
   UpdateSalesReturnRequest,
   UpdateSalesReturnResponse,
   RetrieveSalesReturnResponse,
-  DeleteSalesReturnResponse,
   CreateSalesReturnReceiveRequest,
   CreateSalesReturnReceiveResponse,
-  DeleteSalesReturnReceiveResponse,
 } from '../types/salesreturn';
 
 export class SalesReturnModule {
@@ -29,11 +27,11 @@ export class SalesReturnModule {
 
   async create(
     data: CreateSalesReturnRequest,
-    params?: { salesorder_id?: string }
+    opts?: { salesorder_id?: string }
   ): Promise<CreateSalesReturnResponse['salesreturn']> {
     const res = await this.client.post<CreateSalesReturnResponse>({
       path: ['salesreturns'],
-      params,
+      params: opts,
       body: data,
     });
     return res.salesreturn;
@@ -51,17 +49,17 @@ export class SalesReturnModule {
   async update(
     salesReturnId: string,
     data: UpdateSalesReturnRequest,
-    params?: { salesorder_id?: string }
+    opts?: { salesorder_id?: string }
   ): Promise<UpdateSalesReturnResponse['salesreturn']> {
     const res = await this.client.put<UpdateSalesReturnResponse>({
       path: ['salesreturns', salesReturnId],
-      params,
+      params: opts,
       body: data,
     });
     return res.salesreturn;
   }
 
-  async delete(salesReturnId: string): Promise<DeleteSalesReturnResponse> {
+  delete(salesReturnId: string): Promise<void> {
     return this.client.delete({
       path: ['salesreturns', salesReturnId],
     });
@@ -78,9 +76,7 @@ export class SalesReturnModule {
     return res.salesreturn;
   }
 
-  async deleteReceive(
-    salesReturnReceiveId: string
-  ): Promise<DeleteSalesReturnReceiveResponse> {
+  deleteReceive(salesReturnReceiveId: string): Promise<void> {
     return this.client.delete({
       path: ['salesreturnreceives', salesReturnReceiveId],
     });

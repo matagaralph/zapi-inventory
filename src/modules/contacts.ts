@@ -2,20 +2,15 @@ import type { ApiClient } from '../client';
 import type {
   CreateContactRequest,
   CreateContactResponse,
+  EmailContactRequest,
+  EmailStatementRequest,
+  GetContactAddressResponse,
+  GetContactResponse,
+  GetStatementMailContentResponse,
+  ListCommentsResponse,
   ListContactsResponse,
   UpdateContactRequest,
   UpdateContactResponse,
-  GetContactResponse,
-  DeleteContactResponse,
-  GetContactAddressResponse,
-  MarkAsActiveResponse,
-  MarkAsInactiveResponse,
-  EmailStatementRequest,
-  EmailStatementResponse,
-  GetStatementMailContentResponse,
-  EmailContactRequest,
-  EmailContactResponse,
-  ListCommentsResponse,
 } from '../types/contact';
 
 export class ContactModule {
@@ -33,8 +28,7 @@ export class ContactModule {
   }): Promise<ListContactsResponse['contacts']> {
     return this.client.getList({
       path: ['contacts'],
-      params: {},
-      limit: opts?.limit ?? 200,
+      limit: opts?.limit,
       extractor: (res: ListContactsResponse) => res.contacts ?? [],
     });
   }
@@ -79,8 +73,8 @@ export class ContactModule {
   /**
    * Delete a contact.
    */
-  async delete(contactId: string): Promise<DeleteContactResponse> {
-    return this.client.delete<DeleteContactResponse>({
+  delete(contactId: string): Promise<void> {
+    return this.client.delete({
       path: ['contacts', contactId],
     });
   }
@@ -100,8 +94,8 @@ export class ContactModule {
   /**
    * Mark as active.
    */
-  async markActive(contactId: string): Promise<MarkAsActiveResponse> {
-    return this.client.post<MarkAsActiveResponse>({
+  markActive(contactId: string): Promise<void> {
+    return this.client.post({
       path: ['contacts', contactId, 'active'],
     });
   }
@@ -109,8 +103,8 @@ export class ContactModule {
   /**
    * Mark as Inactive.
    */
-  async markInactive(contactId: string): Promise<MarkAsInactiveResponse> {
-    return this.client.post<MarkAsInactiveResponse>({
+  markInactive(contactId: string): Promise<void> {
+    return this.client.post({
       path: ['contacts', contactId, 'inactive'],
     });
   }
@@ -120,73 +114,59 @@ export class ContactModule {
    */
   async getStatementMailContent(
     contactId: string,
-    opts?: { startDate?: string; endDate?: string }
+    opts?: { start_date?: string; end_date?: string }
   ): Promise<GetStatementMailContentResponse> {
-    const params: Record<string, any> = {};
-    if (opts?.startDate) params.start_date = opts.startDate;
-    if (opts?.endDate) params.end_date = opts.endDate;
-
     return this.client.get<GetStatementMailContentResponse>({
       path: ['contacts', contactId, 'statements', 'email'],
-      params,
+      params: opts,
     });
   }
 
   /**
    * Email statement.
    */
-  async emailStatement(
+  emailStatement(
     contactId: string,
     emailRequest: EmailStatementRequest,
-    opts?: { startDate?: string; endDate?: string }
-  ): Promise<EmailStatementResponse> {
-    const params: Record<string, any> = {};
-    if (opts?.startDate) params.start_date = opts.startDate;
-    if (opts?.endDate) params.end_date = opts.endDate;
-
-    return this.client.post<EmailStatementResponse>({
+    opts?: { start_date?: string; end_date?: string }
+  ): Promise<void> {
+    return this.client.post({
       path: ['contacts', contactId, 'statements', 'email'],
       body: emailRequest,
-      params,
+      params: opts,
     });
   }
 
   /**
    * Email contact.
    */
-  async emailContact(
+  emailContact(
     contactId: string,
     emailRequest: EmailContactRequest,
-    opts?: { sendCustomerStatement?: boolean }
-  ): Promise<EmailContactResponse> {
-    const params: Record<string, any> = {};
-    if (opts?.sendCustomerStatement) {
-      params.send_customer_statement = opts.sendCustomerStatement;
-    }
-
-    return this.client.post<EmailContactResponse>({
+    opts?: { send_customer_statement?: boolean }
+  ): Promise<void> {
+    return this.client.post({
       path: ['contacts', contactId, 'email'],
       body: emailRequest,
-      params,
+      params: opts,
     });
   }
 
   /**
    * List Comments.
    */
-  async listComments(
+  listComments(
     contactId: string,
     opts?: { limit?: number }
   ): Promise<ListCommentsResponse['contact_comments']> {
     return this.client.getList({
       path: ['contacts', contactId, 'comments'],
-      params: {},
       limit: opts?.limit ?? 200,
       extractor: (res: ListCommentsResponse) => res.contact_comments ?? [],
     });
   }
 
-  public async addAddress(
+  async addAddress(
     contactId: string,
     address: any,
     updateExistingTransactions?: boolean
@@ -205,14 +185,9 @@ export class ContactModule {
     return res.address_info.address_id;
   }
 
-  public async deleteAddress(
-    contactId: string,
-    addressId: string
-  ): Promise<string> {
-    await this.client.delete({
+  deleteAddress(contactId: string, addressId: string): Promise<void> {
+    return this.client.delete({
       path: ['contacts', contactId, 'address', addressId],
     });
-
-    return addressId;
   }
 }
