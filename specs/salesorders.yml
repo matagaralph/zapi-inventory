@@ -1330,7 +1330,7 @@ components:
           type: string
           example: success
           readOnly: true
-        sales_order:
+        salesorder:
           $ref: '#/components/schemas/sales_order-response'
     list-all-sales-orders-response:
       type: object

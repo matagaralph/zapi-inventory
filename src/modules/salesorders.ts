@@ -41,14 +41,14 @@ export class SalesOrderModule {
   async create(
     salesOrder: CreateSalesOrderRequest,
     opts?: { ignore_auto_number_generation?: boolean }
-  ): Promise<CreateSalesOrderResponse['sales_order']> {
+  ): Promise<CreateSalesOrderResponse['salesorder']> {
     const res = await this.client.post<CreateSalesOrderResponse>({
       path: ['salesorders'],
       body: salesOrder,
       params: opts,
     });
 
-    return res.sales_order;
+    return res.salesorder;
   }
 
   async get(
