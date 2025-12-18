@@ -1,5 +1,11 @@
 # zapi-inventory
 
+## 2.0.1
+
+### Patch Changes
+
+- eb83f25: use correct resource name
+
 ## 2.0.0
 
 ### Major Changes
