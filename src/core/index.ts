@@ -4,6 +4,7 @@ import { OAuthToken } from './auth/oauth.ts';
 import { FileTokenStore } from './auth/store/file-store.ts';
 import type { TokenStore } from './auth/store/token-store.ts';
 import { ContactResource } from './modules/contact.ts';
+import { InvoiceResource } from './modules/invoice.ts';
 import { ItemResource } from './modules/item.ts';
 import { PackageResource } from './modules/package.ts';
 import { SalesOrderResource } from './modules/salesorder.ts';
@@ -25,6 +26,7 @@ export class ZohoInventory {
 
   readonly http: HttpClient;
   readonly items: ItemResource;
+  readonly invoices: InvoiceResource;
   readonly contacts: ContactResource;
   readonly packages: PackageResource;
   readonly salesorders: SalesOrderResource;
@@ -58,6 +60,7 @@ export class ZohoInventory {
     });
 
     this.items = new ItemResource(this.http);
+    this.invoices = new InvoiceResource(this.http);
     this.contacts = new ContactResource(this.http);
     this.packages = new PackageResource(this.http);
     this.salesorders = new SalesOrderResource(this.http);

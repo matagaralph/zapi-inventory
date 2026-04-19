@@ -41,4 +41,11 @@ export const MODULES = {
       PLURAL: 'packages',
     },
   },
+  INVOICE: {
+    PATH: 'invoices',
+    RESPONSE_KEY: {
+      SINGULAR: 'invoice',
+      PLURAL: 'invoices',
+    },
+  },
 } as const;
