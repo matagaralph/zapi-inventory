@@ -11,15 +11,14 @@ export interface Address {
   country_code?: string;
   phone?: string;
   fax?: string;
-  county?: string;
-  latitude?: string;
-  longitude?: string;
 }
 
-export type AddressWithoutId = Omit<
-  Address,
-  'address_id' | 'longitude' | 'latitude' | 'state_code'
->;
+export type AddressWithoutId = Omit<Address, 'address_id'>;
 export type AddressWithoutCoordsWithCompany = AddressWithoutId & {
   company_name: string;
 };
+
+export type AddressBasic = Pick<
+  Address,
+  'attention' | 'country' | 'address' | 'city' | 'state' | 'zip' | 'phone' | 'fax'
+>;

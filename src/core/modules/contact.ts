@@ -1,5 +1,6 @@
 import type { HttpClient } from '@/client';
 import { MODULES } from '@/core/constants';
+import type { Address, AddressBasic, AddressWithoutId } from '@/types/address';
 import type { Contact, CreateContact } from '@/types/contact';
 
 export class ContactResource {
@@ -34,6 +35,30 @@ export class ContactResource {
   async delete(contactId: string) {
     return this.http.delete({
       path: [MODULES.CONTACT.PATH, contactId],
+    });
+  }
+
+  async getAddress(contactId: string) {
+    const res = await this.http.get<{ addresses: Address[] }>({
+      path: ['contacts', contactId, 'address'],
+    });
+    return res.addresses;
+  }
+
+  async addAddress(contactId: string, addressInfo: AddressBasic) {
+    const res = await this.http.post<{
+      address_info: AddressWithoutId;
+    }>({
+      path: ['contacts', contactId, 'address'],
+      body: addressInfo,
+    });
+
+    return res.address_info;
+  }
+
+  deleteAddress(contactId: string, addressId: string): Promise<void> {
+    return this.http.delete({
+      path: ['contacts', contactId, 'address', addressId],
     });
   }
 }
