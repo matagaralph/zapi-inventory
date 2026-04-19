@@ -1,5 +1,12 @@
 # zapi-inventory
 
+## 0.11.0
+
+### Minor Changes
+
+- feat: add address management to contact module (getAddress, addAddress, deleteAddress) (#1fd4c49)
+- feat: add contact status management methods (markActive, markInactive) (#91f221a)
+
 ## 0.10.0
 
 ### Minor Changes
