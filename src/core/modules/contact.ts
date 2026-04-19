@@ -56,9 +56,21 @@ export class ContactResource {
     return res.address_info;
   }
 
-  deleteAddress(contactId: string, addressId: string): Promise<void> {
+  deleteAddress(contactId: string, addressId: string) {
     return this.http.delete({
       path: ['contacts', contactId, 'address', addressId],
+    });
+  }
+
+  markActive(contactId: string) {
+    return this.http.post({
+      path: ['contacts', contactId, 'active'],
+    });
+  }
+
+  markInactive(contactId: string) {
+    return this.http.post({
+      path: ['contacts', contactId, 'inactive'],
     });
   }
 }
