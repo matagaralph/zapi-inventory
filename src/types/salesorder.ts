@@ -11,7 +11,7 @@ export interface SalesOrder {
   zcrm_potential_id: string;
   zcrm_potential_name: string;
   salesorder_number: string;
-  date: Date;
+  date: string;
   offline_created_date_with_time: string;
   tracking_url: string;
   has_discount: boolean;
@@ -102,7 +102,7 @@ export interface SalesOrder {
   created_time: string;
   last_modified_time: string;
   created_by_id: string;
-  created_date: Date;
+  created_date: string;
   last_modified_by_id: string;
   attachment_name: string;
   can_send_in_mail: boolean;
@@ -231,8 +231,6 @@ export type ListSalesOrder = Pick<
   delivery_date?: string;
   has_attachment?: boolean;
   tags?: any[];
-  cf_source?: string;
-  cf_source_unformatted?: string;
 };
 
 export interface Contact {
@@ -251,10 +249,7 @@ export interface ContactPersonDetail {
   email: string;
 }
 
-export interface CustomFieldHash {
-  cf_source: string;
-  cf_source_unformatted: string;
-}
+export interface CustomFieldHash {}
 
 export interface CustomLock {
   locked_fields: ShippingDetails;

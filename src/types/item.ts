@@ -1,4 +1,5 @@
 import type { CustomField } from './customfield';
+import type { PackageDetails } from './index';
 
 export interface Item {
   item_id: string;
@@ -145,15 +146,6 @@ export interface Location {
   default_storage: string;
   is_general_location: boolean;
   sales_channels: any[];
-}
-
-export interface PackageDetails {
-  length: string;
-  width: string;
-  height: string;
-  weight: string;
-  weight_unit: string;
-  dimension_unit: string;
 }
 
 export interface UnitConversion {

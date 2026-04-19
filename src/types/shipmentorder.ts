@@ -4,7 +4,7 @@ import type { CustomField } from './customfield';
 export interface ShipmentOrder {
   salesorder_id: string;
   salesorder_number: string;
-  salesorder_date: Date;
+  salesorder_date: string;
   salesorder_fulfilment_status: string;
   sales_channel: string;
   sales_channel_formatted: string;
@@ -12,8 +12,8 @@ export interface ShipmentOrder {
   package_number: string;
   shipment_id: string;
   shipment_number: string;
-  date: Date;
-  shipping_date: Date;
+  date: string;
+  shipping_date: string;
   delivery_method: string;
   delivery_method_id: string;
   tracking_number: string;
@@ -148,7 +148,7 @@ export enum Unit {
 export interface ShipmentOrderClass {
   shipment_id: string;
   shipment_number: string;
-  shipping_date: Date;
+  shipping_date: string;
   delivery_method: string;
   delivery_method_id: string;
   notes: string;
@@ -196,7 +196,7 @@ export interface TrackingStatus {
   fax: string;
   email: string;
   notes: string;
-  date: Date;
+  date: string;
   time: string;
   current_tracking_status: string;
   current_tracking_status_message: string;
