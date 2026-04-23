@@ -121,6 +121,24 @@ export interface DefaultPriceBracket {
   pricebook_rate: number;
 }
 
+export interface ItemCategory {
+  created_time: string;
+  last_modified_time: string;
+  visibility: boolean;
+  documents: unknown[];
+  show_in_menu: boolean;
+  ondc_category_type: string;
+  document_id: string;
+  url: string;
+  parent_category_id: string;
+  sibling_order: number;
+  depth: number;
+  category_id: string;
+  has_active_items: boolean;
+  name: string;
+  ondc_category_type_formatted: string;
+}
+
 export interface Location {
   location_id: string;
   location_name: string;

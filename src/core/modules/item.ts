@@ -2,7 +2,14 @@ import type { HttpClient } from '@/client';
 import { MODULES } from '@/core/constants';
 import { chunkArray } from '@/core/utils';
 import type { PaginatedResponse } from '@/types';
-import type { CreateItem, Item, ItemDetail, ListItem, UpdateItem } from '@/types/item';
+import type {
+  CreateItem,
+  Item,
+  ItemCategory,
+  ItemDetail,
+  ListItem,
+  UpdateItem,
+} from '@/types/item';
 
 export interface ItemSearchOptions {
   page?: number;
@@ -27,6 +34,20 @@ export class ItemResource {
       path: [MODULES.ITEM.PATH, id],
     });
     return res[MODULES.ITEM.RESPONSE_KEY.SINGULAR];
+  }
+
+  /**
+   * Fetches all available item categories.
+   * @experimental This API is currently experimental.
+   * The method signature and response structure may change in future releases.
+   * @returns A promise containing an array of item categories.
+   */
+  async getCategories(): Promise<ItemCategory[]> {
+    const res = await this.http.get<{ categories: ItemCategory[] }>({
+      path: ['categories'],
+    });
+
+    return res.categories;
   }
 
   async create(item: CreateItem): Promise<Item> {
@@ -84,6 +105,7 @@ export class ItemResource {
       path: [MODULES.ITEM.PATH, itemId, 'inactive'],
     });
   }
+
   /* Searches for items based on provided filters.
    * * @experimental This search implementation is currently experimental.
    * Supported query parameters and behavior may change in future releases.
