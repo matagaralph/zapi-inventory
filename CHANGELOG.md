@@ -1,5 +1,11 @@
 # zapi-inventory
 
+## 0.12.0
+
+### Minor Changes
+
+- feat: add batch methods, item transactions, contact address support, and getPageContext for pagination metadata
+
 ## 0.11.0
 
 ### Minor Changes
