@@ -1,5 +1,6 @@
 import type { CustomField } from './customfield';
 import type { PackageDetails } from './index';
+import type { SalesOrder } from './salesorder';
 
 export interface Item {
   item_id: string;
@@ -121,6 +122,44 @@ export interface DefaultPriceBracket {
   pricebook_rate: number;
 }
 
+export interface InventorySummary {
+  qty_to_be_shipped: number;
+  qty_to_be_shipped_formatted: string;
+  qty_to_be_received: number;
+  qty_to_be_received_formatted: string;
+  qty_to_be_invoiced: number;
+  qty_to_be_invoiced_formatted: string;
+  qty_to_be_billed: number;
+  qty_to_be_billed_formatted: string;
+}
+
+export interface Batch {
+  batch_id: string;
+  batch_in_id: string;
+  batch_number: string;
+  internal_batch_number: string;
+  external_batch_number: string;
+  manufacturer_batch_number: string;
+  expiry_date: string;
+  expiry_date_formatted: string;
+  in_quantity: number;
+  in_quantity_formatted: string;
+  balance_quantity: number;
+  balance_quantity_formatted: string;
+  balance_quantity_unit: string;
+  location_id: string;
+  associated_locations: {
+    location_id: string;
+    in_quantity: number;
+    in_quantity_formatted: string;
+    balance_quantity: number;
+    balance_quantity_formatted: string;
+  }[];
+  batch_custom_fields: unknown[];
+  status: string;
+  status_formatted: string;
+}
+
 export interface ItemCategory {
   created_time: string;
   last_modified_time: string;
@@ -176,6 +215,30 @@ export interface UnitConversion {
 
 export type CreateItem = Pick<Item, 'name' | 'sku'> & Partial<Omit<Item, 'name' | 'sku'>>;
 export type UpdateItem = Pick<Item, 'name'> & Partial<Omit<Item, 'name'>>;
+
+export type SalesOrderTransaction = Pick<
+  SalesOrder,
+  | 'salesorder_id'
+  | 'customer_id'
+  | 'customer_name'
+  | 'order_status'
+  | 'salesorder_number'
+  | 'date'
+  | 'sales_channel'
+  | 'currency_symbol'
+  | 'currency_id'
+  | 'currency_code'
+  | 'color_code'
+  | 'current_sub_status'
+  | 'current_sub_status_id'
+> & {
+  item_quantity: string;
+  item_price: string;
+  item_price_formatted: string;
+  item_total_price: string;
+  item_total_price_formatted: string;
+  sales_channel_formatted: string;
+};
 
 export type ListItem = Omit<
   Item,

@@ -3,11 +3,14 @@ import { MODULES } from '@/core/constants';
 import { chunkArray } from '@/core/utils';
 import type { PaginatedResponse } from '@/types';
 import type {
+  Batch,
   CreateItem,
+  InventorySummary,
   Item,
   ItemCategory,
   ItemDetail,
   ListItem,
+  SalesOrderTransaction,
   UpdateItem,
 } from '@/types/item';
 
@@ -64,6 +67,45 @@ export class ItemResource {
       body: item,
     });
     return res[MODULES.ITEM.RESPONSE_KEY.SINGULAR];
+  }
+
+  async inventorySummary(itemId: string): Promise<InventorySummary> {
+    const res = await this.http.get<{
+      inventory_summary: InventorySummary;
+    }>({
+      path: [MODULES.ITEM.PATH, itemId, 'inventorysummary'],
+    });
+    return res.inventory_summary;
+  }
+
+  async getBatches(
+    itemId: string,
+    params?: {
+      page?: number;
+      per_page?: number;
+      sort_column?: 'batch_number' | 'external_batch_number' | 'expiry_date';
+      sort_order?: 'A' | 'D';
+      filter_by?: string;
+      include_empty_batches?: boolean;
+    },
+  ): Promise<PaginatedResponse<{ batches: Batch[] }>> {
+    return this.http.get<PaginatedResponse<{ batches: Batch[] }>>({
+      path: [MODULES.ITEM.PATH, itemId, 'batches'],
+      query: params,
+    });
+  }
+
+  async getSalesOrderTransactions(params: {
+    item_id: string;
+    page?: number;
+    per_page?: number;
+    sort_column?: 'salesorder_number' | 'date';
+    sort_order?: 'A' | 'D';
+  }): Promise<PaginatedResponse<{ salesorders: SalesOrderTransaction[] }>> {
+    return this.http.get<PaginatedResponse<{ salesorders: SalesOrderTransaction[] }>>({
+      path: [MODULES.ITEM.PATH, 'transactions', 'salesorders'],
+      query: params,
+    });
   }
 
   /**
