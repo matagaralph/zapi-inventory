@@ -1,5 +1,11 @@
 # zapi-inventory
 
+## 0.12.2
+
+### Patch Changes
+
+- fix: export missing types from index.ts barrel
+
 ## 0.12.1
 
 ### Patch Changes
