@@ -1,5 +1,11 @@
 # zapi-inventory
 
+## 0.12.1
+
+### Patch Changes
+
+- re-export modules types
+
 ## 0.12.0
 
 ### Minor Changes
