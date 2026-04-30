@@ -66,4 +66,39 @@ export class ZohoInventory {
     this.salesorders = new SalesOrderResource(this.http);
     this.shipmentorders = new ShipmentOrderResource(this.http);
   }
+
+  async getPageContext(
+    path: string[],
+    params?: Record<string, unknown>,
+  ): Promise<{
+    page: number;
+    per_page: number;
+    total: string;
+    total_pages: number;
+    report_name: string;
+    applied_filter: string;
+    sort_column: string;
+    sort_order: string;
+  }> {
+    const response = await this.http.get<{
+      page_context: {
+        page: number;
+        per_page: number;
+        total: string;
+        total_pages: number;
+        report_name: string;
+        applied_filter: string;
+        sort_column: string;
+        sort_order: string;
+      };
+    }>({
+      path,
+      query: {
+        ...params,
+        response_option: 2,
+      },
+    });
+
+    return response.page_context;
+  }
 }
