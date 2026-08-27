@@ -8,6 +8,7 @@
     "url": "https://github.com/matagaralph/zapi-inventory/issues"
   },
   "license": "MIT",
+  "author": "Ralph Mataga",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/matagaralph/zapi-inventory.git"
