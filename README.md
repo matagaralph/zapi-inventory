@@ -70,6 +70,10 @@ inventory.http.post<T>(options: {
 })
 ```
 
+## A note on version history
+
+Early versions (`1.0.0-dev`, `1.1.0`, `2.0.0`–`3.0.0`) were part of initial experimentation from when this started as a toy SDK, and were mistakes in versioning — they have since been unpublished. The `0.8.5`–`0.12.2` line is the stable pre-rewrite history. `1.0.0-rc.x` and onward is the current, actively maintained architecture (types generated from Zoho's official OpenAPI specs, a resource module per API domain, OAuth token handling with a pluggable token store).
+
 ## Contributing
 
 Contributions Welcome! You can contribute in the following ways.
