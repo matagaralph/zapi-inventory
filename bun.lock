@@ -13,12 +13,12 @@
         "turbo": "^2.10.12",
       },
       "peerDependencies": {
-        "typescript": "^7",
+        "typescript": "^5",
       },
     },
     "packages/sdk": {
       "name": "zapi-inventory",
-      "version": "0.0.0",
+      "version": "1.0.0-rc.0",
       "dependencies": {
         "xior": "^0.8.4",
       },
