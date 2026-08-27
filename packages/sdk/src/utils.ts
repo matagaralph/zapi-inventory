@@ -1,3 +1,5 @@
+export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
+
 export function chunkArray<T>(array: T[], size: number): T[][] {
   if (size <= 0) {
     throw new RangeError('Chunk size must be greater than 0.')

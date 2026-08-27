@@ -19,8 +19,10 @@
       "name": "zapi-inventory",
       "version": "0.0.0",
       "dependencies": {
-        "@zapi-inventory/typegen": "workspace:*",
         "xior": "^0.8.4",
+      },
+      "devDependencies": {
+        "@zapi-inventory/typegen": "workspace:*",
       },
     },
     "packages/typegen": {

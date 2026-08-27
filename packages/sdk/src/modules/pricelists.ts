@@ -1,6 +1,7 @@
 import type {
   CreatePricebookRequest,
   CreatePricebookResponse,
+  ListPricebooksQuery,
   ListPricebooksResponse,
   PricelistsMarkAsActiveResponse,
   PricelistsMarkAsInactiveResponse,
@@ -13,9 +14,7 @@ import type { HTTPClient } from '../http.ts'
 export class PriceLists {
   constructor(private readonly http: HTTPClient) {}
 
-  async list(
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<ListPricebooksResponse['pricebooks']> {
+  async list(params?: ListPricebooksQuery): Promise<ListPricebooksResponse['pricebooks']> {
     const { pricebooks } = await this.http.get<ListPricebooksResponse>({
       path: ['pricebooks'],
       query: { ...params },

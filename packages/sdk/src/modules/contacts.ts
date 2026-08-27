@@ -4,14 +4,19 @@ import type {
   CreateContactRequest,
   CreateContactResponse,
   DeleteContactResponse,
+  EmailContactQuery,
   EmailContactRequest,
   EmailContactResponse,
+  EmailStatementQuery,
   EmailStatementRequest,
   EmailStatementResponse,
   GetContactAddressResponse,
   GetContactResponse,
+  GetStatementMailContentQuery,
   GetStatementMailContentResponse,
   ListCommentsResponse,
+  ListContactCommentsQuery,
+  ListContactsQuery,
   ListContactsResponse,
   UpdateContactRequest,
   UpdateContactResponse,
@@ -22,9 +27,7 @@ import type { HTTPClient } from '../http.ts'
 export class Contacts {
   constructor(private readonly http: HTTPClient) {}
 
-  async list(
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<ListContactsResponse['contacts']> {
+  async list(params?: ListContactsQuery): Promise<ListContactsResponse['contacts']> {
     const { contacts } = await this.http.get<ListContactsResponse>({
       path: ['contacts'],
       query: params,
@@ -79,7 +82,7 @@ export class Contacts {
 
   async getStatementMailContent(
     contactId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: GetStatementMailContentQuery
   ): Promise<GetStatementMailContentResponse> {
     return this.http.get<GetStatementMailContentResponse>({
       path: ['contacts', contactId, 'statements', 'email'],
@@ -90,7 +93,7 @@ export class Contacts {
   async emailStatement(
     contactId: string,
     data: EmailStatementRequest,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: EmailStatementQuery
   ): Promise<EmailStatementResponse> {
     return this.http.post<EmailStatementResponse>({
       path: ['contacts', contactId, 'statements', 'email'],
@@ -102,7 +105,7 @@ export class Contacts {
   async sendEmail(
     contactId: string,
     data: EmailContactRequest,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: EmailContactQuery
   ): Promise<EmailContactResponse> {
     return this.http.post<EmailContactResponse>({
       path: ['contacts', contactId, 'email'],
@@ -113,7 +116,7 @@ export class Contacts {
 
   async listComments(
     contactId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: ListContactCommentsQuery
   ): Promise<ListCommentsResponse['contact_comments']> {
     const { contact_comments } = await this.http.get<ListCommentsResponse>({
       path: ['contacts', contactId, 'comments'],

@@ -3,14 +3,19 @@ import type {
   ApplyCreditsToBillResponse,
   ApproveVendorCreditResponse,
   ConvertToOpenResponse,
+  CreateVendorCreditQuery,
   CreateVendorCreditRequest,
   CreateVendorCreditResponse,
+  GetVendorCreditQuery,
   GetVendorCreditRefundResponse,
   GetVendorCreditResponse,
   ListBillsCreditedResponse,
   ListRefundsOfVendorCreditResponse,
+  ListRefundsOfVendorCreditQuery,
+  ListRefundsOfVendorCreditsQuery,
   ListVendorCreditCommentsAndHistoryResponse,
   ListVendorCreditRefundsResponse,
+  ListVendorCreditsQuery,
   ListVendorCreditsResponse,
   RefundVendorCreditRequest,
   RefundVendorCreditResponse,
@@ -29,9 +34,7 @@ import type { HTTPClient } from '../http.ts'
 export class VendorCredits {
   constructor(private readonly http: HTTPClient) {}
 
-  async list(
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<ListVendorCreditsResponse['vendorcredits']> {
+  async list(params?: ListVendorCreditsQuery): Promise<ListVendorCreditsResponse['vendorcredits']> {
     const { vendorcredits } = await this.http.get<ListVendorCreditsResponse>({
       path: ['vendorcredits'],
       query: { ...params },
@@ -41,7 +44,7 @@ export class VendorCredits {
 
   async create(
     data: CreateVendorCreditRequest,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: CreateVendorCreditQuery
   ): Promise<CreateVendorCreditResponse['vendor_credit']> {
     const { vendor_credit } = await this.http.post<CreateVendorCreditResponse>({
       path: ['vendorcredits'],
@@ -53,7 +56,7 @@ export class VendorCredits {
 
   async get(
     vendorCreditId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: GetVendorCreditQuery
   ): Promise<GetVendorCreditResponse['vendor_credit']> {
     const { vendor_credit } = await this.http.get<GetVendorCreditResponse>({
       path: ['vendorcredits', vendorCreditId],
@@ -126,7 +129,7 @@ export class VendorCredits {
 
   async listRefunds(
     vendorCreditId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: ListRefundsOfVendorCreditQuery
   ): Promise<ListRefundsOfVendorCreditResponse['vendor_credit_refunds']> {
     const { vendor_credit_refunds } = await this.http.get<ListRefundsOfVendorCreditResponse>({
       path: ['vendorcredits', vendorCreditId, 'refunds'],
@@ -175,7 +178,7 @@ export class VendorCredits {
   }
 
   async listAllRefunds(
-    params?: Record<string, string | number | boolean | undefined>
+    params?: ListRefundsOfVendorCreditsQuery
   ): Promise<ListVendorCreditRefundsResponse['vendor_credit_refunds']> {
     const { vendor_credit_refunds } = await this.http.get<ListVendorCreditRefundsResponse>({
       path: ['vendorcredits', 'refunds'],

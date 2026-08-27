@@ -1,12 +1,16 @@
 import type {
+  BulkDeleteBatchesQuery,
   BulkDeleteBatchesResponse,
   CreateBatchRequest,
   CreateBatchResponse,
   GetBatchResponse,
+  ListBatchesQuery,
   ListBatchesResponse,
   MarkBatchAsActiveResponse,
   MarkBatchAsInactiveResponse,
+  MarkBatchesAsActiveQuery,
   MarkBatchesAsActiveResponse,
+  MarkBatchesAsInactiveQuery,
   MarkBatchesAsInactiveResponse,
   UpdateBatchRequest,
   UpdateBatchResponse,
@@ -17,13 +21,10 @@ import type { HTTPClient } from '../http.ts'
 export class Batches {
   constructor(private readonly http: HTTPClient) {}
 
-  async list(
-    itemId: string,
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<ListBatchesResponse['batches']> {
+  async list(params: ListBatchesQuery): Promise<ListBatchesResponse['batches']> {
     const { batches } = await this.http.get<ListBatchesResponse>({
       path: ['items', 'batches'],
-      query: { item_id: itemId, ...params },
+      query: params,
     })
     return batches
   }
@@ -36,10 +37,10 @@ export class Batches {
     return batch
   }
 
-  async bulkDelete(batchIds: string): Promise<BulkDeleteBatchesResponse> {
+  async bulkDelete(params: BulkDeleteBatchesQuery): Promise<BulkDeleteBatchesResponse> {
     return this.http.delete<BulkDeleteBatchesResponse>({
       path: ['items', 'batches'],
-      query: { batch_ids: batchIds },
+      query: params,
     })
   }
 
@@ -74,17 +75,19 @@ export class Batches {
     })
   }
 
-  async bulkMarkAsActive(batchIds: string): Promise<MarkBatchesAsActiveResponse> {
+  async bulkMarkAsActive(params: MarkBatchesAsActiveQuery): Promise<MarkBatchesAsActiveResponse> {
     return this.http.post<MarkBatchesAsActiveResponse>({
       path: ['items', 'batches', 'active'],
-      query: { batch_ids: batchIds },
+      query: params,
     })
   }
 
-  async bulkMarkAsInactive(batchIds: string): Promise<MarkBatchesAsInactiveResponse> {
+  async bulkMarkAsInactive(
+    params: MarkBatchesAsInactiveQuery
+  ): Promise<MarkBatchesAsInactiveResponse> {
     return this.http.post<MarkBatchesAsInactiveResponse>({
       path: ['items', 'batches', 'inactive'],
-      query: { batch_ids: batchIds },
+      query: params,
     })
   }
 }

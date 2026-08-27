@@ -3,7 +3,9 @@ import type {
   CreateLocationResponse,
   EnableLocationResponse,
   GetLocationResponse,
+  ListLocationsQuery,
   ListLocationResponse,
+  ListUsersOfLocationQuery,
   ListUsersOfLocationResponse,
   LocationsMarkAsActiveResponse,
   LocationsMarkAsInactiveResponse,
@@ -21,9 +23,7 @@ export class Locations {
     return this.http.post<EnableLocationResponse>({ path: ['settings', 'locations', 'enable'] })
   }
 
-  async list(
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<ListLocationResponse['locations']> {
+  async list(params?: ListLocationsQuery): Promise<ListLocationResponse['locations']> {
     const { locations } = await this.http.get<ListLocationResponse>({
       path: ['locations'],
       query: { ...params },
@@ -81,7 +81,7 @@ export class Locations {
 
   async listUsers(
     locationId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: ListUsersOfLocationQuery
   ): Promise<ListUsersOfLocationResponse['users']> {
     const { users } = await this.http.get<ListUsersOfLocationResponse>({
       path: ['locations', locationId, 'users'],

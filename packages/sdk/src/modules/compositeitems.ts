@@ -1,16 +1,20 @@
 import type {
   BundlingHistoryResponse,
+  CreateAssembliesQuery,
   CreateBundleRequest,
   CreateBundleResponse,
   CreateCompositeItemRequest,
   CreateCompositeItemResponse,
   GetBundleResponse,
   GetCompositeItemResponse,
+  ListAssembliesQuery,
+  ListCompositeItemsQuery,
   ListCompositeItemsResponse,
   MarkAsActiveResponse,
   MarkAsInactiveResponse,
   MarkAssemblyAsBuiltResponse,
   MarkAssemblyAsConfirmedResponse,
+  UpdateAssemblyQuery,
   UpdateBundleRequest,
   UpdateBundleResponse,
   UpdateCompositeItemRequest,
@@ -19,12 +23,13 @@ import type {
 } from '@zapi-inventory/typegen'
 
 import type { HTTPClient } from '../http.ts'
+import type { PartialBy } from '../utils.ts'
 
 export class CompositeItems {
   constructor(private readonly http: HTTPClient) {}
 
   async list(
-    params?: Record<string, string | number | boolean | undefined>
+    params?: ListCompositeItemsQuery
   ): Promise<ListCompositeItemsResponse['composite_items']> {
     const { composite_items } = await this.http.get<ListCompositeItemsResponse>({
       path: ['compositeitems'],
@@ -90,24 +95,23 @@ export class CompositeItems {
     await this.http.delete({ path: ['compositeitems', compositeItemId, 'image'] })
   }
 
-  async listAssemblies(
-    compositeItemId: string,
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<BundlingHistoryResponse['bundles']> {
+  async listAssemblies(params: ListAssembliesQuery): Promise<BundlingHistoryResponse['bundles']> {
     const { bundles } = await this.http.get<BundlingHistoryResponse>({
       path: ['bundles'],
-      query: { composite_item_id: compositeItemId, ...params },
+      query: params,
     })
     return bundles
   }
 
+  // reference_number is only mandatory when params.ignore_auto_number_generation is true;
+  // otherwise Zoho auto-generates it. Zoho's spec always marks it required, so it's relaxed here.
   async createAssembly(
-    data: CreateBundleRequest,
-    ignoreAutoNumberGeneration?: boolean
+    data: PartialBy<CreateBundleRequest, 'reference_number'>,
+    params?: CreateAssembliesQuery
   ): Promise<CreateBundleResponse> {
     return this.http.post<CreateBundleResponse>({
       path: ['bundles'],
-      query: { ignore_auto_number_generation: ignoreAutoNumberGeneration },
+      query: params,
       body: data,
     })
   }
@@ -120,11 +124,11 @@ export class CompositeItems {
   async updateAssembly(
     bundleId: string,
     data: UpdateBundleRequest,
-    ignoreAutoNumberGeneration?: boolean
+    params?: UpdateAssemblyQuery
   ): Promise<UpdateBundleResponse['bundle']> {
     const { bundle } = await this.http.put<UpdateBundleResponse>({
       path: ['bundles', bundleId],
-      query: { ignore_auto_number_generation: ignoreAutoNumberGeneration },
+      query: params,
       body: data,
     })
     return bundle

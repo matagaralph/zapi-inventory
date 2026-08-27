@@ -1,8 +1,11 @@
 import type {
   MarkDefaultOptionResponse,
+  MarkDefaultOptionQuery,
   OptionsDetailPageResponse,
   OptionsResponse,
   ReportingTagsResponse,
+  GetTagOptionsQuery,
+  TagOptionsQuery,
   UpdateCriteriaRequest,
   UpdateCriteriaResponse,
   UpdateOptionsRequest,
@@ -65,11 +68,11 @@ export class ReportingTags {
 
   async markDefaultOption(
     tagId: string,
-    defaultOptionId: string
+    params: MarkDefaultOptionQuery
   ): Promise<MarkDefaultOptionResponse> {
     return this.http.post<MarkDefaultOptionResponse>({
       path: ['reportingtags', tagId],
-      query: { default_option_id: defaultOptionId },
+      query: params,
     })
   }
 
@@ -114,20 +117,17 @@ export class ReportingTags {
     })
   }
 
-  async getOptionsDetailPage(tagId: string): Promise<OptionsDetailPageResponse> {
+  async getOptionsDetailPage(params: GetTagOptionsQuery): Promise<OptionsDetailPageResponse> {
     return this.http.get<OptionsDetailPageResponse>({
       path: ['reportingtags', 'options'],
-      query: { tag_id: tagId },
+      query: params,
     })
   }
 
-  async listAllOptions(
-    tagId: string,
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<OptionsResponse> {
+  async listAllOptions(params: TagOptionsQuery): Promise<OptionsResponse> {
     return this.http.get<OptionsResponse>({
       path: ['reportingtags', 'options', 'all'],
-      query: { tag_id: tagId, ...params },
+      query: params,
     })
   }
 

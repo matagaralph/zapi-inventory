@@ -1,17 +1,23 @@
 import type {
   AddTaskAttachmentResponse,
+  AddTaskAttachmentQuery,
   AddTaskCommentRequest,
   AddTaskCommentResponse,
   AddTaskRequest,
   AddTaskResponse,
+  DeleteTaskDocumentQuery,
+  DeleteTasksQuery,
   GetTaskDocumentResponse,
+  GetTaskDocumentQuery,
   GetTaskResponse,
   ListTaskCommentsResponse,
+  ListTasksQuery,
   ListTasksResponse,
   UpdatePercentageTaskRequest,
   UpdatePercentageTaskResponse,
   UpdateTaskRequest,
   UpdateTaskResponse,
+  UpdateTasksQuery,
   UpdateTasksResponse,
 } from '@zapi-inventory/typegen'
 
@@ -20,20 +26,18 @@ import type { HTTPClient } from '../http.ts'
 export class Tasks {
   constructor(private readonly http: HTTPClient) {}
 
-  async list(
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<ListTasksResponse['tasks']> {
+  async list(params?: ListTasksQuery): Promise<ListTasksResponse['tasks']> {
     const { tasks } = await this.http.get<ListTasksResponse>({ path: ['tasks'], query: params })
     return tasks
   }
 
   async bulkUpdate(
-    bulkUpdate: boolean,
-    data: UpdateTaskRequest[]
+    data: UpdateTaskRequest[],
+    params: UpdateTasksQuery
   ): Promise<UpdateTasksResponse['tasks']> {
     const { tasks } = await this.http.put<UpdateTasksResponse>({
       path: ['tasks'],
-      query: { bulk_update: bulkUpdate },
+      query: params,
       body: data,
     })
     return tasks
@@ -44,8 +48,8 @@ export class Tasks {
     return task
   }
 
-  async bulkDelete(taskIds: string): Promise<void> {
-    await this.http.delete({ path: ['tasks'], query: { task_ids: taskIds } })
+  async bulkDelete(params: DeleteTasksQuery): Promise<void> {
+    await this.http.delete({ path: ['tasks'], query: params })
   }
 
   async get(taskId: string): Promise<GetTaskResponse['task']> {
@@ -112,11 +116,11 @@ export class Tasks {
 
   async addAttachment(
     taskId: string,
-    attachment?: string
+    params?: AddTaskAttachmentQuery
   ): Promise<AddTaskAttachmentResponse['documents']> {
     const { documents } = await this.http.post<AddTaskAttachmentResponse>({
       path: ['tasks', taskId, 'attachment'],
-      query: { attachment },
+      query: params,
     })
     return documents
   }
@@ -124,7 +128,7 @@ export class Tasks {
   async getDocument(
     taskId: string,
     documentId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: GetTaskDocumentQuery
   ): Promise<GetTaskDocumentResponse['documents']> {
     const { documents } = await this.http.get<GetTaskDocumentResponse>({
       path: ['tasks', taskId, 'documents', documentId],
@@ -133,10 +137,14 @@ export class Tasks {
     return documents
   }
 
-  async deleteDocument(taskId: string, documentId: string, unAssociate?: boolean): Promise<void> {
+  async deleteDocument(
+    taskId: string,
+    documentId: string,
+    params?: DeleteTaskDocumentQuery
+  ): Promise<void> {
     await this.http.delete({
       path: ['tasks', taskId, 'documents', documentId],
-      query: { un_associate: unAssociate },
+      query: params,
     })
   }
 }

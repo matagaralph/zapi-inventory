@@ -1,6 +1,11 @@
 import type {
   BulkUpdateReplenishmentConfigurationsRequest,
   BulkUpdateReplenishmentConfigurationsResponse,
+  BulkDismissReplenishmentTasksQuery,
+  BulkGenerateReplenishmentTasksQuery,
+  BulkPauseReplenishmentsQuery,
+  BulkResumeReplenishmentsQuery,
+  BulkUpdateReplenishmentsQuery,
   CreateReplenishmentConfigurationRequest,
   CreateReplenishmentConfigurationResponse,
   DismissReplenishmentTaskResponse,
@@ -9,10 +14,15 @@ import type {
   GetReplenishmentConfigurationsForAssociatedLocationsResponse,
   GetReplenishmentConfigurationsForAssociatedWarehousesResponse,
   GetReplenishmentOrderDetailsResponse,
+  GetReplenishmentOrderDetailsQuery,
   GetReplenishmentTaskDetailsReportResponse,
   GetReplenishmentTaskResponse,
+  GetReplenishmentTaskForItemQuery,
+  GetReplenishmentTasksReportQuery,
   ListReplenishmentTasksResponse,
+  ListReplenishmentTasksQuery,
   PauseReplenishmentConfigurationResponse,
+  PauseReplenishmentConfigurationQuery,
   ResumeReplenishmentConfigurationResponse,
   UpdateReplenishmentConfigurationRequest,
   UpdateReplenishmentConfigurationResponse,
@@ -70,14 +80,13 @@ export class Replenishment {
   }
 
   async bulkUpdate(
-    itemIds: string,
     data: BulkUpdateReplenishmentConfigurationsRequest,
-    locationIds?: string
+    params: BulkUpdateReplenishmentsQuery
   ): Promise<BulkUpdateReplenishmentConfigurationsResponse['replenishment_configurations']> {
     const { replenishment_configurations } =
       await this.http.put<BulkUpdateReplenishmentConfigurationsResponse>({
         path: ['replenishments'],
-        query: { item_ids: itemIds, location_ids: locationIds },
+        query: params,
         body: data,
       })
     return replenishment_configurations
@@ -95,7 +104,7 @@ export class Replenishment {
   }
 
   async listTasks(
-    params?: Record<string, string | number | boolean | undefined>
+    params?: ListReplenishmentTasksQuery
   ): Promise<ListReplenishmentTasksResponse['replenishment_tasks']> {
     const { replenishment_tasks } = await this.http.get<ListReplenishmentTasksResponse>({
       path: ['replenishments', 'tasks'],
@@ -117,47 +126,43 @@ export class Replenishment {
     })
   }
 
-  async getTaskForItem(itemId: string): Promise<GetReplenishmentTaskResponse['task_details']> {
+  async getTaskForItem(
+    params: GetReplenishmentTaskForItemQuery
+  ): Promise<GetReplenishmentTaskResponse['task_details']> {
     const { task_details } = await this.http.get<GetReplenishmentTaskResponse>({
       path: ['replenishments', 'tasks', 'details'],
-      query: { item_id: itemId },
+      query: params,
     })
     return task_details
   }
 
   async getOrderDetails(
-    replenishmentConfigurationId: string,
-    orderType: string
+    params: GetReplenishmentOrderDetailsQuery
   ): Promise<GetReplenishmentOrderDetailsResponse['replenishment_order_details']> {
     const { replenishment_order_details } =
       await this.http.get<GetReplenishmentOrderDetailsResponse>({
         path: ['replenishments', 'orders'],
-        query: {
-          replenishment_configuration_id: replenishmentConfigurationId,
-          order_type: orderType,
-        },
+        query: params,
       })
     return replenishment_order_details
   }
 
   async pause(
     replenishmentConfigurationId: string,
-    pauseTillDate?: string
+    params?: PauseReplenishmentConfigurationQuery
   ): Promise<PauseReplenishmentConfigurationResponse> {
     return this.http.put<PauseReplenishmentConfigurationResponse>({
       path: ['replenishments', replenishmentConfigurationId, 'pause'],
-      query: { pause_till_date: pauseTillDate },
+      query: params,
     })
   }
 
   async bulkPause(
-    itemIds: string,
-    locationIds?: string,
-    pauseTillDate?: string
+    params: BulkPauseReplenishmentsQuery
   ): Promise<PauseReplenishmentConfigurationResponse> {
     return this.http.put<PauseReplenishmentConfigurationResponse>({
       path: ['replenishments', 'pause'],
-      query: { item_ids: itemIds, location_ids: locationIds, pause_till_date: pauseTillDate },
+      query: params,
     })
   }
 
@@ -170,19 +175,20 @@ export class Replenishment {
   }
 
   async bulkResume(
-    itemIds: string,
-    locationIds?: string
+    params: BulkResumeReplenishmentsQuery
   ): Promise<ResumeReplenishmentConfigurationResponse> {
     return this.http.put<ResumeReplenishmentConfigurationResponse>({
       path: ['replenishments', 'resume'],
-      query: { item_ids: itemIds, location_ids: locationIds },
+      query: params,
     })
   }
 
-  async bulkDismissTasks(replenishmentTaskIds: string): Promise<DismissReplenishmentTaskResponse> {
+  async bulkDismissTasks(
+    params: BulkDismissReplenishmentTasksQuery
+  ): Promise<DismissReplenishmentTaskResponse> {
     return this.http.put<DismissReplenishmentTaskResponse>({
       path: ['replenishments', 'tasks', 'dismiss'],
-      query: { replenishment_task_ids: replenishmentTaskIds },
+      query: params,
     })
   }
 
@@ -195,17 +201,16 @@ export class Replenishment {
   }
 
   async bulkGenerateTasks(
-    itemIds: string,
-    locationIds?: string
+    params: BulkGenerateReplenishmentTasksQuery
   ): Promise<GenerateReplenishmentTaskResponse> {
     return this.http.post<GenerateReplenishmentTaskResponse>({
       path: ['replenishments', 'tasks', 'generate'],
-      query: { item_ids: itemIds, location_ids: locationIds },
+      query: params,
     })
   }
 
   async getTasksReport(
-    params?: Record<string, string | number | boolean | undefined>
+    params?: GetReplenishmentTasksReportQuery
   ): Promise<GetReplenishmentTaskDetailsReportResponse['replenishment_tasks']> {
     const { replenishment_tasks } = await this.http.get<GetReplenishmentTaskDetailsReportResponse>({
       path: ['reports', 'replenishments', 'tasks'],

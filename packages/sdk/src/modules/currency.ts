@@ -3,6 +3,7 @@ import type {
   CreateCurrencyResponse,
   DeleteCurrencyResponse,
   GetCurrencyResponse,
+  ListCurrenciesQuery,
   ListCurrencyResponse,
   UpdateCurrencyRequest,
   UpdateCurrencyResponse,
@@ -13,12 +14,10 @@ import type { HTTPClient } from '../http.ts'
 export class Currencies {
   constructor(private readonly http: HTTPClient) {}
 
-  async list(
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<ListCurrencyResponse['currencies']> {
+  async list(params?: ListCurrenciesQuery): Promise<ListCurrencyResponse['currencies']> {
     const { currencies } = await this.http.get<ListCurrencyResponse>({
       path: ['settings', 'currencies'],
-      query: { ...params },
+      query: params,
     })
     return currencies
   }

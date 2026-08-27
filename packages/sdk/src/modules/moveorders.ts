@@ -1,15 +1,22 @@
 import type {
   CreateMoveOrderRequest,
+  CreateMoveOrderQuery,
   CreateMoveOrderResponse,
   DeleteMoveOrderDocumentResponse,
+  DeleteMoveOrderDocumentQuery,
   DeleteMoveOrderResponse,
+  GetMoveOrderDocumentQuery,
+  GetMoveOrderQuery,
   GetMoveOrderResponse,
   GetMoveOrderSettingsResponse,
   ListMoveOrderCommentsResponse,
+  ListMoveOrdersQuery,
   ListMoveOrdersResponse,
+  MarkMoveOrderAsCompletedQuery,
   MoveOrderAttachmentResponse,
   MoveOrderStatusResponse,
   UpdateMoveOrderRequest,
+  UpdateMoveOrderQuery,
   UpdateMoveOrderResponse,
 } from '@zapi-inventory/typegen'
 
@@ -25,9 +32,7 @@ export interface AddMoveOrderAttachmentRequest {
 export class MoveOrders {
   constructor(private readonly http: HTTPClient) {}
 
-  async list(
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<ListMoveOrdersResponse['moveorders']> {
+  async list(params?: ListMoveOrdersQuery): Promise<ListMoveOrdersResponse['moveorders']> {
     const { moveorders } = await this.http.get<ListMoveOrdersResponse>({
       path: ['moveorders'],
       query: { ...params },
@@ -37,7 +42,7 @@ export class MoveOrders {
 
   async create(
     data: CreateMoveOrderRequest,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: CreateMoveOrderQuery
   ): Promise<CreateMoveOrderResponse['moveorder']> {
     const { moveorder } = await this.http.post<CreateMoveOrderResponse>({
       path: ['moveorders'],
@@ -47,15 +52,13 @@ export class MoveOrders {
     return moveorder
   }
 
-  async bulkDelete(
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<DeleteMoveOrderResponse> {
+  async bulkDelete(params?: ListMoveOrdersQuery): Promise<DeleteMoveOrderResponse> {
     return this.http.delete<DeleteMoveOrderResponse>({ path: ['moveorders'], query: { ...params } })
   }
 
   async get(
     moveorderId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: GetMoveOrderQuery
   ): Promise<GetMoveOrderResponse['moveorder']> {
     const { moveorder } = await this.http.get<GetMoveOrderResponse>({
       path: ['moveorders', moveorderId],
@@ -67,7 +70,7 @@ export class MoveOrders {
   async update(
     moveorderId: string,
     data: UpdateMoveOrderRequest,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: UpdateMoveOrderQuery
   ): Promise<UpdateMoveOrderResponse['moveorder']> {
     const { moveorder } = await this.http.put<UpdateMoveOrderResponse>({
       path: ['moveorders', moveorderId],
@@ -102,11 +105,11 @@ export class MoveOrders {
 
   async markAsCompleted(
     moveorderId: string,
-    completedDate: string
+    params: MarkMoveOrderAsCompletedQuery
   ): Promise<MoveOrderStatusResponse> {
     return this.http.post<MoveOrderStatusResponse>({
       path: ['moveorders', moveorderId, 'markascompleted'],
-      query: { completed_date: completedDate },
+      query: params,
     })
   }
 
@@ -124,7 +127,7 @@ export class MoveOrders {
   async getDocument(
     moveorderId: string,
     documentId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: GetMoveOrderDocumentQuery
   ): Promise<string> {
     return this.http.get<string>({
       path: ['moveorders', moveorderId, 'documents', documentId],
@@ -135,7 +138,7 @@ export class MoveOrders {
   async deleteDocument(
     moveorderId: string,
     documentId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: DeleteMoveOrderDocumentQuery
   ): Promise<DeleteMoveOrderDocumentResponse> {
     return this.http.delete<DeleteMoveOrderDocumentResponse>({
       path: ['moveorders', moveorderId, 'documents', documentId],

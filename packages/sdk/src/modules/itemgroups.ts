@@ -5,6 +5,7 @@ import type {
   GetItemGroupResponse,
   ItemgroupsMarkAsActiveResponse,
   ItemgroupsMarkAsInactiveResponse,
+  ListItemGroupsQuery,
   ListItemGroupsResponse,
   UpdateItemGroupRequest,
   UpdateItemGroupResponse,
@@ -15,9 +16,7 @@ import type { HTTPClient } from '../http.ts'
 export class ItemGroups {
   constructor(private readonly http: HTTPClient) {}
 
-  async list(
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<ListItemGroupsResponse['itemgroups']> {
+  async list(params?: ListItemGroupsQuery): Promise<ListItemGroupsResponse['itemgroups']> {
     const { itemgroups } = await this.http.get<ListItemGroupsResponse>({
       path: ['itemgroups'],
       query: params,

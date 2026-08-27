@@ -15,12 +15,20 @@ import type {
   GetStorageLocationResponse,
   GetStorageZoneResponse,
   ListStorageLocationsResponse,
+  ListStorageLocationsQuery,
   ListStorageZonesResponse,
+  ListStorageZonesQuery,
   MapStorageLocationsToItemRequest,
+  MarkStorageLocationsAsActiveQuery,
   MarkStorageLocationsAsActiveResponse,
+  MarkStorageLocationsAsInactiveQuery,
   MarkStorageLocationsAsInactiveResponse,
+  MarkStorageZonesAsActiveQuery,
   MarkStorageZonesAsActiveResponse,
+  MarkStorageZonesAsInactiveQuery,
   MarkStorageZonesAsInactiveResponse,
+  BulkDeleteStorageLocationsQuery,
+  GetItemStorageLocationMappingsQuery,
   UpdateItemStorageLocationMappingsResponse,
   UpdateStorageLocationRequest,
   UpdateStorageLocationResponse,
@@ -58,7 +66,7 @@ export class StorageLocations {
   }
 
   async listZones(
-    params?: Record<string, string | number | boolean | undefined>
+    params?: ListStorageZonesQuery
   ): Promise<ListStorageZonesResponse['storage_zones']> {
     const { storage_zones } = await this.http.get<ListStorageZonesResponse>({
       path: ['storagezones'],
@@ -77,19 +85,21 @@ export class StorageLocations {
     return storage_zone
   }
 
-  async bulkMarkZonesAsActive(storageZoneIds: string): Promise<MarkStorageZonesAsActiveResponse> {
+  async bulkMarkZonesAsActive(
+    params: MarkStorageZonesAsActiveQuery
+  ): Promise<MarkStorageZonesAsActiveResponse> {
     return this.http.put<MarkStorageZonesAsActiveResponse>({
       path: ['storagezones', 'active'],
-      query: { storage_zone_ids: storageZoneIds },
+      query: params,
     })
   }
 
   async bulkMarkZonesAsInactive(
-    storageZoneIds: string
+    params: MarkStorageZonesAsInactiveQuery
   ): Promise<MarkStorageZonesAsInactiveResponse> {
     return this.http.put<MarkStorageZonesAsInactiveResponse>({
       path: ['storagezones', 'inactive'],
-      query: { storage_zone_ids: storageZoneIds },
+      query: params,
     })
   }
 
@@ -116,7 +126,7 @@ export class StorageLocations {
   }
 
   async list(
-    params?: Record<string, string | number | boolean | undefined>
+    params?: ListStorageLocationsQuery
   ): Promise<ListStorageLocationsResponse['storage_locations']> {
     const { storage_locations } = await this.http.get<ListStorageLocationsResponse>({
       path: ['storagelocations'],
@@ -135,24 +145,30 @@ export class StorageLocations {
     return storage_location
   }
 
-  async bulkDelete(storageIds: string): Promise<BulkDeleteStorageLocationsResponse> {
+  async bulkDelete(
+    params: BulkDeleteStorageLocationsQuery
+  ): Promise<BulkDeleteStorageLocationsResponse> {
     return this.http.delete<BulkDeleteStorageLocationsResponse>({
       path: ['storagelocations'],
-      query: { storage_ids: storageIds },
+      query: params,
     })
   }
 
-  async bulkMarkAsActive(storageIds: string): Promise<MarkStorageLocationsAsActiveResponse> {
+  async bulkMarkAsActive(
+    params: MarkStorageLocationsAsActiveQuery
+  ): Promise<MarkStorageLocationsAsActiveResponse> {
     return this.http.post<MarkStorageLocationsAsActiveResponse>({
       path: ['storagelocations', 'active'],
-      query: { storage_ids: storageIds },
+      query: params,
     })
   }
 
-  async bulkMarkAsInactive(storageIds: string): Promise<MarkStorageLocationsAsInactiveResponse> {
+  async bulkMarkAsInactive(
+    params: MarkStorageLocationsAsInactiveQuery
+  ): Promise<MarkStorageLocationsAsInactiveResponse> {
     return this.http.post<MarkStorageLocationsAsInactiveResponse>({
       path: ['storagelocations', 'inactive'],
-      query: { storage_ids: storageIds },
+      query: params,
     })
   }
 
@@ -180,7 +196,7 @@ export class StorageLocations {
 
   async getItemMappings(
     itemId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: GetItemStorageLocationMappingsQuery
   ): Promise<GetItemStorageLocationMappingsResponse['storage_locations_product_mapping']> {
     const { storage_locations_product_mapping } =
       await this.http.get<GetItemStorageLocationMappingsResponse>({

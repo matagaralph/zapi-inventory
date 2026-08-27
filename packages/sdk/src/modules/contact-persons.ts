@@ -2,6 +2,7 @@ import type {
   CreateContactPersonRequest,
   CreateContactPersonResponse,
   GetContactPersonResponse,
+  ListContactPersonsQuery,
   ListContactPersonsResponse,
   MarkAsPrimaryContactPersonResponse,
   UpdateContactPersonRequest,
@@ -15,7 +16,7 @@ export class ContactPersons {
 
   async list(
     contactId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: ListContactPersonsQuery
   ): Promise<ListContactPersonsResponse['contact_persons']> {
     const { contact_persons } = await this.http.get<ListContactPersonsResponse>({
       path: ['contacts', contactId, 'contactpersons'],

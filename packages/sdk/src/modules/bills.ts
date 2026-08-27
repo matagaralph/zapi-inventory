@@ -1,8 +1,11 @@
 import type {
   ApprovalActionResponse,
+  BulkApproveBillsQuery,
+  BulkSubmitBillsQuery,
   CreateBillRequest,
   CreateBillResponse,
   GetBillResponse,
+  ListBillsQuery,
   ListBillsResponse,
   MarkAsOpenResponse,
   MarkAsVoidResponse,
@@ -17,9 +20,7 @@ import type { HTTPClient } from '../http.ts'
 export class Bills {
   constructor(private readonly http: HTTPClient) {}
 
-  async list(
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<ListBillsResponse['bills']> {
+  async list(params?: ListBillsQuery): Promise<ListBillsResponse['bills']> {
     const { bills } = await this.http.get<ListBillsResponse>({ path: ['bills'], query: params })
     return bills
   }
@@ -80,17 +81,17 @@ export class Bills {
     return this.http.post<ApprovalActionResponse>({ path: ['bills', billId, 'reject'], body: data })
   }
 
-  async bulkSubmit(billIds: string): Promise<ApprovalActionResponse> {
+  async bulkSubmit(params: BulkSubmitBillsQuery): Promise<ApprovalActionResponse> {
     return this.http.post<ApprovalActionResponse>({
       path: ['bills', 'submit'],
-      query: { bill_ids: billIds },
+      query: params,
     })
   }
 
-  async bulkApprove(billIds: string): Promise<ApprovalActionResponse> {
+  async bulkApprove(params: BulkApproveBillsQuery): Promise<ApprovalActionResponse> {
     return this.http.post<ApprovalActionResponse>({
       path: ['bills', 'approve'],
-      query: { bill_ids: billIds },
+      query: params,
     })
   }
 }

@@ -1,16 +1,26 @@
 import type {
   AdvancedTrackingResponse,
+  BulkDeletePicklistsQuery,
+  BulkSetPicklistStatusQuery,
   CommentResponse,
   CreatePicklistRequest,
+  CreatePicklistQuery,
+  GetPicklistQuery,
+  ListPicklistsQuery,
   ListPicklistsResponse,
   MessageResponse,
   PicklistResponse,
   PicklistsAddCommentRequest,
+  SearchPrLineItemsForPicklistQuery,
   SearchPrLineItemsResponse,
+  SearchSalesOrdersForPicklistQuery,
   SearchSalesOrdersResponse,
+  SearchSoLineItemsForPicklistQuery,
   SearchSoLineItemsResponse,
+  SetPicklistStatusQuery,
   UpdateAdvancedTrackingRequest,
   UpdatePicklistRequest,
+  UpdatePicklistQuery,
 } from '@zapi-inventory/typegen'
 
 import type { HTTPClient } from '../http.ts'
@@ -20,9 +30,7 @@ export type PicklistStatus = 'yettostart' | 'inprogress' | 'onhold' | 'completed
 export class Picklists {
   constructor(private readonly http: HTTPClient) {}
 
-  async list(
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<ListPicklistsResponse['picklists']> {
+  async list(params?: ListPicklistsQuery): Promise<ListPicklistsResponse['picklists']> {
     const { picklists } = await this.http.get<ListPicklistsResponse>({
       path: ['picklists'],
       query: { ...params },
@@ -32,7 +40,7 @@ export class Picklists {
 
   async create(
     data: CreatePicklistRequest,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: CreatePicklistQuery
   ): Promise<PicklistResponse['picklist']> {
     const { picklist } = await this.http.post<PicklistResponse>({
       path: ['picklists'],
@@ -42,17 +50,14 @@ export class Picklists {
     return picklist
   }
 
-  async bulkDelete(picklistIds: string): Promise<MessageResponse> {
+  async bulkDelete(params: BulkDeletePicklistsQuery): Promise<MessageResponse> {
     return this.http.delete<MessageResponse>({
       path: ['picklists'],
-      query: { picklist_ids: picklistIds },
+      query: params,
     })
   }
 
-  async get(
-    picklistId: string,
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<PicklistResponse['picklist']> {
+  async get(picklistId: string, params?: GetPicklistQuery): Promise<PicklistResponse['picklist']> {
     const { picklist } = await this.http.get<PicklistResponse>({
       path: ['picklists', picklistId],
       query: { ...params },
@@ -63,7 +68,7 @@ export class Picklists {
   async update(
     picklistId: string,
     data: UpdatePicklistRequest,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: UpdatePicklistQuery
   ): Promise<PicklistResponse['picklist']> {
     const { picklist } = await this.http.put<PicklistResponse>({
       path: ['picklists', picklistId],
@@ -77,21 +82,17 @@ export class Picklists {
     await this.http.delete({ path: ['picklists', picklistId] })
   }
 
-  async setStatus(picklistId: string, status: PicklistStatus): Promise<MessageResponse> {
+  async setStatus(picklistId: string, params: SetPicklistStatusQuery): Promise<MessageResponse> {
     return this.http.post<MessageResponse>({
       path: ['picklists', picklistId, 'setstatus'],
-      query: { status },
+      query: params,
     })
   }
 
-  async bulkSetStatus(
-    picklistIds: string,
-    status: PicklistStatus,
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<MessageResponse> {
+  async bulkSetStatus(params: BulkSetPicklistStatusQuery): Promise<MessageResponse> {
     return this.http.post<MessageResponse>({
       path: ['picklists', 'setstatus'],
-      query: { picklist_ids: picklistIds, status, ...params },
+      query: params,
     })
   }
 
@@ -128,7 +129,7 @@ export class Picklists {
   }
 
   async searchSoLineItems(
-    params?: Record<string, string | number | boolean | undefined>
+    params?: SearchSoLineItemsForPicklistQuery
   ): Promise<SearchSoLineItemsResponse['so_line_items']> {
     const { so_line_items } = await this.http.get<SearchSoLineItemsResponse>({
       path: ['picklists', 'searchsolineitems'],
@@ -138,7 +139,7 @@ export class Picklists {
   }
 
   async searchSalesOrders(
-    params?: Record<string, string | number | boolean | undefined>
+    params?: SearchSalesOrdersForPicklistQuery
   ): Promise<SearchSalesOrdersResponse['salesorders']> {
     const { salesorders } = await this.http.get<SearchSalesOrdersResponse>({
       path: ['picklists', 'searchso'],
@@ -148,7 +149,7 @@ export class Picklists {
   }
 
   async searchPrLineItems(
-    params?: Record<string, string | number | boolean | undefined>
+    params?: SearchPrLineItemsForPicklistQuery
   ): Promise<SearchPrLineItemsResponse['pr_line_items']> {
     const { pr_line_items } = await this.http.get<SearchPrLineItemsResponse>({
       path: ['picklists', 'searchprlineitems'],

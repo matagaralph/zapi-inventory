@@ -1,12 +1,14 @@
 import type {
+  AddAttachmentToCreditNoteQuery,
+  AddAttachmentToCreditNoteResponse,
   AddCommentRequest,
   AddCommentResponse,
-  AddAttachmentToCreditNoteResponse,
   ApplyCreditsToInvoicesRequest,
   ApplyCreditsToInvoicesResponse,
   ApproveCreditNoteResponse,
   ConvertCreditNoteToDraftResponse,
   ConvertCreditNoteToOpenResponse,
+  CreateCreditNoteQuery,
   CreateCreditNoteRequest,
   CreateCreditNoteResponse,
   DeleteCommentResponse,
@@ -14,24 +16,33 @@ import type {
   DeleteCreditNoteRefundResponse,
   DeleteCreditNoteResponse,
   DeleteCreditsAppliedToInvoiceResponse,
+  EmailCreditNoteQuery,
   EmailCreditNoteRequest,
   EmailCreditNoteResponse,
   EmailHistoryResponse,
+  GetCreditNoteEmailContentQuery,
+  GetCreditNoteQuery,
   GetCreditNoteRefundResponse,
   GetCreditNoteResponse,
   GetEmailContentResponse,
   ListCreditNoteCommentsAndHistoryResponse,
+  ListCreditNoteRefundsOfCreditNotesQuery,
+  ListCreditNoteRefundsOfCreditNotesQuery_1,
   ListCreditNoteRefundsResponse,
   ListCreditNoteTemplatesResponse,
+  ListCreditNotesQuery,
   ListCreditNotesResponse,
   ListInvoicesCreditedResponse,
   ListRefundsOfCreditNoteResponse,
+  MarkCreditNoteAsDraftQuery,
   RefundCreditNoteRequest,
   RefundCreditNoteResponse,
+  RejectCreditNoteQuery,
   RejectCreditNoteResponse,
   SubmitCreditNoteForApprovalResponse,
   UpdateBillingAddressRequest,
   UpdateBillingAddressResponse,
+  UpdateCreditNoteQuery,
   UpdateCreditNoteRefundRequest,
   UpdateCreditNoteRefundResponse,
   UpdateCreditNoteRequest,
@@ -43,27 +54,28 @@ import type {
 } from '@zapi-inventory/typegen'
 
 import type { HTTPClient } from '../http.ts'
+import type { PartialBy } from '../utils.ts'
 
 export class CreditNotes {
   constructor(private readonly http: HTTPClient) {}
 
-  async list(
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<ListCreditNotesResponse['creditnotes']> {
+  async list(params?: ListCreditNotesQuery): Promise<ListCreditNotesResponse['creditnotes']> {
     const { creditnotes } = await this.http.get<ListCreditNotesResponse>({
       path: ['creditnotes'],
-      query: { ...params },
+      query: params,
     })
     return creditnotes
   }
 
+  // creditnote_number is only mandatory when params.ignore_auto_number_generation is true;
+  // otherwise Zoho auto-generates it. Zoho's spec always marks it required, so it's relaxed here.
   async create(
-    data: CreateCreditNoteRequest,
-    params?: Record<string, string | number | boolean | undefined>
+    data: PartialBy<CreateCreditNoteRequest, 'creditnote_number'>,
+    params?: CreateCreditNoteQuery
   ): Promise<CreateCreditNoteResponse['creditnote']> {
     const { creditnote } = await this.http.post<CreateCreditNoteResponse>({
       path: ['creditnotes'],
-      query: { ...params },
+      query: params,
       body: data,
     })
     return creditnote
@@ -71,23 +83,23 @@ export class CreditNotes {
 
   async get(
     creditnoteId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: GetCreditNoteQuery
   ): Promise<GetCreditNoteResponse['creditnote']> {
     const { creditnote } = await this.http.get<GetCreditNoteResponse>({
       path: ['creditnotes', creditnoteId],
-      query: { ...params },
+      query: params,
     })
     return creditnote
   }
 
   async update(
     creditnoteId: string,
-    data: UpdateCreditNoteRequest,
-    params?: Record<string, string | number | boolean | undefined>
+    data: PartialBy<UpdateCreditNoteRequest, 'creditnote_number'>,
+    params?: UpdateCreditNoteQuery
   ): Promise<UpdateCreditNoteResponse['creditnote']> {
     const { creditnote } = await this.http.put<UpdateCreditNoteResponse>({
       path: ['creditnotes', creditnoteId],
-      query: { ...params },
+      query: params,
       body: data,
     })
     return creditnote
@@ -99,7 +111,7 @@ export class CreditNotes {
 
   async getEmailContent(
     creditnoteId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: GetCreditNoteEmailContentQuery
   ): Promise<GetEmailContentResponse['data']> {
     const { data } = await this.http.get<GetEmailContentResponse>({
       path: ['creditnotes', creditnoteId, 'email'],
@@ -111,7 +123,7 @@ export class CreditNotes {
   async email(
     creditnoteId: string,
     data: EmailCreditNoteRequest,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: EmailCreditNoteQuery
   ): Promise<EmailCreditNoteResponse> {
     return this.http.post<EmailCreditNoteResponse>({
       path: ['creditnotes', creditnoteId, 'email'],
@@ -126,7 +138,7 @@ export class CreditNotes {
 
   async markAsDraft(
     creditnoteId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: MarkCreditNoteAsDraftQuery
   ): Promise<ConvertCreditNoteToDraftResponse> {
     return this.http.post<ConvertCreditNoteToDraftResponse>({
       path: ['creditnotes', creditnoteId, 'status', 'draft'],
@@ -154,7 +166,7 @@ export class CreditNotes {
 
   async reject(
     creditnoteId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: RejectCreditNoteQuery
   ): Promise<RejectCreditNoteResponse> {
     return this.http.post<RejectCreditNoteResponse>({
       path: ['creditnotes', creditnoteId, 'reject'],
@@ -171,7 +183,7 @@ export class CreditNotes {
 
   async addAttachment(
     creditnoteId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: AddAttachmentToCreditNoteQuery
   ): Promise<AddAttachmentToCreditNoteResponse> {
     return this.http.post<AddAttachmentToCreditNoteResponse>({
       path: ['creditnotes', creditnoteId, 'attachment'],
@@ -275,7 +287,7 @@ export class CreditNotes {
   }
 
   async listRefunds(
-    params?: Record<string, string | number | boolean | undefined>
+    params?: ListCreditNoteRefundsOfCreditNotesQuery
   ): Promise<ListCreditNoteRefundsResponse['creditnote_refunds']> {
     const { creditnote_refunds } = await this.http.get<ListCreditNoteRefundsResponse>({
       path: ['creditnotes', 'refunds'],
@@ -286,7 +298,7 @@ export class CreditNotes {
 
   async listRefundsForCreditNote(
     creditnoteId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: ListCreditNoteRefundsOfCreditNotesQuery_1
   ): Promise<ListRefundsOfCreditNoteResponse['creditnote_refunds']> {
     const { creditnote_refunds } = await this.http.get<ListRefundsOfCreditNoteResponse>({
       path: ['creditnotes', creditnoteId, 'refunds'],

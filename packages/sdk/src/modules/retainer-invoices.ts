@@ -1,7 +1,9 @@
 import type {
+  CreateRetainerInvoiceQuery,
   ApproveRetainerInvoiceResponse,
   CreateRetainerinvoiceRequest,
   CreateRetainerinvoiceResponse,
+  EmailRetainerInvoiceQuery,
   EmailRetainerInvoiceRequest,
   EmailRetainerInvoiceResponse,
   GetRetainerInvoiceAttachmentResponse,
@@ -11,6 +13,7 @@ import type {
   AddAttachmentToRetainerInvoiceResponse,
   ListRetainerInvoiceCommentsAndHistoryResponse,
   ListRetainerInvoiceTemplatesResponse,
+  ListRetainerInvoicesQuery,
   ListRetainerInvoicesResponse,
   MarkRetainerInvoiceAsSentResponse,
   RetainerInvoicesAddCommentRequest,
@@ -35,7 +38,7 @@ export class RetainerInvoices {
   constructor(private readonly http: HTTPClient) {}
 
   async list(
-    params?: Record<string, string | number | boolean | undefined>
+    params?: ListRetainerInvoicesQuery
   ): Promise<ListRetainerInvoicesResponse['retainerinvoices']> {
     const { retainerinvoices } = await this.http.get<ListRetainerInvoicesResponse>({
       path: ['retainerinvoices'],
@@ -46,12 +49,12 @@ export class RetainerInvoices {
 
   async create(
     data: CreateRetainerinvoiceRequest,
-    ignoreAutoNumberGeneration?: boolean
+    params?: CreateRetainerInvoiceQuery
   ): Promise<CreateRetainerinvoiceResponse['retainerinvoice']> {
     const { retainerinvoice } = await this.http.post<CreateRetainerinvoiceResponse>({
       path: ['retainerinvoices'],
       body: data,
-      query: { ignore_auto_number_generation: ignoreAutoNumberGeneration },
+      query: params,
     })
     return retainerinvoice
   }
@@ -130,11 +133,7 @@ export class RetainerInvoices {
   async email(
     retainerinvoiceId: string,
     data?: EmailRetainerInvoiceRequest,
-    query?: {
-      send_customer_statement?: boolean
-      send_attachment?: boolean
-      attachments?: string
-    }
+    query?: EmailRetainerInvoiceQuery
   ): Promise<EmailRetainerInvoiceResponse> {
     return this.http.post<EmailRetainerInvoiceResponse>({
       path: ['retainerinvoices', retainerinvoiceId, 'email'],

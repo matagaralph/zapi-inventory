@@ -1,23 +1,30 @@
 import type {
+  BulkDeleteTransferOrdersQuery,
   CreateTransferOrderRequest,
+  CreateTransferOrderQuery,
   CreateTransferOrderResponse,
   GetTransferOrderResponse,
+  ListTransferOrdersQuery,
   ListTransferOrdersResponse,
   MarkInTransitResponse,
+  MarkTransferOrderAsReceivedQuery,
+  MarkTransferOrderInTransitQuery,
   TransferordersApprovalActionResponse,
   TransferordersMarkAsReceivedResponse,
   TransferordersRejectRequest,
   UpdateTransferOrderRequest,
+  UpdateTransferOrderQuery,
   UpdateTransferOrderResponse,
 } from '@zapi-inventory/typegen'
 
 import type { HTTPClient } from '../http.ts'
+import type { PartialBy } from '../utils.ts'
 
 export class TransferOrders {
   constructor(private readonly http: HTTPClient) {}
 
   async list(
-    params?: Record<string, string | number | boolean | undefined>
+    params?: ListTransferOrdersQuery
   ): Promise<ListTransferOrdersResponse['transfer_orders']> {
     const { transfer_orders } = await this.http.get<ListTransferOrdersResponse>({
       path: ['transferorders'],
@@ -26,9 +33,11 @@ export class TransferOrders {
     return transfer_orders
   }
 
+  // transfer_order_number is only mandatory when params.ignore_auto_number_generation is true;
+  // otherwise Zoho auto-generates it. Zoho's spec always marks it required, so it's relaxed here.
   async create(
-    data: CreateTransferOrderRequest,
-    params?: Record<string, string | number | boolean | undefined>
+    data: PartialBy<CreateTransferOrderRequest, 'transfer_order_number'>,
+    params?: CreateTransferOrderQuery
   ): Promise<CreateTransferOrderResponse['transfer_order']> {
     const { transfer_order } = await this.http.post<CreateTransferOrderResponse>({
       path: ['transferorders'],
@@ -38,10 +47,10 @@ export class TransferOrders {
     return transfer_order
   }
 
-  async bulkDelete(transferOrderIds: string): Promise<void> {
+  async bulkDelete(params: BulkDeleteTransferOrdersQuery): Promise<void> {
     await this.http.delete({
       path: ['transferorders'],
-      query: { transfer_order_ids: transferOrderIds },
+      query: params,
     })
   }
 
@@ -54,8 +63,8 @@ export class TransferOrders {
 
   async update(
     transferOrderId: string,
-    data: UpdateTransferOrderRequest,
-    params?: Record<string, string | number | boolean | undefined>
+    data: PartialBy<UpdateTransferOrderRequest, 'transfer_order_number'>,
+    params?: UpdateTransferOrderQuery
   ): Promise<UpdateTransferOrderResponse['transfer_order']> {
     const { transfer_order } = await this.http.put<UpdateTransferOrderResponse>({
       path: ['transferorders', transferOrderId],
@@ -71,17 +80,17 @@ export class TransferOrders {
 
   async markAsReceived(
     transferOrderId: string,
-    date: string
+    params: MarkTransferOrderAsReceivedQuery
   ): Promise<TransferordersMarkAsReceivedResponse> {
     return this.http.post<TransferordersMarkAsReceivedResponse>({
       path: ['transferorders', transferOrderId, 'markastransferred'],
-      query: { date },
+      query: params,
     })
   }
 
   async markInTransit(
     transferOrderId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: MarkTransferOrderInTransitQuery
   ): Promise<MarkInTransitResponse> {
     return this.http.post<MarkInTransitResponse>({
       path: ['transferorders', transferOrderId, 'intransit'],

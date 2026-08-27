@@ -5,6 +5,7 @@ import type {
   GetInventoryAdjustmentResponse,
   InventoryadjustmentsApprovalActionResponse,
   InventoryadjustmentsRejectRequest,
+  ListInventoryAdjustmentsQuery,
   ListInventoryAdjustmentsResponse,
   UpdateInventoryAdjustmentRequest,
   UpdateInventoryAdjustmentResponse,
@@ -16,7 +17,7 @@ export class InventoryAdjustments {
   constructor(private readonly http: HTTPClient) {}
 
   async list(
-    params?: Record<string, string | number | boolean | undefined>
+    params?: ListInventoryAdjustmentsQuery
   ): Promise<ListInventoryAdjustmentsResponse['inventory_adjustments']> {
     const { inventory_adjustments } = await this.http.get<ListInventoryAdjustmentsResponse>({
       path: ['inventoryadjustments'],

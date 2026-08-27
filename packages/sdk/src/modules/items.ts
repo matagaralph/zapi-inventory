@@ -1,6 +1,7 @@
 import type {
   BulkDeleteItemsResponse,
   BulkFetchItemDetailsResponse,
+  BulkUpdateItemLocationPermissionsQuery,
   BulkMarkItemsActiveResponse,
   BulkMarkItemsInactiveResponse,
   BulkUpdateItemLocationPermissionsResponse,
@@ -19,13 +20,21 @@ import type {
   ItemsMarkAsActiveResponse,
   ItemsMarkAsInactiveResponse,
   ListItemDeliveryChallansResponse,
+  ListItemDeliveryChallansQuery,
   ListItemInvoicesResponse,
+  ListItemInvoicesQuery,
   ListItemMoveOrdersResponse,
+  ListItemMoveOrdersQuery,
   ListItemPurchaseOrdersResponse,
+  ListItemPurchaseOrdersQuery,
   ListItemPutawaysResponse,
+  ListItemPutawaysQuery,
   ListItemsResponse,
+  ListItemsQuery,
   ListItemSalesOrdersResponse,
+  ListItemSalesOrdersQuery,
   ListItemSalesReceiptsResponse,
+  ListItemSalesReceiptsQuery,
   MarkImageAsBackImageResponse,
   MoveItemRequest,
   MoveItemResponse,
@@ -41,9 +50,11 @@ import type {
   UploadItemBackImageResponse,
   UploadItemImageResponse,
   UploadItemImagesResponse,
+  UploadItemImagesQuery,
   ValidateAndMapSerialNumbersRequest,
   ValidateAndMapSerialNumbersResponse,
   ValidateSerialNumbersResponse,
+  ValidateSerialNumbersQuery,
 } from '@zapi-inventory/typegen'
 
 import type { HTTPClient } from '../http.ts'
@@ -51,9 +62,7 @@ import type { HTTPClient } from '../http.ts'
 export class Items {
   constructor(private readonly http: HTTPClient) {}
 
-  async list(
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<ListItemsResponse['items']> {
+  async list(params?: ListItemsQuery): Promise<ListItemsResponse['items']> {
     const { items } = await this.http.get<ListItemsResponse>({ path: ['items'], query: params })
     return items
   }
@@ -150,7 +159,7 @@ export class Items {
   async uploadImages(
     itemId: string,
     data: unknown,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: UploadItemImagesQuery
   ): Promise<UploadItemImagesResponse> {
     return this.http.post<UploadItemImagesResponse>({
       path: ['items', itemId, 'images'],
@@ -265,7 +274,7 @@ export class Items {
   }
 
   async bulkUpdateLocationPermissions(
-    params?: Record<string, string | number | boolean | undefined>
+    params?: BulkUpdateItemLocationPermissionsQuery
   ): Promise<BulkUpdateItemLocationPermissionsResponse> {
     return this.http.put<BulkUpdateItemLocationPermissionsResponse>({
       path: ['items', 'locations', 'permissions'],
@@ -277,7 +286,7 @@ export class Items {
     itemId: string,
     entityType: string,
     serialNumbers: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: Omit<ValidateSerialNumbersQuery, 'entity_type' | 'serial_numbers'>
   ): Promise<ValidateSerialNumbersResponse> {
     return this.http.post<ValidateSerialNumbersResponse>({
       path: ['items', itemId, 'serialnumber', 'validate'],
@@ -297,7 +306,7 @@ export class Items {
 
   async listSalesOrders(
     itemId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: Omit<ListItemSalesOrdersQuery, 'item_id'>
   ): Promise<ListItemSalesOrdersResponse['salesorders']> {
     const { salesorders } = await this.http.get<ListItemSalesOrdersResponse>({
       path: ['items', 'transactions', 'salesorders'],
@@ -308,7 +317,7 @@ export class Items {
 
   async listPurchaseOrders(
     itemId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: Omit<ListItemPurchaseOrdersQuery, 'item_id'>
   ): Promise<ListItemPurchaseOrdersResponse['purchaseorders']> {
     const { purchaseorders } = await this.http.get<ListItemPurchaseOrdersResponse>({
       path: ['items', 'transactions', 'purchaseorders'],
@@ -319,7 +328,7 @@ export class Items {
 
   async listInvoices(
     itemId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: Omit<ListItemInvoicesQuery, 'item_id'>
   ): Promise<ListItemInvoicesResponse['invoices']> {
     const { invoices } = await this.http.get<ListItemInvoicesResponse>({
       path: ['items', 'transactions', 'invoices'],
@@ -330,7 +339,7 @@ export class Items {
 
   async listDeliveryChallans(
     itemId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: Omit<ListItemDeliveryChallansQuery, 'item_id'>
   ): Promise<ListItemDeliveryChallansResponse['deliverychallans']> {
     const { deliverychallans } = await this.http.get<ListItemDeliveryChallansResponse>({
       path: ['items', 'transactions', 'deliverychallans'],
@@ -341,7 +350,7 @@ export class Items {
 
   async listSalesReceipts(
     itemId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: Omit<ListItemSalesReceiptsQuery, 'item_id'>
   ): Promise<ListItemSalesReceiptsResponse['sales_receipts']> {
     const { sales_receipts } = await this.http.get<ListItemSalesReceiptsResponse>({
       path: ['items', 'transactions', 'salesreceipts'],
@@ -352,7 +361,7 @@ export class Items {
 
   async listMoveOrders(
     itemId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: Omit<ListItemMoveOrdersQuery, 'item_id'>
   ): Promise<ListItemMoveOrdersResponse['moveorders']> {
     const { moveorders } = await this.http.get<ListItemMoveOrdersResponse>({
       path: ['items', 'transactions', 'moveorders'],
@@ -363,7 +372,7 @@ export class Items {
 
   async listPutaways(
     itemId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: Omit<ListItemPutawaysQuery, 'item_id'>
   ): Promise<ListItemPutawaysResponse['putaways']> {
     const { putaways } = await this.http.get<ListItemPutawaysResponse>({
       path: ['items', 'transactions', 'putaways'],

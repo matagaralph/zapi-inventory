@@ -3,6 +3,7 @@ import type {
   CreatePaymentResponse,
   DeletePaymentResponse,
   GetPaymentResponse,
+  ListCustomerPaymentsQuery,
   ListCustomerPaymentsResponse,
   UpdateCustomerpaymentCustomfieldResponse,
   UpdatePaymentRequest,
@@ -20,11 +21,11 @@ export class CustomerPayments {
   constructor(private readonly http: HTTPClient) {}
 
   async list(
-    params?: Record<string, string | number | boolean | undefined>
+    params?: ListCustomerPaymentsQuery
   ): Promise<ListCustomerPaymentsResponse['customerpayments']> {
     const { customerpayments } = await this.http.get<ListCustomerPaymentsResponse>({
       path: ['customerpayments'],
-      query: { ...params },
+      query: params,
     })
     return customerpayments
   }

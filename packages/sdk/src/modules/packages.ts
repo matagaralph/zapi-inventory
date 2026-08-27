@@ -1,8 +1,11 @@
 import type {
   BulkPrintPackagesResponse,
+  BulkPrintPackagesQuery,
   CreatePackageRequest,
+  CreatePackageQuery,
   CreatePackageResponse,
   GetPackageResponse,
+  ListPackagesQuery,
   ListPackagesResponse,
   UpdatePackageRequest,
   UpdatePackageResponse,
@@ -13,9 +16,7 @@ import type { HTTPClient } from '../http.ts'
 export class Packages {
   constructor(private readonly http: HTTPClient) {}
 
-  async list(
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<ListPackagesResponse['packagea']> {
+  async list(params?: ListPackagesQuery): Promise<ListPackagesResponse['packagea']> {
     const { packagea } = await this.http.get<ListPackagesResponse>({
       path: ['packages'],
       query: { ...params },
@@ -24,12 +25,12 @@ export class Packages {
   }
 
   async create(
-    salesorderId: string,
-    data: CreatePackageRequest
+    data: CreatePackageRequest,
+    params: CreatePackageQuery
   ): Promise<CreatePackageResponse['package']> {
     const { package: pkg } = await this.http.post<CreatePackageResponse>({
       path: ['packages'],
-      query: { salesorder_id: salesorderId },
+      query: params,
       body: data,
     })
     return pkg
@@ -57,10 +58,10 @@ export class Packages {
     await this.http.delete({ path: ['packages', packageId] })
   }
 
-  async bulkPrint(packageIds: string): Promise<BulkPrintPackagesResponse> {
+  async bulkPrint(params: BulkPrintPackagesQuery): Promise<BulkPrintPackagesResponse> {
     return this.http.get<BulkPrintPackagesResponse>({
       path: ['packages', 'print'],
-      query: { package_ids: packageIds },
+      query: params,
     })
   }
 }

@@ -1,26 +1,31 @@
 import type {
   BulkConfirmSalesordersResponse,
+  BulkConfirmSalesOrdersQuery,
   BulkDeleteSalesOrdersResponse,
+  BulkSubmitSalesordersQuery,
+  BulkApproveSalesordersQuery,
   CreateSalesOrderRequest,
+  CreateSalesOrderQuery,
   CreateSalesOrderResponse,
   GetSalesOrderResponse,
+  ListSalesOrdersQuery,
   ListSalesOrdersResponse,
   MarkAsConfirmedResponse,
   SalesordersApprovalActionResponse,
   SalesordersMarkAsVoidResponse,
   SalesordersRejectRequest,
   UpdateSalesOrderRequest,
+  UpdateSalesOrderQuery,
   UpdateSalesOrderResponse,
 } from '@zapi-inventory/typegen'
 
 import type { HTTPClient } from '../http.ts'
+import type { PartialBy } from '../utils.ts'
 
 export class SalesOrders {
   constructor(private readonly http: HTTPClient) {}
 
-  async list(
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<ListSalesOrdersResponse['salesorders']> {
+  async list(params?: ListSalesOrdersQuery): Promise<ListSalesOrdersResponse['salesorders']> {
     const { salesorders } = await this.http.get<ListSalesOrdersResponse>({
       path: ['salesorders'],
       query: params,
@@ -28,9 +33,11 @@ export class SalesOrders {
     return salesorders
   }
 
+  // salesorder_number is only mandatory when params.ignore_auto_number_generation is true;
+  // otherwise Zoho auto-generates it. Zoho's spec always marks it required, so it's relaxed here.
   async create(
-    data: CreateSalesOrderRequest,
-    params?: Record<string, string | number | boolean | undefined>
+    data: PartialBy<CreateSalesOrderRequest, 'salesorder_number'>,
+    params?: CreateSalesOrderQuery
   ): Promise<CreateSalesOrderResponse['sales_order']> {
     const { sales_order } = await this.http.post<CreateSalesOrderResponse>({
       path: ['salesorders'],
@@ -53,8 +60,8 @@ export class SalesOrders {
 
   async update(
     salesorderId: string,
-    data: UpdateSalesOrderRequest,
-    params?: Record<string, string | number | boolean | undefined>
+    data: PartialBy<UpdateSalesOrderRequest, 'salesorder_number'>,
+    params?: UpdateSalesOrderQuery
   ): Promise<UpdateSalesOrderResponse['sales_order']> {
     const { sales_order } = await this.http.put<UpdateSalesOrderResponse>({
       path: ['salesorders', salesorderId],
@@ -80,10 +87,10 @@ export class SalesOrders {
     })
   }
 
-  async bulkConfirm(salesorderIds: string): Promise<BulkConfirmSalesordersResponse> {
+  async bulkConfirm(params: BulkConfirmSalesOrdersQuery): Promise<BulkConfirmSalesordersResponse> {
     return this.http.post<BulkConfirmSalesordersResponse>({
       path: ['salesorders', 'status', 'confirmed'],
-      query: { salesorder_ids: salesorderIds },
+      query: params,
     })
   }
 
@@ -115,17 +122,19 @@ export class SalesOrders {
     })
   }
 
-  async bulkSubmit(salesorderIds: string): Promise<SalesordersApprovalActionResponse> {
+  async bulkSubmit(params: BulkSubmitSalesordersQuery): Promise<SalesordersApprovalActionResponse> {
     return this.http.post<SalesordersApprovalActionResponse>({
       path: ['salesorders', 'submit'],
-      query: { salesorder_ids: salesorderIds },
+      query: params,
     })
   }
 
-  async bulkApprove(salesorderIds: string): Promise<SalesordersApprovalActionResponse> {
+  async bulkApprove(
+    params: BulkApproveSalesordersQuery
+  ): Promise<SalesordersApprovalActionResponse> {
     return this.http.post<SalesordersApprovalActionResponse>({
       path: ['salesorders', 'approve'],
-      query: { salesorder_ids: salesorderIds },
+      query: params,
     })
   }
 }

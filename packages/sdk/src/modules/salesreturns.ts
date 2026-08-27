@@ -1,12 +1,16 @@
 import type {
   CreateSalesReturnReceiveRequest,
+  CreateSalesReturnReceiveQuery,
   CreateSalesReturnReceiveResponse,
   CreateSalesReturnRequest,
+  CreateSalesReturnQuery,
   CreateSalesReturnResponse,
   DeleteSalesReturnReceiveResponse,
   DeleteSalesReturnResponse,
   GetSalesReturnResponse,
+  ListSalesReturnsQuery,
   ListSalesReturnsResponse,
+  UpdateSalesReturnQuery,
   UpdateSalesReturnRequest,
   UpdateSalesReturnResponse,
 } from '@zapi-inventory/typegen'
@@ -16,9 +20,7 @@ import type { HTTPClient } from '../http.ts'
 export class SalesReturns {
   constructor(private readonly http: HTTPClient) {}
 
-  async list(
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<ListSalesReturnsResponse['salesreturns']> {
+  async list(params?: ListSalesReturnsQuery): Promise<ListSalesReturnsResponse['salesreturns']> {
     const { salesreturns } = await this.http.get<ListSalesReturnsResponse>({
       path: ['salesreturns'],
       query: params,
@@ -28,11 +30,11 @@ export class SalesReturns {
 
   async create(
     data: CreateSalesReturnRequest,
-    salesorderId?: string
+    params?: CreateSalesReturnQuery
   ): Promise<CreateSalesReturnResponse['salesreturn']> {
     const { salesreturn } = await this.http.post<CreateSalesReturnResponse>({
       path: ['salesreturns'],
-      query: { salesorder_id: salesorderId },
+      query: params,
       body: data,
     })
     return salesreturn
@@ -48,11 +50,11 @@ export class SalesReturns {
   async update(
     salesreturnId: string,
     data: UpdateSalesReturnRequest,
-    salesorderId?: string
+    params?: UpdateSalesReturnQuery
   ): Promise<UpdateSalesReturnResponse['salesreturn']> {
     const { salesreturn } = await this.http.put<UpdateSalesReturnResponse>({
       path: ['salesreturns', salesreturnId],
-      query: { salesorder_id: salesorderId },
+      query: params,
       body: data,
     })
     return salesreturn
@@ -64,11 +66,11 @@ export class SalesReturns {
 
   async createReceive(
     data: CreateSalesReturnReceiveRequest,
-    salesreturnId?: string
+    params?: CreateSalesReturnReceiveQuery
   ): Promise<CreateSalesReturnReceiveResponse['salesreturn']> {
     const { salesreturn } = await this.http.post<CreateSalesReturnReceiveResponse>({
       path: ['salesreturnreceives'],
-      query: { salesreturn_id: salesreturnId },
+      query: params,
       body: data,
     })
     return salesreturn

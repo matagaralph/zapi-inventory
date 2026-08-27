@@ -12,6 +12,7 @@ import type {
   GetTaxGroupResponse,
   GetTaxResponse,
   ListTaxAuthoritiesUsEditionOnlyResponse,
+  ListTaxesQuery,
   ListTaxesResponse,
   ListTaxExemptionsUsEditionOnlyResponse,
   UpdateTaxAuthorityUsAndCaEditionOnlyRequest,
@@ -29,9 +30,7 @@ import type { HTTPClient } from '../http.ts'
 export class Taxes {
   constructor(private readonly http: HTTPClient) {}
 
-  async list(
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<ListTaxesResponse['taxes']> {
+  async list(params?: ListTaxesQuery): Promise<ListTaxesResponse['taxes']> {
     const { taxes } = await this.http.get<ListTaxesResponse>({
       path: ['settings', 'taxes'],
       query: { ...params },

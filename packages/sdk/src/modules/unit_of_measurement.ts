@@ -7,7 +7,9 @@ import type {
   CreateUnitResponse,
   GetUnitGroupResponse,
   ListUnitConversionsResponse,
+  ListUnitGroupsQuery,
   ListUnitGroupsResponse,
+  ListUnitsQuery,
   ListUnitsResponse,
   UpdateUnitConversionRequest,
   UpdateUnitConversionResponse,
@@ -22,9 +24,7 @@ import type { HTTPClient } from '../http.ts'
 export class UnitsOfMeasurement {
   constructor(private readonly http: HTTPClient) {}
 
-  async listGroups(
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<ListUnitGroupsResponse['unit_groups']> {
+  async listGroups(params?: ListUnitGroupsQuery): Promise<ListUnitGroupsResponse['unit_groups']> {
     const { unit_groups } = await this.http.get<ListUnitGroupsResponse>({
       path: ['unitgroups'],
       query: params,
@@ -62,9 +62,7 @@ export class UnitsOfMeasurement {
     await this.http.delete({ path: ['unitgroups', unitGroupId] })
   }
 
-  async listUnits(
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<ListUnitsResponse['units']> {
+  async listUnits(params?: ListUnitsQuery): Promise<ListUnitsResponse['units']> {
     const { units } = await this.http.get<ListUnitsResponse>({
       path: ['units'],
       query: params,

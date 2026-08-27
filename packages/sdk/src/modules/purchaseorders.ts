@@ -1,23 +1,29 @@
 import type {
+  BulkApprovePurchaseordersQuery,
+  BulkSubmitPurchaseordersQuery,
   CreatePurchaseOrderRequest,
+  CreatePurchaseOrderQuery,
   CreatePurchaseOrderResponse,
   GetPurchaseOrderResponse,
+  ListPurchaseOrdersQuery,
   ListPurchaseOrdersResponse,
   MarkAsCancelledResponse,
   MarkAsIssuedResponse,
   PurchaseordersApprovalActionResponse,
   PurchaseordersRejectRequest,
   UpdatePurchaseOrderRequest,
+  UpdatePurchaseOrderQuery,
   UpdatePurchaseOrderResponse,
 } from '@zapi-inventory/typegen'
 
 import type { HTTPClient } from '../http.ts'
+import type { PartialBy } from '../utils.ts'
 
 export class PurchaseOrders {
   constructor(private readonly http: HTTPClient) {}
 
   async list(
-    params?: Record<string, string | number | boolean | undefined>
+    params?: ListPurchaseOrdersQuery
   ): Promise<ListPurchaseOrdersResponse['purchaseorders']> {
     const { purchaseorders } = await this.http.get<ListPurchaseOrdersResponse>({
       path: ['purchaseorders'],
@@ -26,13 +32,15 @@ export class PurchaseOrders {
     return purchaseorders
   }
 
+  // purchaseorder_number is only mandatory when params.ignore_auto_number_generation is true;
+  // otherwise Zoho auto-generates it. Zoho's spec always marks it required, so it's relaxed here.
   async create(
-    data: CreatePurchaseOrderRequest,
-    ignoreAutoNumberGeneration?: boolean
+    data: PartialBy<CreatePurchaseOrderRequest, 'purchaseorder_number'>,
+    params?: CreatePurchaseOrderQuery
   ): Promise<CreatePurchaseOrderResponse['purchase_order']> {
     const { purchase_order } = await this.http.post<CreatePurchaseOrderResponse>({
       path: ['purchaseorders'],
-      query: { ignore_auto_number_generation: ignoreAutoNumberGeneration },
+      query: params,
       body: data,
     })
     return purchase_order
@@ -47,12 +55,12 @@ export class PurchaseOrders {
 
   async update(
     purchaseorderId: string,
-    data: UpdatePurchaseOrderRequest,
-    ignoreAutoNumberGeneration?: boolean
+    data: PartialBy<UpdatePurchaseOrderRequest, 'purchaseorder_number'>,
+    params?: UpdatePurchaseOrderQuery
   ): Promise<UpdatePurchaseOrderResponse['purchase_order']> {
     const { purchase_order } = await this.http.put<UpdatePurchaseOrderResponse>({
       path: ['purchaseorders', purchaseorderId],
-      query: { ignore_auto_number_generation: ignoreAutoNumberGeneration },
+      query: params,
       body: data,
     })
     return purchase_order
@@ -102,17 +110,21 @@ export class PurchaseOrders {
     })
   }
 
-  async bulkSubmit(purchaseorderIds: string): Promise<PurchaseordersApprovalActionResponse> {
+  async bulkSubmit(
+    params: BulkSubmitPurchaseordersQuery
+  ): Promise<PurchaseordersApprovalActionResponse> {
     return this.http.post<PurchaseordersApprovalActionResponse>({
       path: ['purchaseorders', 'submit'],
-      query: { purchaseorder_ids: purchaseorderIds },
+      query: params,
     })
   }
 
-  async bulkApprove(purchaseorderIds: string): Promise<PurchaseordersApprovalActionResponse> {
+  async bulkApprove(
+    params: BulkApprovePurchaseordersQuery
+  ): Promise<PurchaseordersApprovalActionResponse> {
     return this.http.post<PurchaseordersApprovalActionResponse>({
       path: ['purchaseorders', 'approve'],
-      query: { purchaseorder_ids: purchaseorderIds },
+      query: params,
     })
   }
 }

@@ -1,13 +1,19 @@
 import type {
   CreatePutawayRequest,
+  CreatePutawayQuery,
   CreatePutawayResponse,
   DeletePutawayDocumentResponse,
+  DeletePutawayDocumentQuery,
+  GetPutawayDocumentQuery,
+  GetPutawayQuery,
   GetPutawayResponse,
   GetPutawaySettingsResponse,
   ListPutawayCommentsResponse,
+  ListPutawaysQuery,
   ListPutawaysResponse,
   PutawayAttachmentResponse,
   UpdatePutawayRequest,
+  UpdatePutawayQuery,
   UpdatePutawayResponse,
 } from '@zapi-inventory/typegen'
 
@@ -16,9 +22,7 @@ import type { HTTPClient } from '../http.ts'
 export class Putaways {
   constructor(private readonly http: HTTPClient) {}
 
-  async list(
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<ListPutawaysResponse['putaways']> {
+  async list(params?: ListPutawaysQuery): Promise<ListPutawaysResponse['putaways']> {
     const { putaways } = await this.http.get<ListPutawaysResponse>({
       path: ['putaways'],
       query: { ...params },
@@ -28,20 +32,17 @@ export class Putaways {
 
   async create(
     data: CreatePutawayRequest,
-    ignoreAutoNumberGeneration?: boolean
+    params?: CreatePutawayQuery
   ): Promise<CreatePutawayResponse['putaway']> {
     const { putaway } = await this.http.post<CreatePutawayResponse>({
       path: ['putaways'],
-      query: { ignore_auto_number_generation: ignoreAutoNumberGeneration },
+      query: params,
       body: data,
     })
     return putaway
   }
 
-  async get(
-    putawayId: string,
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<GetPutawayResponse['putaway']> {
+  async get(putawayId: string, params?: GetPutawayQuery): Promise<GetPutawayResponse['putaway']> {
     const { putaway } = await this.http.get<GetPutawayResponse>({
       path: ['putaways', putawayId],
       query: { ...params },
@@ -52,11 +53,11 @@ export class Putaways {
   async update(
     putawayId: string,
     data: UpdatePutawayRequest,
-    ignoreAutoNumberGeneration?: boolean
+    params?: UpdatePutawayQuery
   ): Promise<UpdatePutawayResponse['putaway']> {
     const { putaway } = await this.http.put<UpdatePutawayResponse>({
       path: ['putaways', putawayId],
-      query: { ignore_auto_number_generation: ignoreAutoNumberGeneration },
+      query: params,
       body: data,
     })
     return putaway
@@ -91,7 +92,7 @@ export class Putaways {
   async getDocument(
     putawayId: string,
     documentId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: GetPutawayDocumentQuery
   ): Promise<unknown> {
     return this.http.get({
       path: ['putaways', putawayId, 'documents', documentId],
@@ -102,11 +103,11 @@ export class Putaways {
   async deleteDocument(
     putawayId: string,
     documentId: string,
-    unAssociate?: boolean
+    params?: DeletePutawayDocumentQuery
   ): Promise<DeletePutawayDocumentResponse> {
     return this.http.delete<DeletePutawayDocumentResponse>({
       path: ['putaways', putawayId, 'documents', documentId],
-      query: { un_associate: unAssociate },
+      query: params,
     })
   }
 

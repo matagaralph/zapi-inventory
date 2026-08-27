@@ -1,13 +1,18 @@
 import type {
   ActionDeliveryChallanResponse,
   CreateDeliveryChallanRequest,
+  CreateDeliveryChallanQuery,
   CreateDeliveryChallanResponse,
   DeleteDeliveryChallanResponse,
   DeliveryChallansUpdateShippingAddressRequest,
+  GetDeliveryChallanQuery,
   GetDeliveryChallanResponse,
+  ListDeliveryChallansQuery,
   ListDeliveryChallansResponse,
   ListTemplatesResponse,
   ReturnDeliveryChallanRequest,
+  ReturnDeliveryChallansQuery,
+  UndoReturnDeliveryChallansQuery,
   UpdateDeliveryChallanRequest,
   UpdateDeliveryChallanResponse,
 } from '@zapi-inventory/typegen'
@@ -18,7 +23,7 @@ export class DeliveryChallans {
   constructor(private readonly http: HTTPClient) {}
 
   async list(
-    params?: Record<string, string | number | boolean | undefined>
+    params?: ListDeliveryChallansQuery
   ): Promise<ListDeliveryChallansResponse['deliverychallans']> {
     const { deliverychallans } = await this.http.get<ListDeliveryChallansResponse>({
       path: ['deliverychallans'],
@@ -29,7 +34,7 @@ export class DeliveryChallans {
 
   async create(
     data: CreateDeliveryChallanRequest,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: CreateDeliveryChallanQuery
   ): Promise<CreateDeliveryChallanResponse['deliverychallan']> {
     const { deliverychallan } = await this.http.post<CreateDeliveryChallanResponse>({
       path: ['deliverychallans'],
@@ -41,7 +46,7 @@ export class DeliveryChallans {
 
   async get(
     deliverychallanId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: GetDeliveryChallanQuery
   ): Promise<GetDeliveryChallanResponse['deliverychallan']> {
     const { deliverychallan } = await this.http.get<GetDeliveryChallanResponse>({
       path: ['deliverychallans', deliverychallanId],
@@ -92,20 +97,22 @@ export class DeliveryChallans {
   }
 
   async return(
-    deliverychallanIds: string,
+    params: ReturnDeliveryChallansQuery,
     data: ReturnDeliveryChallanRequest
   ): Promise<ActionDeliveryChallanResponse> {
     return this.http.put<ActionDeliveryChallanResponse>({
       path: ['deliverychallans', 'return'],
-      query: { deliverychallan_ids: deliverychallanIds },
+      query: params,
       body: data,
     })
   }
 
-  async undoReturn(deliverychallanIds: string): Promise<ActionDeliveryChallanResponse> {
+  async undoReturn(
+    params: UndoReturnDeliveryChallansQuery
+  ): Promise<ActionDeliveryChallanResponse> {
     return this.http.put<ActionDeliveryChallanResponse>({
       path: ['deliverychallans', 'undo', 'return'],
-      query: { deliverychallan_ids: deliverychallanIds },
+      query: params,
     })
   }
 

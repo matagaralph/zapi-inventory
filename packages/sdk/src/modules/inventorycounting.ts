@@ -1,8 +1,13 @@
 import type {
   ApproveInventoryCountRequest,
+  AutocompleteInventoryCountItemsQuery,
+  AutocompleteInventoryCountStoragesQuery,
   AutocompleteItemsResponse,
   AutocompleteStoragesResponse,
+  BulkDeleteInventoryCountsQuery,
+  CreateInventoryCountQuery,
   CreateInventoryCountRequest,
+  CreateRecurringInventoryCountQuery,
   CreateRecurringInventoryCountRequest,
   GetInventoryCountResponse,
   GetRecurringInventoryCountResponse,
@@ -12,12 +17,20 @@ import type {
   InventoryCountSettingsRequest,
   InventoryCountSettingsResponse,
   InventorycountingPageContext,
+  ListInventoryCountItemStoragesQuery,
+  ListInventoryCountItemTrackingDetailsQuery,
+  ListInventoryCountsQuery,
   ListInventoryCountsResponse,
   ListItemStoragesResponse,
+  ListRecurringInventoryCountsQuery,
   RecurringInventoryCountResponse,
   RecurringinventorycountObject,
+  SubmitInventoryCountQuery,
+  UpdateCountedQuantitiesQuery,
   UpdateCountedQuantitiesRequest,
+  UpdateInventoryCountQuery,
   UpdateInventoryCountRequest,
+  UpdateRecurringInventoryCountQuery,
   UpdateRecurringInventoryCountRequest,
 } from '@zapi-inventory/typegen'
 
@@ -57,7 +70,7 @@ export class InventoryCounts {
   constructor(private readonly http: HTTPClient) {}
 
   async list(
-    params?: Record<string, string | number | boolean | undefined>
+    params?: ListInventoryCountsQuery
   ): Promise<ListInventoryCountsResponse['inventorycounts']> {
     const { inventorycounts } = await this.http.get<ListInventoryCountsResponse>({
       path: ['inventorycounts'],
@@ -68,7 +81,7 @@ export class InventoryCounts {
 
   async create(
     data: CreateInventoryCountRequest,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: CreateInventoryCountQuery
   ): Promise<InventoryCountResponse['inventorycount']> {
     const { inventorycount } = await this.http.post<InventoryCountResponse>({
       path: ['inventorycounts'],
@@ -78,10 +91,10 @@ export class InventoryCounts {
     return inventorycount
   }
 
-  async bulkDelete(inventorycountIds: string): Promise<void> {
+  async bulkDelete(params: BulkDeleteInventoryCountsQuery): Promise<void> {
     await this.http.delete({
       path: ['inventorycounts'],
-      query: { inventorycount_ids: inventorycountIds },
+      query: params,
     })
   }
 
@@ -94,7 +107,7 @@ export class InventoryCounts {
   async update(
     inventorycountId: string,
     data: UpdateInventoryCountRequest,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: UpdateInventoryCountQuery
   ): Promise<InventoryCountResponse['inventorycount']> {
     const { inventorycount } = await this.http.put<InventoryCountResponse>({
       path: ['inventorycounts', inventorycountId],
@@ -118,7 +131,7 @@ export class InventoryCounts {
   async updateCountedQuantities(
     inventorycountId: string,
     data: UpdateCountedQuantitiesRequest,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: UpdateCountedQuantitiesQuery
   ): Promise<InventoryCountResponse['inventorycount']> {
     const { inventorycount } = await this.http.put<InventoryCountResponse>({
       path: ['inventorycounts', inventorycountId, 'count'],
@@ -130,7 +143,7 @@ export class InventoryCounts {
 
   async submit(
     inventorycountId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: SubmitInventoryCountQuery
   ): Promise<InventoryCountResponse['inventorycount']> {
     const { inventorycount } = await this.http.post<InventoryCountResponse>({
       path: ['inventorycounts', inventorycountId, 'submit'],
@@ -157,7 +170,7 @@ export class InventoryCounts {
   }
 
   async listRecurring(
-    params?: Record<string, string | number | boolean | undefined>
+    params?: ListRecurringInventoryCountsQuery
   ): Promise<RecurringinventorycountObject[] | undefined> {
     const { recurringinventorycounts } = await this.http.get<ListRecurringInventoryCountsResponse>({
       path: ['recurringinventorycounts'],
@@ -168,7 +181,7 @@ export class InventoryCounts {
 
   async createRecurring(
     data: CreateRecurringInventoryCountRequest,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: CreateRecurringInventoryCountQuery
   ): Promise<RecurringInventoryCountResponse['recurringinventorycount']> {
     const { recurringinventorycount } = await this.http.post<RecurringInventoryCountResponse>({
       path: ['recurringinventorycounts'],
@@ -205,7 +218,7 @@ export class InventoryCounts {
   async updateRecurring(
     recurringinventorycountId: string,
     data: UpdateRecurringInventoryCountRequest,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: UpdateRecurringInventoryCountQuery
   ): Promise<RecurringInventoryCountResponse['recurringinventorycount']> {
     const { recurringinventorycount } = await this.http.put<RecurringInventoryCountResponse>({
       path: ['recurringinventorycounts', recurringinventorycountId],
@@ -221,7 +234,7 @@ export class InventoryCounts {
 
   async listItemTrackingDetails(
     inventorycountItemId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: ListInventoryCountItemTrackingDetailsQuery
   ): Promise<Pick<InventoryCountItemTrackingDetailsResponse, 'serial_numbers' | 'batches'>> {
     const { serial_numbers, batches } =
       await this.http.get<InventoryCountItemTrackingDetailsResponse>({
@@ -234,7 +247,7 @@ export class InventoryCounts {
   async listItemStorages(
     inventorycountId: string,
     itemId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: ListInventoryCountItemStoragesQuery
   ): Promise<ListItemStoragesResponse['storages']> {
     const { storages } = await this.http.get<ListItemStoragesResponse>({
       path: ['inventorycounts', inventorycountId, 'items', itemId, 'storages'],
@@ -244,7 +257,7 @@ export class InventoryCounts {
   }
 
   async autocompleteItems(
-    params?: Record<string, string | number | boolean | undefined>
+    params?: AutocompleteInventoryCountItemsQuery
   ): Promise<AutocompleteItemsResponse['inventorycount_items']> {
     const { inventorycount_items } = await this.http.get<AutocompleteItemsResponse>({
       path: ['autocomplete', 'inventorycounts', 'items'],
@@ -254,7 +267,7 @@ export class InventoryCounts {
   }
 
   async autocompleteStorages(
-    params?: Record<string, string | number | boolean | undefined>
+    params?: AutocompleteInventoryCountStoragesQuery
   ): Promise<AutocompleteStoragesResponse['storage_locations']> {
     const { storage_locations } = await this.http.get<AutocompleteStoragesResponse>({
       path: ['autocomplete', 'inventorycounts', 'storages'],

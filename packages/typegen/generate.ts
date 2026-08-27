@@ -58,6 +58,80 @@ function propertyNameText(name: ts.PropertyName): string | undefined {
   return undefined
 }
 
+const RESPONSE_SCHEMA_SUFFIX = '-response'
+
+function stripOptionalDeep<T extends ts.Node>(node: T): T {
+  function visit(n: ts.Node): ts.Node {
+    const visited = ts.visitEachChild(n, visit, undefined)
+    if (ts.isPropertySignature(visited) && visited.questionToken) {
+      return ts.factory.updatePropertySignature(
+        visited,
+        visited.modifiers,
+        visited.name,
+        undefined,
+        visited.type
+      )
+    }
+    return visited
+  }
+  return ts.visitNode(node, visit) as T
+}
+
+// Zoho's spec never marks response fields required, even ones always present, so every
+// response type comes out fully optional and painful to consume. Since request bodies genuinely
+// do use `required:` where it matters, only schemas named "*-response" are forced non-optional.
+function requireResponseFields(ast: readonly ts.Node[]): ts.Node[] {
+  return ast.map((node) => {
+    if (!ts.isInterfaceDeclaration(node) || node.name.text !== 'components') return node
+
+    const newMembers = node.members.map((member) => {
+      if (
+        !ts.isPropertySignature(member) ||
+        propertyNameText(member.name) !== 'schemas' ||
+        !member.type ||
+        !ts.isTypeLiteralNode(member.type)
+      ) {
+        return member
+      }
+
+      const newSchemaMembers = member.type.members.map((schemaMember) => {
+        if (!ts.isPropertySignature(schemaMember) || !schemaMember.type) return schemaMember
+        const key = propertyNameText(schemaMember.name)
+        if (!key?.endsWith(RESPONSE_SCHEMA_SUFFIX)) return schemaMember
+
+        return ts.factory.updatePropertySignature(
+          schemaMember,
+          schemaMember.modifiers,
+          schemaMember.name,
+          schemaMember.questionToken,
+          stripOptionalDeep(schemaMember.type)
+        )
+      })
+
+      const newSchemasType = ts.factory.updateTypeLiteralNode(
+        member.type,
+        ts.factory.createNodeArray(newSchemaMembers)
+      )
+      return ts.factory.updatePropertySignature(
+        member,
+        member.modifiers,
+        member.name,
+        member.questionToken,
+        newSchemasType
+      )
+    })
+
+    return ts.factory.updateInterfaceDeclaration(
+      node,
+      node.modifiers,
+      node.name,
+      node.typeParameters,
+      node.heritageClauses,
+      newMembers
+    )
+  })
+}
+
 function extractStructuralSchemaKeys(ast: readonly ts.Node[]): string[] {
   const keys: string[] = []
 
@@ -82,58 +156,148 @@ function extractStructuralSchemaKeys(ast: readonly ts.Node[]): string[] {
   return keys
 }
 
+const ORG_ID_QUERY_PARAM = 'organization_id'
+
+// organization_id is always present but is injected by the SDK's auth layer on every request,
+// not something a caller ever supplies. An operation whose only query param is organization_id
+// has nothing worth a Query type at all.
+function hasExtraQueryParams(operationType: ts.TypeNode): boolean {
+  if (!ts.isTypeLiteralNode(operationType)) return false
+
+  const parametersProp = operationType.members.find(
+    (m): m is ts.PropertySignature =>
+      ts.isPropertySignature(m) && propertyNameText(m.name) === 'parameters'
+  )
+  if (!parametersProp?.type || !ts.isTypeLiteralNode(parametersProp.type)) return false
+
+  const queryProp = parametersProp.type.members.find(
+    (m): m is ts.PropertySignature =>
+      ts.isPropertySignature(m) && propertyNameText(m.name) === 'query'
+  )
+  if (!queryProp?.type || !ts.isTypeLiteralNode(queryProp.type)) return false
+
+  return queryProp.type.members.some((m) => {
+    const key = ts.isPropertySignature(m) ? propertyNameText(m.name) : undefined
+    return key !== undefined && key !== ORG_ID_QUERY_PARAM
+  })
+}
+
+function extractQueryableOperationIds(ast: readonly ts.Node[]): string[] {
+  const ids: string[] = []
+
+  for (const node of ast) {
+    if (!ts.isInterfaceDeclaration(node) || node.name.text !== 'operations') continue
+
+    for (const member of node.members) {
+      if (!ts.isPropertySignature(member) || !member.type) continue
+      const id = propertyNameText(member.name)
+      if (id && hasExtraQueryParams(member.type)) ids.push(id)
+    }
+  }
+
+  return ids
+}
+
 const specFiles = (await readdir(specsDir)).filter((f) => f.endsWith('.yml')).sort()
 
 const moduleNames: string[] = []
 // tracks which module claimed each alias, so cross-domain collisions disambiguate the same way every run
 const globalAliasOwners = new Map<string, string>()
 
+function resolveAlias(
+  candidate: string,
+  key: string,
+  moduleName: string,
+  namespace: string,
+  localAliasOwners: Map<string, string>,
+  collisionCounts: Map<string, number>
+): string {
+  let alias = candidate
+
+  if (localAliasOwners.has(alias) && localAliasOwners.get(alias) !== key) {
+    const seed = (collisionCounts.get(candidate) ?? 0) + 1
+    collisionCounts.set(candidate, seed)
+    const disambiguated = `${alias}_${seed}`
+    console.warn(
+      `[typegen] ${moduleName}: "${key}" collides with "${localAliasOwners.get(alias)}" as "${alias}", using "${disambiguated}"`
+    )
+    alias = disambiguated
+  }
+
+  const owner = globalAliasOwners.get(alias)
+  if (owner && owner !== moduleName) {
+    const disambiguated = `${namespace}${alias}`
+    console.warn(
+      `[typegen] ${moduleName}: "${alias}" already used by "${owner}", using "${disambiguated}"`
+    )
+    alias = disambiguated
+  }
+
+  localAliasOwners.set(alias, key)
+  globalAliasOwners.set(alias, moduleName)
+  return alias
+}
+
 for (const file of specFiles) {
   const specPath = join(specsDir, file)
   const moduleName = basename(file, '.yml')
   const namespace = toNamespace(moduleName)
 
-  const ast = await openapiTS(Bun.pathToFileURL(specPath))
+  const ast = requireResponseFields(await openapiTS(Bun.pathToFileURL(specPath)))
   await Bun.write(join(generatedDir, `${moduleName}.ts`), astToString(ast))
 
-  const schemaKeys = extractStructuralSchemaKeys(ast)
   const localAliasOwners = new Map<string, string>()
-  const entries: Array<{ alias: string; schemaKey: string }> = []
+  const collisionCounts = new Map<string, number>()
 
-  for (const schemaKey of schemaKeys) {
-    let alias = aliasNameFor(schemaKey)
+  const entries = extractStructuralSchemaKeys(ast).map((schemaKey) => ({
+    alias: resolveAlias(
+      aliasNameFor(schemaKey),
+      schemaKey,
+      moduleName,
+      namespace,
+      localAliasOwners,
+      collisionCounts
+    ),
+    schemaKey,
+  }))
 
-    if (localAliasOwners.has(alias) && localAliasOwners.get(alias) !== schemaKey) {
-      const disambiguated = `${alias}_${entries.length}`
-      console.warn(
-        `[typegen] ${moduleName}: "${schemaKey}" collides with "${localAliasOwners.get(alias)}" as "${alias}", using "${disambiguated}"`
-      )
-      alias = disambiguated
-    }
-
-    const owner = globalAliasOwners.get(alias)
-    if (owner && owner !== moduleName) {
-      const disambiguated = `${namespace}${alias}`
-      console.warn(
-        `[typegen] ${moduleName}: "${alias}" already used by "${owner}", using "${disambiguated}"`
-      )
-      alias = disambiguated
-    }
-
-    localAliasOwners.set(alias, schemaKey)
-    globalAliasOwners.set(alias, moduleName)
-    entries.push({ alias, schemaKey })
-  }
+  const queryEntries = extractQueryableOperationIds(ast).map((operationId) => ({
+    alias: resolveAlias(
+      `${aliasNameFor(operationId)}Query`,
+      operationId,
+      moduleName,
+      namespace,
+      localAliasOwners,
+      collisionCounts
+    ),
+    operationId,
+  }))
 
   const body = entries
     .map(({ alias, schemaKey }) => `export type ${alias} = components["schemas"]["${schemaKey}"];`)
     .join('\n')
 
-  const contents = `import type { components } from "../generated/${moduleName}.ts";\n\n${body}\n`
+  const queryBody = queryEntries
+    .map(
+      ({ alias, operationId }) =>
+        `export type ${alias} = Omit<operations["${operationId}"]["parameters"]["query"], "organization_id">;`
+    )
+    .join('\n')
+
+  const importedTypes = queryEntries.length > 0 ? 'components, operations' : 'components'
+  const contents = [
+    `import type { ${importedTypes} } from "../generated/${moduleName}.ts";`,
+    '',
+    body,
+    ...(queryEntries.length > 0 ? ['', queryBody] : []),
+    '',
+  ].join('\n')
   await Bun.write(join(typesDir, `${moduleName}.ts`), contents)
 
   moduleNames.push(moduleName)
-  console.log(`generated ${moduleName}.ts (${entries.length} types)`)
+  console.log(
+    `generated ${moduleName}.ts (${entries.length} types, ${queryEntries.length} query types)`
+  )
 }
 
 moduleNames.sort()

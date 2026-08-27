@@ -1,20 +1,29 @@
 import type {
   AddAttachmentResponse,
   BulkStatusUpdateRequest,
+  BulkDeletePurchaseReceivesQuery,
   CreatePurchaseReceiveRequest,
+  CreatePurchaseReceiveQuery,
   CreatePurchaseReceiveResponse,
   DeletePurchaseReceiveResponse,
+  DeletePurchaseReceiveAttachmentQuery,
+  GetPurchaseReceiveAttachmentQuery,
+  GetPurchaseReceiveQuery,
   GetPurchaseReceiveResponse,
   ListPurchaseReceivesResponse,
+  ListPurchaseReceivesQuery,
   MarkAsInTransitResponse,
   MarkAsReceivedResponse,
+  MarkPurchaseReceiveAsReceivedQuery,
   PurchasereceivesAddCommentRequest,
   PurchasereceivesAddCommentResponse,
   PurchasereceivesDeleteAttachmentResponse,
+  RejectPurchaseReceiveQuery,
   RejectPurchaseReceiveResponse,
   SubmitPurchaseReceiveResponse,
   ApprovePurchaseReceiveResponse,
   UpdatePurchaseReceiveRequest,
+  UpdatePurchaseReceiveQuery,
   UpdatePurchaseReceiveResponse,
 } from '@zapi-inventory/typegen'
 
@@ -24,7 +33,7 @@ export class PurchaseReceives {
   constructor(private readonly http: HTTPClient) {}
 
   async list(
-    params?: Record<string, string | number | boolean | undefined>
+    params?: ListPurchaseReceivesQuery
   ): Promise<ListPurchaseReceivesResponse['purchasereceives']> {
     const { purchasereceives } = await this.http.get<ListPurchaseReceivesResponse>({
       path: ['purchasereceives'],
@@ -34,35 +43,33 @@ export class PurchaseReceives {
   }
 
   async create(
-    purchaseorderId: string,
     data: CreatePurchaseReceiveRequest,
-    ignoreAutoNumberGeneration?: boolean
+    params: CreatePurchaseReceiveQuery
   ): Promise<CreatePurchaseReceiveResponse['purchase_receive']> {
     const { purchase_receive } = await this.http.post<CreatePurchaseReceiveResponse>({
       path: ['purchasereceives'],
-      query: {
-        purchaseorder_id: purchaseorderId,
-        ignore_auto_number_generation: ignoreAutoNumberGeneration,
-      },
+      query: params,
       body: data,
     })
     return purchase_receive
   }
 
-  async bulkDelete(receiveIds: string): Promise<DeletePurchaseReceiveResponse> {
+  async bulkDelete(
+    params: BulkDeletePurchaseReceivesQuery
+  ): Promise<DeletePurchaseReceiveResponse> {
     return this.http.delete<DeletePurchaseReceiveResponse>({
       path: ['purchasereceives'],
-      query: { receive_ids: receiveIds },
+      query: params,
     })
   }
 
   async get(
     purchasereceiveId: string,
-    print?: boolean
+    params?: GetPurchaseReceiveQuery
   ): Promise<GetPurchaseReceiveResponse['purchase_receive']> {
     const { purchase_receive } = await this.http.get<GetPurchaseReceiveResponse>({
       path: ['purchasereceives', purchasereceiveId],
-      query: { print },
+      query: params,
     })
     return purchase_receive
   }
@@ -70,11 +77,11 @@ export class PurchaseReceives {
   async update(
     purchasereceiveId: string,
     data: UpdatePurchaseReceiveRequest,
-    ignoreAutoNumberGeneration?: boolean
+    params?: UpdatePurchaseReceiveQuery
   ): Promise<UpdatePurchaseReceiveResponse['purchase_receive']> {
     const { purchase_receive } = await this.http.put<UpdatePurchaseReceiveResponse>({
       path: ['purchasereceives', purchasereceiveId],
-      query: { ignore_auto_number_generation: ignoreAutoNumberGeneration },
+      query: params,
       body: data,
     })
     return purchase_receive
@@ -96,17 +103,23 @@ export class PurchaseReceives {
     })
   }
 
-  async reject(purchasereceiveId: string, reason?: string): Promise<RejectPurchaseReceiveResponse> {
+  async reject(
+    purchasereceiveId: string,
+    params?: RejectPurchaseReceiveQuery
+  ): Promise<RejectPurchaseReceiveResponse> {
     return this.http.post<RejectPurchaseReceiveResponse>({
       path: ['purchasereceives', purchasereceiveId, 'reject'],
-      query: { reason },
+      query: params,
     })
   }
 
-  async markAsReceived(purchasereceiveId: string, date?: string): Promise<MarkAsReceivedResponse> {
+  async markAsReceived(
+    purchasereceiveId: string,
+    params?: MarkPurchaseReceiveAsReceivedQuery
+  ): Promise<MarkAsReceivedResponse> {
     return this.http.post<MarkAsReceivedResponse>({
       path: ['purchasereceives', purchasereceiveId, 'setstatusasreceived'],
-      query: { date },
+      query: params,
     })
   }
 
@@ -142,7 +155,7 @@ export class PurchaseReceives {
   async getAttachment(
     purchasereceiveId: string,
     documentId: string,
-    params?: Record<string, string | number | boolean | undefined>
+    params?: GetPurchaseReceiveAttachmentQuery
   ): Promise<unknown> {
     return this.http.get({
       path: ['purchasereceives', purchasereceiveId, 'documents', documentId],
@@ -153,11 +166,11 @@ export class PurchaseReceives {
   async deleteAttachment(
     purchasereceiveId: string,
     documentId: string,
-    unAssociate?: boolean
+    params?: DeletePurchaseReceiveAttachmentQuery
   ): Promise<PurchasereceivesDeleteAttachmentResponse> {
     return this.http.delete<PurchasereceivesDeleteAttachmentResponse>({
       path: ['purchasereceives', purchasereceiveId, 'documents', documentId],
-      query: { un_associate: unAssociate },
+      query: params,
     })
   }
 
