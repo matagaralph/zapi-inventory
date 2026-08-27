@@ -1,0 +1,699 @@
+openapi: 3.0.0
+info:
+  title: Batches
+  description: Batches help you track inventory items by batch numbers, manufacturing dates, and expiration dates.
+  contact: {}
+  version: 1.0.0
+servers:
+  - url: https://www.zohoapis.com/inventory/v1
+    description: API Endpoint
+tags:
+  - name: batches
+    description: Batches Module
+paths:
+  /items/batches:
+    x-mcp-group:
+      - Batches
+    post:
+      tags:
+        - batches
+      operationId: create_a_batch
+      summary: Create a batch
+      description: Create a new batch for an item that has batch tracking enabled.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-a-batch-request'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-a-batch-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.CREATE
+    get:
+      tags:
+        - batches
+      operationId: list_batches
+      summary: List all batches
+      description: List all batches available for a given item.
+      parameters:
+        - name: item_id
+          in: query
+          description: Unique identifier of the item to fetch batches for.
+          required: true
+          schema:
+            type: string
+          example: '6780203000000167467'
+        - name: include_empty_batches
+          in: query
+          description: Include batches that have zero quantity. Allowed values <code>true</code> and <code>false</code>.
+          schema:
+            type: boolean
+          example: false
+        - name: warehouse_id
+          in: query
+          description: Filter batches by warehouse ID.
+          schema:
+            type: string
+          example: '6780203000000093215'
+        - name: location_id
+          in: query
+          description: Filter batches by location ID.
+          schema:
+            type: string
+          example: '6780203000000093215'
+        - name: batch_ids
+          in: query
+          description: Comma-separated list of batch IDs to filter the response.
+          schema:
+            type: string
+          example: 6780203000000176162,6780203000000176163
+        - name: search_text
+          in: query
+          description: Search batches by batch number or manufacturer batch number.
+          schema:
+            type: string
+          example: BATCH
+        - name: status
+          in: query
+          description: Filter batches by status. Allowed values <code>active</code> and <code>inactive</code>.
+          schema:
+            type: string
+          example: active
+        - name: filter_by
+          in: query
+          description: Filter batches by status, expiry, type, or stock. For example <code>Status.All</code>, <code>Expiry.Expired</code>, <code>Stock.Empty</code>.
+          schema:
+            type: string
+          example: Status.All
+        - name: sort_column
+          in: query
+          description: Column to sort the response by. Allowed values <code>batch_number</code>, <code>external_batch_number</code>, <code>manufacturer_batch_number</code>, <code>manufactured_date</code>, <code>expiry_date</code>, <code>sales_rate</code>, and <code>label_rate</code>.
+          schema:
+            type: string
+            default: batch_number
+          example: batch_number
+        - name: sort_order
+          in: query
+          description: Order of sorting. Allowed values <code>A</code> for ascending and <code>D</code> for descending.
+          schema:
+            type: string
+            default: A
+          example: A
+        - name: page
+          in: query
+          description: Page number to be fetched. Default value is 1.
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: per_page
+          in: query
+          description: Number of records to be fetched per page. Default value is 200.
+          schema:
+            type: integer
+            default: 200
+          example: 200
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-all-batches-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.READ
+    delete:
+      tags:
+        - batches
+      operationId: bulk_delete_batches
+      summary: Bulk delete batches
+      description: Delete multiple batches in a single request. Batches with associated transactions cannot be deleted.
+      parameters:
+        - name: batch_ids
+          in: query
+          required: true
+          description: Comma-separated list of batch IDs to delete.
+          schema:
+            type: string
+          example: 6780203000000176162,6780203000000176163
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bulk-delete-batches-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.DELETE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /items/batches/{batch_id}:
+    x-mcp-group:
+      - Batches
+    get:
+      tags:
+        - batches
+      operationId: retrieve_a_batch
+      summary: Retrieve a batch
+      description: Fetch the details of a specific batch.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/retrieve-a-batch-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.READ
+    put:
+      tags:
+        - batches
+      operationId: update_a_batch
+      summary: Update a batch
+      description: Update the details of an existing batch.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-a-batch-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-a-batch-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.UPDATE
+    delete:
+      tags:
+        - batches
+      operationId: delete_a_batch
+      summary: Delete a batch
+      description: Delete a single batch. The batch must not have any associated transactions.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-a-batch-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.DELETE
+    parameters:
+      - name: batch_id
+        in: path
+        required: true
+        description: Unique identifier of the batch.
+        schema:
+          type: string
+        example: '6780203000000176162'
+      - $ref: '#/components/parameters/organization_id'
+  /items/batches/{batch_id}/active:
+    x-mcp-group:
+      - Batches
+    post:
+      tags:
+        - batches
+      operationId: mark_batch_as_active
+      summary: Mark a batch as active
+      description: Mark a specific batch as active.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mark-a-batch-as-active-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.CREATE
+    parameters:
+      - name: batch_id
+        in: path
+        required: true
+        description: Unique identifier of the batch.
+        schema:
+          type: string
+        example: '6780203000000176162'
+      - $ref: '#/components/parameters/organization_id'
+  /items/batches/{batch_id}/inactive:
+    x-mcp-group:
+      - Batches
+    post:
+      tags:
+        - batches
+      operationId: mark_batch_as_inactive
+      summary: Mark a batch as inactive
+      description: Mark a specific batch as inactive.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mark-a-batch-as-inactive-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.CREATE
+    parameters:
+      - name: batch_id
+        in: path
+        required: true
+        description: Unique identifier of the batch.
+        schema:
+          type: string
+        example: '6780203000000176162'
+      - $ref: '#/components/parameters/organization_id'
+  /items/batches/active:
+    x-mcp-group:
+      - Batches
+    post:
+      tags:
+        - batches
+      operationId: mark_batches_as_active
+      summary: Mark batches as active
+      description: Mark multiple batches as active in a single request.
+      parameters:
+        - name: batch_ids
+          in: query
+          required: true
+          description: Comma-separated list of batch IDs to mark as active.
+          schema:
+            type: string
+          example: 6780203000000176162,6780203000000176163
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mark-batches-as-active-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.CREATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /items/batches/inactive:
+    x-mcp-group:
+      - Batches
+    post:
+      tags:
+        - batches
+      operationId: mark_batches_as_inactive
+      summary: Mark batches as inactive
+      description: Mark multiple batches as inactive in a single request.
+      parameters:
+        - name: batch_ids
+          in: query
+          required: true
+          description: Comma-separated list of batch IDs to mark as inactive.
+          schema:
+            type: string
+          example: 6780203000000176162,6780203000000176163
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mark-batches-as-inactive-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.CREATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+components:
+  parameters:
+    organization_id:
+      name: organization_id
+      description: ID of the organization
+      in: query
+      required: true
+      schema:
+        type: string
+      example: '10234695'
+  schemas:
+    gendoc-attributes-schema:
+      $ref: '#/components/schemas/batch-response'
+    batch_id:
+      description: Unique identifier of the batch.
+      type: string
+      example: '6780203000001066694'
+    batch_in_id:
+      description: Unique identifier of the inward batch entry created when stock was received.
+      type: string
+      example: '6780203000001003281'
+    item_id:
+      description: Unique identifier of the item the batch belongs to.
+      type: string
+      example: '6780203000001003147'
+    batch_number:
+      description: Batch number.
+      type: string
+      example: BTC-8900
+    internal_batch_number:
+      description: Internal batch number generated by the system.
+      type: string
+      example: ''
+    manufacturer_batch_number:
+      description: Manufacturer-provided batch number.
+      type: string
+      example: MFR-BTC-8900
+    external_batch_number:
+      description: External batch number from the manufacturer.
+      type: string
+      example: MFR-BTC-8900
+    manufactured_date:
+      description: Manufacturing date of the batch.
+      type: string
+      example: '2026-05-12'
+    manufacturer_date:
+      description: Manufacturing date of the batch. Legacy alias retained for backward compatibility; prefer <code>manufactured_date</code>.
+      type: string
+      example: '2026-05-12'
+    expiry_date:
+      description: Expiration date of the batch.
+      type: string
+      example: '2026-10-15'
+    in_quantity:
+      description: Quantity received into the batch when stock was added.
+      type: number
+      format: float
+      example: 0
+    balance_quantity:
+      description: Quantity currently available in the batch.
+      type: number
+      format: float
+      example: 0
+    balance_quantity_unit:
+      description: Unit of measurement for the balance quantity.
+      type: string
+      example: ''
+    location_id:
+      description: Unique identifier of the location associated with the batch.
+      type: string
+      example: '6780203000000093215'
+    associated_locations:
+      description: Locations where stock for this batch is available, with the inward and balance quantity at each location.
+      type: array
+      items:
+        type: object
+        properties:
+          location_id:
+            $ref: '#/components/schemas/location_id'
+          in_quantity:
+            $ref: '#/components/schemas/in_quantity'
+          balance_quantity:
+            $ref: '#/components/schemas/balance_quantity'
+    status:
+      description: Status of the batch. Allowed values <code>active</code> and <code>inactive</code>.
+      type: string
+      example: active
+    sales_rate:
+      description: Sales rate of the batch.
+      type: number
+      format: float
+      example: 50.4
+      x-node_available_in:
+        - Batch Price enabled
+    label_rate:
+      description: Label rate of the batch.
+      type: number
+      format: float
+      example: 50
+      x-node_available_in:
+        - Batch Price enabled
+    custom_field_id:
+      description: Unique identifier of the custom field.
+      type: string
+      example: '6780203000000176175'
+    label:
+      description: Label of the custom field.
+      type: string
+      example: Lot Code
+    value:
+      description: Value of the custom field.
+      type: string
+      example: LC-001
+    batch_custom_fields:
+      description: Custom fields configured for the batch.
+      type: array
+      items:
+        type: object
+        properties:
+          custom_field_id:
+            $ref: '#/components/schemas/custom_field_id'
+          label:
+            $ref: '#/components/schemas/label'
+          value:
+            $ref: '#/components/schemas/value'
+    batch-response:
+      description: Details of a batch.
+      type: object
+      properties:
+        batch_id:
+          $ref: '#/components/schemas/batch_id'
+        item_id:
+          $ref: '#/components/schemas/item_id'
+        batch_number:
+          $ref: '#/components/schemas/batch_number'
+        manufacturer_batch_number:
+          $ref: '#/components/schemas/manufacturer_batch_number'
+        manufactured_date:
+          $ref: '#/components/schemas/manufactured_date'
+        expiry_date:
+          $ref: '#/components/schemas/expiry_date'
+        balance_quantity:
+          $ref: '#/components/schemas/balance_quantity'
+        status:
+          $ref: '#/components/schemas/status'
+        batch_custom_fields:
+          $ref: '#/components/schemas/batch_custom_fields'
+    list-batches-item:
+      description: Details of a batch as returned in the list batches response.
+      type: object
+      properties:
+        batch_id:
+          $ref: '#/components/schemas/batch_id'
+        batch_in_id:
+          $ref: '#/components/schemas/batch_in_id'
+        batch_number:
+          $ref: '#/components/schemas/batch_number'
+        internal_batch_number:
+          $ref: '#/components/schemas/internal_batch_number'
+        external_batch_number:
+          $ref: '#/components/schemas/external_batch_number'
+        manufacturer_batch_number:
+          $ref: '#/components/schemas/manufacturer_batch_number'
+        manufacturer_date:
+          $ref: '#/components/schemas/manufacturer_date'
+        manufactured_date:
+          $ref: '#/components/schemas/manufactured_date'
+        expiry_date:
+          $ref: '#/components/schemas/expiry_date'
+        in_quantity:
+          $ref: '#/components/schemas/in_quantity'
+        balance_quantity:
+          $ref: '#/components/schemas/balance_quantity'
+        balance_quantity_unit:
+          $ref: '#/components/schemas/balance_quantity_unit'
+        location_id:
+          $ref: '#/components/schemas/location_id'
+        associated_locations:
+          $ref: '#/components/schemas/associated_locations'
+        batch_custom_fields:
+          $ref: '#/components/schemas/batch_custom_fields'
+        status:
+          $ref: '#/components/schemas/status'
+    create-a-batch-request:
+      required:
+        - item_id
+        - batch_number
+      type: object
+      properties:
+        item_id:
+          $ref: '#/components/schemas/item_id'
+        batch_number:
+          $ref: '#/components/schemas/batch_number'
+        manufacturer_batch_number:
+          $ref: '#/components/schemas/manufacturer_batch_number'
+        manufactured_date:
+          $ref: '#/components/schemas/manufactured_date'
+        expiry_date:
+          $ref: '#/components/schemas/expiry_date'
+        sales_rate:
+          $ref: '#/components/schemas/sales_rate'
+        label_rate:
+          $ref: '#/components/schemas/label_rate'
+        batch_custom_fields:
+          $ref: '#/components/schemas/batch_custom_fields'
+    create-a-batch-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The batch has been created.
+          readOnly: true
+        batch:
+          $ref: '#/components/schemas/batch-response'
+    list-all-batches-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        batches:
+          type: array
+          items:
+            $ref: '#/components/schemas/list-batches-item'
+    retrieve-a-batch-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        batch:
+          $ref: '#/components/schemas/batch-response'
+    update-a-batch-request:
+      type: object
+      properties:
+        batch_number:
+          $ref: '#/components/schemas/batch_number'
+        manufacturer_batch_number:
+          $ref: '#/components/schemas/manufacturer_batch_number'
+        manufactured_date:
+          $ref: '#/components/schemas/manufactured_date'
+        expiry_date:
+          $ref: '#/components/schemas/expiry_date'
+        sales_rate:
+          $ref: '#/components/schemas/sales_rate'
+        label_rate:
+          $ref: '#/components/schemas/label_rate'
+        batch_custom_fields:
+          $ref: '#/components/schemas/batch_custom_fields'
+    update-a-batch-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The batch has been updated.
+          readOnly: true
+        batch:
+          $ref: '#/components/schemas/batch-response'
+    delete-a-batch-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The batch has been deleted.
+          readOnly: true
+    bulk-delete-batches-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The selected batches have been deleted.
+          readOnly: true
+    mark-a-batch-as-active-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The batch has been marked as active.
+          readOnly: true
+    mark-a-batch-as-inactive-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The batch has been marked as inactive.
+          readOnly: true
+    mark-batches-as-active-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The selected batches have been marked as active.
+          readOnly: true
+    mark-batches-as-inactive-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The selected batches have been marked as inactive.
+          readOnly: true
+  securitySchemes:
+    Zoho_Auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://accounts.zoho.com/oauth/v2/auth
+          scopes:
+            ZohoInventory.items.CREATE: Create Items
+            ZohoInventory.items.READ: Read Items
+            ZohoInventory.items.UPDATE: Update Items
+            ZohoInventory.items.DELETE: Delete Items

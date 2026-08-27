@@ -1,0 +1,1406 @@
+openapi: 3.0.0
+info:
+  title: Reporting Tags
+  description: Reporting tags are custom financial labels you add to financial transactions to categorize them  by department, cost center, business unit, or any other way based on business needs for reporting. In this document,  you'll learn how to create and manage reporting tags for the specific requirements that your organization needs.
+  contact: {}
+  version: 1.0.0
+servers:
+  - url: https://www.zohoapis.com/inventory/v1
+    description: API Endpoint
+tags:
+  - name: reporting-tags
+    description: Reporting Tags Module
+paths:
+  /reportingtags:
+    x-mcp-group:
+      - Reporting Tags
+    get:
+      tags:
+        - reporting-tags
+      operationId: get_tags
+      summary: List of all Reporting Tags
+      description: Get a list of all reporting tags in the preferred order that you can set.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reporting_tags:
+                    $ref: '#/components/schemas/list-reporting-tags-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.READ
+    post:
+      tags:
+        - reporting-tags
+      operationId: create_tag
+      summary: Create Reporting Tag
+      description: Create a reporting tag
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-reporting-tag-request'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reporting-tags-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.CREATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /reportingtags/{tag_id}:
+    x-mcp-group:
+      - Reporting Tags
+    post:
+      tags:
+        - reporting-tags
+      operationId: mark_default_option
+      summary: Mark an option as default for a reporting tag
+      description: Mark an option as the default option or clear default option for a reporting tag.
+      parameters:
+        - name: default_option_id
+          in: query
+          description: ID of the option to be marked as default. If this parameter is not sent or sent empty, the current default option of the tag will be removed.
+          required: true
+          schema:
+            $ref: '#/components/schemas/option_id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mark-default_option-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.READ
+    put:
+      tags:
+        - reporting-tags
+      operationId: update_tag
+      summary: Update Reporting Tag
+      description: Update a reporting tag
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-reporting-tag-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reporting-tags-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.UPDATE
+    delete:
+      tags:
+        - reporting-tags
+      operationId: delete_tag
+      summary: Delete a reporting tag
+      description: Delete a reporting tag. If there are any usages of the reporting tag in transactions,  custom views or workflows, you will not be able to delete the tag.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The reporting tag has been deleted successfully.
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.DELETE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+      - $ref: '#/components/parameters/path_tag_id'
+  /reportingtags/{tag_id}/options:
+    x-mcp-group:
+      - Reporting Tags
+    put:
+      tags:
+        - reporting-tags
+      operationId: update_tag_options
+      summary: Update Reporting Tag Options
+      description: Create, update or delete the options of a reporting tag. Reorder and arrange them in an hierarchical structure as per your organization requirements. <br><b>NOTE:</b> <br><ol> <li>An option cannot be a child option beyond five hierarchical level.</li> <li>The overall children of an option cannot exceed 500 options.</li></ol>
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-options-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-options-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.UPDATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+      - $ref: '#/components/parameters/path_tag_id'
+  /reportingtags/{tag_id}/criteria:
+    x-mcp-group:
+      - Reporting Tags
+    put:
+      tags:
+        - reporting-tags
+      operationId: update_tag_criteria
+      summary: Update Reporting Tag - Visibility Conditions
+      description: Update the visibility conditions (or filter in some places) of a reporting tag. You can set other tags or location as filters for a tag. Check our help document to know about the requirements of a tag to be associated as a filter to another tag.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-criteria-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-criteria-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.UPDATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+      - $ref: '#/components/parameters/path_tag_id'
+  /reportingtags/{tag_id}/active:
+    x-mcp-group:
+      - Reporting Tags
+    post:
+      tags:
+        - reporting-tags
+      operationId: active_tag
+      summary: Mark Reporting Tag as active
+      description: Mark a reporting tag as active so that you can use it on entities which you allowed.  A newly created tag will be in draft state. Use this to mark that tag as ready.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The reporting tag has been activated.
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.UPDATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+      - $ref: '#/components/parameters/path_tag_id'
+  /reportingtags/{tag_id}/inactive:
+    x-mcp-group:
+      - Reporting Tags
+    post:
+      tags:
+        - reporting-tags
+      operationId: inactive_tag
+      summary: Mark Reporting Tag as inactive
+      description: Mark a reporting tag as inactive.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The reporting tag has been deactivated.
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.UPDATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+      - $ref: '#/components/parameters/path_tag_id'
+  /reportingtags/{tag_id}/option/(\d+)/active:
+    x-mcp-group:
+      - Reporting Tags
+    post:
+      tags:
+        - reporting-tags
+      operationId: active_tag_option
+      summary: Mark an option as active
+      description: Mark a reporting tag's option as active.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The reporting tag option has been activated.
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.UPDATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+      - $ref: '#/components/parameters/path_tag_id'
+      - $ref: '#/components/parameters/path_option_id'
+  /reportingtags/{tag_id}/option/(\d+)/inactive:
+    x-mcp-group:
+      - Reporting Tags
+    post:
+      tags:
+        - reporting-tags
+      operationId: inactive_tag_option
+      summary: Mark an option as inactive
+      description: Mark a reporting tag's option as inactive.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The reporting tag option has been deactivated.
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.UPDATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+      - $ref: '#/components/parameters/path_tag_id'
+      - $ref: '#/components/parameters/path_option_id'
+  /reportingtags/options:
+    x-mcp-group:
+      - Reporting Tags
+    get:
+      tags:
+        - reporting-tags
+      operationId: get_all_tag_options
+      summary: Get Reporting Tags Options Detail Page
+      description: Get the options and its criteria details of a reporting tag. For each page, you can retrieve only 200 options.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/options_detail_page_response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+      - $ref: '#/components/parameters/query_tag_id'
+  /reportingtags/(\d+)/options/all:
+    x-mcp-group:
+      - Reporting Tags
+    get:
+      tags:
+        - reporting-tags
+      operationId: all_tag_options
+      summary: Get all Options
+      description: Get all options for a reporting tag.
+      parameters:
+        - name: show_untagged
+          in: query
+          description: '''untagged'' will be included in the response if this parameter is set to true.'
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/all_options_response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+      - $ref: '#/components/parameters/query_tag_id'
+  /reportingtags/reorder:
+    x-mcp-group:
+      - Reporting Tags
+    put:
+      tags:
+        - reporting-tags
+      operationId: reorder_tags
+      summary: Reorder Reporting Tags
+      description: Reorder the reporting tags in your organization. The order of tags will be followed in transactions and reports.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tag_ids:
+                  description: List of reporting tag IDs in the desired order
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/tag_id'
+                  example:
+                    - '460000000038080'
+                    - '460000000038081'
+                    - '460000000038082'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: The reporting tags have been reordered successfully.
+                  tags:
+                    $ref: '#/components/schemas/list-reporting-tags-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.UPDATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+components:
+  parameters:
+    organization_id:
+      name: organization_id
+      description: ID of the organization
+      in: query
+      required: true
+      schema:
+        type: string
+      example: '10234695'
+    path_tag_id:
+      name: tag_id
+      in: path
+      description: ID of the reporting tag
+      required: true
+      schema:
+        type: string
+      example: '460000000038080'
+    query_tag_id:
+      name: tag_id
+      in: query
+      description: ID of the reporting tag
+      required: true
+      schema:
+        type: string
+      example: '460000000038080'
+    path_option_id:
+      name: option_id
+      in: path
+      description: ID of a reporting tag's option
+      required: true
+      schema:
+        type: string
+      example: '460000000038081'
+  schemas:
+    is_tag_mandatory:
+      description: Boolean to check if the tag is mandatory
+      type: boolean
+      example: false
+    tags:
+      description: Array of reporting tags associated with this line item. Each tag consists of a `tag_id` and `option_id` that categorize the line item for reporting and analytics purposes. Tags help organize and filter data across reports and enable detailed business intelligence analysis.
+      type: array
+      items:
+        type: object
+        properties:
+          tag_id:
+            $ref: '#/components/schemas/tag_id'
+          tag_option_id:
+            $ref: '#/components/schemas/option_id'
+    tags_response:
+      description: Array of reporting tags associated with this line item in the response. Each tag consists of a `tag_id`, `tag_name`, `option_id`, and `option_name` that categorize the line item for reporting and analytics purposes. Tags help organize and filter data across reports and enable detailed business intelligence analysis.
+      type: array
+      items:
+        type: object
+        properties:
+          tag_id:
+            $ref: '#/components/schemas/tag_id'
+          tag_name:
+            $ref: '#/components/schemas/tag_name'
+          tag_option_id:
+            $ref: '#/components/schemas/option_id'
+          tag_option_name:
+            $ref: '#/components/schemas/option_name'
+          is_tag_mandatory:
+            $ref: '#/components/schemas/is_tag_mandatory'
+    tag_id:
+      description: Tag ID
+      type: string
+      example: '460000000038080'
+    tag_name:
+      description: Tag Name
+      type: string
+      example: Business Unit
+    tag_order:
+      description: The order in which the tag appears
+      type: integer
+      example: 1
+    description:
+      description: Description
+      type: string
+      example: Description of the reporting tag
+    is_mandatory:
+      description: Is Mandatory
+      type: boolean
+      example: false
+    is_class:
+      description: Is segmentation enabled for the tag
+      type: boolean
+      example: false
+    is_draft:
+      description: Is tag still in draft state
+      type: boolean
+      example: false
+    option_id:
+      description: Option ID
+      type: string
+      example: '460000000038081'
+    option_name:
+      description: Option Name
+      type: string
+      example: Sales
+    depth:
+      description: Depth or how much indentation required of the option in the hierarchy
+      type: integer
+      example: 1
+    filter_tag_id:
+      type: string
+      description: Filter tag ID. If the filter 'type' is location, <code>null</code> should be passed
+      example: '460000000038081'
+    filter_type:
+      description: 'Type of filter entity. <br>Allowed values: Tag <code>tag</code> and Location <code>location</code>. <br>'
+      type: string
+      example: tag
+    filter_option_id:
+      description: 'Option ID for the filter. It can be an option ID or flags.  <br>Allowed flags: <code>all</code> - Instead of selecting all options, you can send this flag to denote all options of the filter tag or location are selected for the filter to the respective tag. <code>untagged</code> - When you want to show an option when no option is selected for the filter tag. <b>Note: This flag cannot be used for location filter.</b>'
+      type: string
+      example: '460000000038081'
+    filter_option_name:
+      description: 'Option Name for the filter. It can be an option name or flags.  <br>Allowed flags: <code>All</code> - Instead of selecting all options, you can send this flag to denote all options of the filter tag or location are selected for the filter to the respective tag. <code>Untagged</code> - When you want to show an option when no option is selected for the filter tag. <b>Note: This flag cannot be used for location filter.</b>'
+      type: string
+      example: Sales
+    tag_is_active:
+      type: boolean
+      description: Is the tag active
+      example: true
+    option_is_default:
+      type: boolean
+      description: Is the option default for the tag
+      example: true
+    option_is_active:
+      type: boolean
+      description: Is the option active for the tag
+      example: true
+    entities:
+      description: Entities that can only be enabled or disabled which can also be called as mono-preference entities.
+      type: array
+      items:
+        type: object
+        properties:
+          entity_name:
+            description: 'Entity Name<br>Possible Values:  <br>Customer - <code>customers</code>,  <br>Vendor - <code>vendors</code>,  <br>Item - <code>items</code>'
+            type: string
+            enum:
+              - customers
+              - vendors
+              - items
+          is_enabled:
+            description: Is Enabled
+            type: boolean
+            example: true
+      example:
+        - entity_name: customers
+          is_enabled: true
+        - entity_name: vendors
+          is_enabled: true
+        - entity_name: items
+          is_enabled: true
+    multi_preference_entities:
+      type: object
+      properties:
+        preference:
+          description: Preference type. Currently, only <code>'transaction' and 'line_item'</code> is supported for this node
+          type: string
+          example: line_item
+        entities:
+          description: Entities that can only be enabled or disabled
+          type: array
+          items:
+            type: object
+            properties:
+              entity_name:
+                description: 'Entity Name. Possible Values:  <br>Sales - <code>sales</code>,  <br>Purchases - <code>purchases</code>,  <br>Inventory Adjustment - <code>inventory_adjustment</code>'
+                type: string
+                enum:
+                  - Sales
+                  - Purchases
+                  - Inventory Adjustment
+              is_enabled:
+                description: Is Enabled
+                type: boolean
+                example: true
+      example:
+        preference: line_item
+        entities:
+          - entity_name: sales
+            is_enabled: true
+          - entity_name: purchases
+            is_enabled: true
+          - entity_name: inventory_adjustment
+            is_enabled: true
+    criteria_tags:
+      description: Filter tags and location
+      type: array
+      items:
+        type: object
+        properties:
+          tag_id:
+            $ref: '#/components/schemas/filter_tag_id'
+          type:
+            $ref: '#/components/schemas/filter_type'
+    criteria_options:
+      description: Options for criteria
+      type: array
+      items:
+        type: object
+        properties:
+          option_id:
+            $ref: '#/components/schemas/option_id'
+          criteria_options:
+            description: List containing filter tags and location
+            type: array
+            items:
+              type: object
+              properties:
+                tag_id:
+                  $ref: '#/components/schemas/filter_tag_id'
+                type:
+                  $ref: '#/components/schemas/filter_type'
+                options:
+                  description: Options selected for the criteria
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/option_id'
+    tag_response:
+      type: object
+      properties:
+        tag_id:
+          $ref: '#/components/schemas/tag_id'
+        tag_name:
+          $ref: '#/components/schemas/tag_name'
+        description:
+          $ref: '#/components/schemas/description'
+        is_mandatory:
+          $ref: '#/components/schemas/is_mandatory'
+        entities:
+          $ref: '#/components/schemas/entities'
+        multi_preference_entities:
+          $ref: '#/components/schemas/multi_preference_entities'
+    list-reporting-tags-response:
+      type: array
+      items:
+        type: object
+        properties:
+          tag_id:
+            $ref: '#/components/schemas/tag_id'
+          tag_name:
+            $ref: '#/components/schemas/tag_name'
+          tag_order:
+            $ref: '#/components/schemas/tag_order'
+          description:
+            $ref: '#/components/schemas/description'
+          is_active:
+            $ref: '#/components/schemas/tag_is_active'
+          is_mandatory:
+            $ref: '#/components/schemas/is_mandatory'
+          is_class:
+            $ref: '#/components/schemas/is_class'
+          is_draft:
+            $ref: '#/components/schemas/is_draft'
+      example:
+        - tag_id: '460000000038080'
+          tag_name: Business Unit
+          tag_order: 1
+          description: Description of the reporting tag
+          is_active: true
+          is_mandatory: false
+          is_class: false
+          is_draft: false
+        - tag_id: '460000000038081'
+          tag_name: Sales Region
+          tag_order: 2
+          description: Description of the reporting tag
+          is_active: true
+          is_mandatory: false
+          is_class: true
+          is_draft: false
+        - tag_id: '460000000038082'
+          tag_name: Department
+          tag_order: 3
+          description: Description of the reporting tag
+          is_active: false
+          is_mandatory: true
+          is_class: false
+          is_draft: true
+    update-reporting-tag-request:
+      required:
+        - tag_name
+        - entities
+        - multi_preference_entities
+      type: object
+      properties:
+        tag_name:
+          $ref: '#/components/schemas/tag_name'
+        description:
+          $ref: '#/components/schemas/description'
+        is_mandatory:
+          $ref: '#/components/schemas/is_mandatory'
+        entities:
+          $ref: '#/components/schemas/entities'
+        multi_preference_entities:
+          $ref: '#/components/schemas/multi_preference_entities'
+    update-options-request:
+      required:
+        - options
+      type: object
+      properties:
+        options:
+          type: array
+          description: Options selected for the criteria
+          items:
+            type: object
+            properties:
+              option_name:
+                $ref: '#/components/schemas/option_name'
+              option_id:
+                $ref: '#/components/schemas/option_id'
+              is_active:
+                $ref: '#/components/schemas/option_is_active'
+              is_default:
+                $ref: '#/components/schemas/option_is_default'
+              children:
+                type: array
+                description: Child options of the option.
+                items:
+                  type: object
+                  properties:
+                    option_id:
+                      description: Option ID
+                      type: string
+                      example: '460000000038082'
+                    option_name:
+                      description: Option Name
+                      type: string
+                      example: Sales - East
+                    is_active:
+                      $ref: '#/components/schemas/option_is_active'
+                    is_default:
+                      $ref: '#/components/schemas/option_is_default'
+      example:
+        options:
+          - option_id: '460000000038082'
+            option_name: ES-2003
+            is_active: true
+            is_default: true
+            children:
+              - option_id: '460000000038088'
+                children: []
+                option_name: ES-2003 Sec - B
+                is_active: true
+              - option_name: ES-2003 Sec - C
+                is_active: true
+                children:
+                  - children: []
+                    option_name: EES-2003
+                    is_active: true
+          - option_id: '460000000038084'
+            option_name: ES-N-2016
+            is_active: true
+            is_default: false
+            children: []
+          - option_id: '460000000038086'
+            option_name: HS & ES-N
+            is_active: true
+            is_default: false
+            children: []
+    update-options-response:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Options updated successfully
+    reporting-tags-response:
+      type: object
+      properties:
+        tag:
+          $ref: '#/components/schemas/tag_response'
+    update-criteria-request:
+      required:
+        - criteria_tags
+        - options
+      type: object
+      properties:
+        criteria_tags:
+          $ref: '#/components/schemas/criteria_tags'
+        options:
+          $ref: '#/components/schemas/criteria_options'
+    update-criteria-response:
+      type: object
+      properties:
+        message:
+          type: string
+          example: The criteria has been updated.
+    update-segmentation-response:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Segmentation modified successfully.
+    options-editpage-response:
+      type: object
+      properties:
+        message:
+          type: string
+          example: success
+        is_class:
+          $ref: '#/components/schemas/is_class'
+        is_draft:
+          $ref: '#/components/schemas/is_draft'
+        is_filter_configured:
+          type: boolean
+          description: If filter is configured for this tag, it will be <code>true</code>
+          example: true
+        tag_id:
+          $ref: '#/components/schemas/tag_id'
+        tag_name:
+          $ref: '#/components/schemas/tag_name'
+        options:
+          type: array
+          description: Options selected for the criteria
+          items:
+            type: object
+            properties:
+              option_id:
+                $ref: '#/components/schemas/option_id'
+              option_name:
+                $ref: '#/components/schemas/option_name'
+              is_active:
+                $ref: '#/components/schemas/option_is_active'
+              is_default:
+                $ref: '#/components/schemas/option_is_default'
+              children:
+                type: array
+                description: Child options of the option.
+                items:
+                  type: object
+                  properties:
+                    option_id:
+                      description: Option ID
+                      type: string
+                      example: '460000000038082'
+                    option_name:
+                      description: Option Name
+                      type: string
+                      example: Sales - East
+                    is_active:
+                      $ref: '#/components/schemas/option_is_active'
+                    is_default:
+                      $ref: '#/components/schemas/option_is_default'
+    editpage-segmentation-response:
+      type: object
+      properties:
+        is_class:
+          $ref: '#/components/schemas/is_class'
+        is_draft:
+          $ref: '#/components/schemas/is_draft'
+        tag_id:
+          $ref: '#/components/schemas/tag_id'
+        tag_name:
+          $ref: '#/components/schemas/tag_name'
+    dependent_tags:
+      type: array
+      description: The tags and location that is associated as filter for the tag
+      items:
+        type: object
+        properties:
+          dependent_id:
+            type: string
+            description: Dependent Tag's ID. If the dependent is location, value will be empty
+            example: 460000000038081
+          dependent_name:
+            type: string
+            description: Dependent Tag's Name. If the dependent is location, value will be <code>Location</code>
+            example: Sales
+          dependent_order:
+            type: integer
+            description: The order in which the dependent tags appear. If the dependent is location, value will be empty
+            example: 1
+          dependent_type:
+            type: string
+            description: 'Type of the dependent. Allowed values: Tag <code>tag</code>, Location <code>location</code>'
+            example: tag
+          dependent_options:
+            description: Options selected for the dependent tag. If the dependent is location, this will be empty
+            type: array
+            items:
+              type: object
+              properties:
+                dependent_option_id:
+                  type: string
+                  description: Dependent Option ID
+                  example: 460000000038083
+                dependent_option_name:
+                  type: string
+                  description: Dependent Option Name
+                  example: Sales - East
+                dependent_option_order:
+                  type: integer
+                  description: The order in which the options appear.
+                  example: 1
+          tag_name:
+            $ref: '#/components/schemas/tag_name'
+    possible_filter_tags:
+      description: List of tags that can be used as filter for the tag
+      type: array
+      items:
+        type: object
+        properties:
+          tag_id:
+            $ref: '#/components/schemas/tag_id'
+          tag_name:
+            $ref: '#/components/schemas/tag_name'
+          type:
+            type: string
+            description: 'Type of the tag. Allowed values: Tag <code>tag</code>, Location <code>location</code>'
+            example: tag
+          is_associated:
+            type: boolean
+            description: Indicates whether the tag is already associated as filter for the tag
+            example: true
+          is_restricted:
+            type: boolean
+            description: Indicates whether the tag is restricted to be used as filter for the tag
+            example: false
+          restricted_reason:
+            type: string
+            description: Reason for restriction, if any
+            example: The modules associated with this reporting tag are not set at the appropriate level compared to the current tag. Kindly refer to the requirements for a filter tag.
+    criteria_options_response:
+      type: array
+      description: Options selected for the criteria
+      items:
+        type: object
+        properties:
+          option_id:
+            $ref: '#/components/schemas/option_id'
+          option_name:
+            $ref: '#/components/schemas/option_name'
+          option_order:
+            type: integer
+            description: The order in which the options appear.
+            example: 1
+          parent_id:
+            type: string
+            description: Parent Option ID. If the options does not have a parent, this will be empty
+            example: '460000000038081'
+          parent_name:
+            type: string
+            description: Parent Option Name. If the options does not have a parent, this will be empty
+            example: Sales
+          is_active:
+            $ref: '#/components/schemas/option_is_active'
+          is_default:
+            $ref: '#/components/schemas/option_is_default'
+          criteria:
+            type: object
+            properties:
+              criteria_id:
+                type: string
+                description: Filter ID
+                example: '460000000038084'
+              tag_id:
+                $ref: '#/components/schemas/filter_tag_id'
+              type:
+                $ref: '#/components/schemas/filter_type'
+              options:
+                description: Options selected for the criteria
+                type: array
+                items:
+                  $ref: '#/components/schemas/filter_option_id'
+          children:
+            description: Child options of the option
+            type: array
+            items:
+              type: object
+              properties:
+                option_id:
+                  $ref: '#/components/schemas/option_id'
+                option_name:
+                  $ref: '#/components/schemas/option_name'
+                option_order:
+                  type: integer
+                  description: The order in which the options appear.
+                  example: 1
+                parent_id:
+                  type: string
+                  description: Parent Option ID. If the options does not have a parent, this will be empty
+                  example: '460000000038081'
+                parent_name:
+                  type: string
+                  description: Parent Option Name. If the options does not have a parent, this will be empty
+                  example: Sales
+                is_active:
+                  $ref: '#/components/schemas/option_is_active'
+                is_default:
+                  $ref: '#/components/schemas/option_is_default'
+                criteria:
+                  type: object
+                  properties:
+                    criteria_id:
+                      type: string
+                      description: Filter ID
+                      example: '460000000038084'
+                    tag_id:
+                      $ref: '#/components/schemas/filter_tag_id'
+                    type:
+                      $ref: '#/components/schemas/filter_type'
+                    options:
+                      description: Options selected for the criteria
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/filter_option_id'
+    criteria_options_response_for_details_page:
+      type: array
+      description: Options selected for the criteria
+      items:
+        type: object
+        properties:
+          option_id:
+            $ref: '#/components/schemas/option_id'
+          option_name:
+            $ref: '#/components/schemas/option_name'
+          option_order:
+            type: integer
+            description: The order in which the options appear.
+            example: 1
+          parent_id:
+            type: string
+            description: Parent Option ID. If the options does not have a parent, this will be empty
+            example: '460000000038081'
+          parent_name:
+            type: string
+            description: Parent Option Name. If the options does not have a parent, this will be empty
+            example: Sales
+          is_active:
+            $ref: '#/components/schemas/option_is_active'
+          is_default:
+            $ref: '#/components/schemas/option_is_default'
+          criteria:
+            type: object
+            properties:
+              criteria_id:
+                type: string
+                description: Filter ID
+                example: '460000000038084'
+              tag_id:
+                $ref: '#/components/schemas/filter_tag_id'
+              type:
+                $ref: '#/components/schemas/filter_type'
+              options:
+                description: Options selected for the criteria
+                type: array
+                items:
+                  $ref: '#/components/schemas/filter_option_name'
+          children:
+            description: Child options of the option
+            type: array
+            items:
+              type: object
+              properties:
+                option_id:
+                  $ref: '#/components/schemas/option_id'
+                option_name:
+                  $ref: '#/components/schemas/option_name'
+                option_order:
+                  type: integer
+                  description: The order in which the options appear.
+                  example: 1
+                parent_id:
+                  type: string
+                  description: Parent Option ID. If the options does not have a parent, this will be empty
+                  example: '460000000038081'
+                parent_name:
+                  type: string
+                  description: Parent Option Name. If the options does not have a parent, this will be empty
+                  example: Sales
+                is_active:
+                  $ref: '#/components/schemas/option_is_active'
+                is_default:
+                  $ref: '#/components/schemas/option_is_default'
+                criteria:
+                  type: object
+                  properties:
+                    criteria_id:
+                      type: string
+                      description: Filter ID
+                      example: '460000000038084'
+                    tag_id:
+                      $ref: '#/components/schemas/filter_tag_id'
+                    type:
+                      $ref: '#/components/schemas/filter_type'
+                    options:
+                      description: Options selected for the criteria
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/filter_option_id'
+      example:
+        - option_id: '460000000038081'
+          option_name: Sales
+          is_active: true
+          is_default: false
+          depth: 0
+          option_order: 1
+          parent_id: ''
+          parent_name: ''
+          criteria:
+            - options:
+                - Asia
+                - India
+                - Europe
+              criteria_id: '460000000048081'
+              tag_id: ''
+              type: location
+            - options:
+                - Untagged
+                - Government
+                - Military / Defense
+              criteria_id: '460000000048083'
+              tag_id: '460000000038078'
+              type: tag
+          children:
+            - option_id: '460000000038083'
+              option_name: Sales - Central
+              children: []
+              is_active: true
+              is_default: false
+              depth: 0
+              option_order: 2
+              parent_id: ''
+              parent_name: ''
+              criteria:
+                - options:
+                    - Asia
+                    - North America
+                  criteria_id: '460000000048081'
+                  tag_id: ''
+                  type: location
+                - options:
+                    - All
+                  criteria_id: '460000000048083'
+                  tag_id: '460000000038078'
+                  type: tag
+    editpage-criteria-response:
+      type: object
+      properties:
+        message:
+          type: string
+          example: success
+        dependent_tags:
+          $ref: '#/components/schemas/dependent_tags'
+        is_class:
+          $ref: '#/components/schemas/is_class'
+        is_draft:
+          $ref: '#/components/schemas/is_draft'
+        tag_id:
+          $ref: '#/components/schemas/tag_id'
+        tag_name:
+          $ref: '#/components/schemas/tag_name'
+        tags:
+          $ref: '#/components/schemas/possible_filter_tags'
+        options:
+          $ref: '#/components/schemas/criteria_options_response'
+      example:
+        - code: 0
+          message: success
+          tag_id: '460000000038055'
+          tag_name: Department
+          is_class: false
+          is_draft: false
+          dependent_tags:
+            - dependent_id: ''
+              dependent_name: Location
+              dependent_order: ''
+              dependent_type: location
+              dependent_options:
+                - dependent_option_id: '460000000039786'
+                  dependent_option_name: Head Office
+                  dependent_option_order: ''
+                - dependent_option_id: '460000000039788'
+                  dependent_option_name: Central Warehouse
+                  dependent_option_order: ''
+            - dependent_id: '460000000038081'
+              dependent_name: Business Unit
+              dependent_order: '1'
+              dependent_type: tag
+              dependent_options:
+                - dependent_option_id: '460000000038038'
+                  dependent_option_name: Public
+                  dependent_option_order: '1'
+                - dependent_option_id: '460000000038083'
+                  dependent_option_name: Private
+                  dependent_option_order: '1'
+                - dependent_option_id: '460000000038085'
+                  dependent_option_name: NGO
+                  dependent_option_order: '2'
+          tags:
+            - tag_id: ''
+              tag_name: Location
+              type: location
+              is_restricted: false
+              is_associated: true
+              restricted_reason: ''
+            - tag_id: '460000000038080'
+              tag_name: Business Unit
+              type: tag
+              is_restricted: false
+              is_associated: true
+              restricted_reason: ''
+            - tag_id: '460000000038057'
+              tag_name: Feedback
+              type: tag
+              is_restricted: true
+              is_associated: false
+              restricted_reason: The modules associated with this reporting tag are not set at the appropriate level compared to the current tag. Kindly refer to the requirements for a filter tag.
+          options:
+            - option_id: '460000000054012'
+              option_name: Sales
+              children:
+                - option_id: '460000000054014'
+                  option_name: Sales - East
+                  children: []
+                  is_active: true
+                  is_default: false
+                  depth: 0
+                  option_order: 1
+                  parent_id: ''
+                  parent_name: ''
+                  criteria:
+                    - options:
+                        - '460000000038083'
+                        - untagged
+                      tag_id: ''
+                      type: location
+              is_active: true
+              is_default: false
+              depth: 0
+              option_order: 1
+              parent_id: ''
+              parent_name: ''
+              criteria:
+                - options:
+                    - all
+                  tag_id: ''
+                  type: location
+            - option_id: '460000000054016'
+              option_name: Marketing
+              children: []
+              is_active: true
+              is_default: false
+              depth: 0
+              option_order: 2
+              parent_id: ''
+              parent_name: ''
+              criteria:
+                - options:
+                    - '460000000038038'
+                    - untagged
+                  tag_id: ''
+                  type: location
+          locations:
+            - location_name: Head Office
+              depth: 0
+              location_id: '460000000039786'
+            - location_name: Central Warehouse
+              depth: 1
+              location_id: '460000000039788'
+            - location_name: East Hill
+              depth: 2
+              location_id: '460000000039790'
+    mark-default_option-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+        message:
+          type: string
+          example: The option has been marked as default.
+    autocomplete_response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+        message:
+          type: string
+          example: success
+        results:
+          type: array
+          description: List of reporting tags matching the search criteria
+          items:
+            type: object
+            properties:
+              id:
+                $ref: '#/components/schemas/option_id'
+              text:
+                $ref: '#/components/schemas/option_name'
+              depth:
+                $ref: '#/components/schemas/depth'
+    all_options_response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+        message:
+          type: string
+          example: success
+        results:
+          type: array
+          description: List of all options under a reporting tag
+          items:
+            type: object
+            properties:
+              option_id:
+                type: string
+                description: Option ID or <code>untagged</code> for untagged option if the show_untagged is true
+                example: '460000000038082'
+              option_name:
+                type: string
+                description: Option's name or 'Untagged' for untagged option if the show_untagged is true
+                example: Sales
+              depth:
+                $ref: '#/components/schemas/depth'
+          example:
+            - option_id: '460000000038081'
+              option_name: Sales
+              depth: 0
+            - option_id: '460000000038083'
+              option_name: Sales - Central
+              depth: 1
+            - option_id: untagged
+              option_name: Untagged
+              depth: 0
+    options_detail_page_response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+        message:
+          type: string
+          example: success
+        dependent_tags:
+          $ref: '#/components/schemas/dependent_tags'
+          example:
+            - dependent_id: ''
+              dependent_name: Location
+              dependent_type: location
+              dependent_order: ''
+              dependent_options:
+                - dependent_option_id: '460000000058078'
+                  dependent_option_name: Europe
+                  dependent_option_order: ''
+                - dependent_option_id: '460000000058080'
+                  dependent_option_name: Asia
+                  dependent_option_order: ''
+                - dependent_option_id: '460000000058082'
+                  dependent_option_name: India
+                  dependent_option_order: ''
+                - dependent_option_id: '460000000058084'
+                  dependent_option_name: North America
+                  dependent_option_order: ''
+            - dependent_id: '460000000038078'
+              dependent_name: Business Type
+              dependent_type: tag
+              dependent_order: 1
+              dependent_options:
+                - dependent_option_id: '460000000038080'
+                  dependent_option_name: Government
+                  dependent_option_order: ''
+                - dependent_option_id: '460000000038076'
+                  dependent_option_name: Military / Defense
+                  dependent_option_order: ''
+        description:
+          $ref: '#/components/schemas/description'
+        is_class:
+          $ref: '#/components/schemas/is_class'
+        is_draft:
+          $ref: '#/components/schemas/is_draft'
+        tag_id:
+          $ref: '#/components/schemas/tag_id'
+        tag_name:
+          $ref: '#/components/schemas/tag_name'
+        options:
+          $ref: '#/components/schemas/criteria_options_response_for_details_page'
+        page_context:
+          type: object
+          properties:
+            page:
+              type: integer
+              example: 1
+            per_page:
+              type: integer
+              example: 200
+            has_more_page:
+              type: boolean
+              example: false
+  securitySchemes:
+    Zoho_Auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://accounts.zoho.com/oauth/v2/auth
+          scopes:
+            ZohoInventory.settings.CREATE: Create Settings
+            ZohoInventory.settings.UPDATE: Update Settings
+            ZohoInventory.settings.READ: Read Settings
+            ZohoInventory.settings.DELETE: Delete Settings

@@ -1,0 +1,212 @@
+import type {
+  ApplyCreditsToBillRequest,
+  ApplyCreditsToBillResponse,
+  ApproveVendorCreditResponse,
+  ConvertToOpenResponse,
+  CreateVendorCreditRequest,
+  CreateVendorCreditResponse,
+  GetVendorCreditRefundResponse,
+  GetVendorCreditResponse,
+  ListBillsCreditedResponse,
+  ListRefundsOfVendorCreditResponse,
+  ListVendorCreditCommentsAndHistoryResponse,
+  ListVendorCreditRefundsResponse,
+  ListVendorCreditsResponse,
+  RefundVendorCreditRequest,
+  RefundVendorCreditResponse,
+  SubmitVendorCreditForApprovalResponse,
+  UpdateVendorCreditRefundRequest,
+  UpdateVendorCreditRefundResponse,
+  UpdateVendorCreditRequest,
+  UpdateVendorCreditResponse,
+  VendorCreditsAddCommentRequest,
+  VendorCreditsAddCommentResponse,
+  VoidVendorCreditResponse,
+} from '@zapi-inventory/typegen'
+
+import type { HTTPClient } from '../http.ts'
+
+export class VendorCredits {
+  constructor(private readonly http: HTTPClient) {}
+
+  async list(
+    params?: Record<string, string | number | boolean | undefined>
+  ): Promise<ListVendorCreditsResponse['vendorcredits']> {
+    const { vendorcredits } = await this.http.get<ListVendorCreditsResponse>({
+      path: ['vendorcredits'],
+      query: { ...params },
+    })
+    return vendorcredits
+  }
+
+  async create(
+    data: CreateVendorCreditRequest,
+    params?: Record<string, string | number | boolean | undefined>
+  ): Promise<CreateVendorCreditResponse['vendor_credit']> {
+    const { vendor_credit } = await this.http.post<CreateVendorCreditResponse>({
+      path: ['vendorcredits'],
+      query: { ...params },
+      body: data,
+    })
+    return vendor_credit
+  }
+
+  async get(
+    vendorCreditId: string,
+    params?: Record<string, string | number | boolean | undefined>
+  ): Promise<GetVendorCreditResponse['vendor_credit']> {
+    const { vendor_credit } = await this.http.get<GetVendorCreditResponse>({
+      path: ['vendorcredits', vendorCreditId],
+      query: { ...params },
+    })
+    return vendor_credit
+  }
+
+  async update(
+    vendorCreditId: string,
+    data: UpdateVendorCreditRequest
+  ): Promise<UpdateVendorCreditResponse['vendor_credit']> {
+    const { vendor_credit } = await this.http.put<UpdateVendorCreditResponse>({
+      path: ['vendorcredits', vendorCreditId],
+      body: data,
+    })
+    return vendor_credit
+  }
+
+  async delete(vendorCreditId: string): Promise<void> {
+    await this.http.delete({ path: ['vendorcredits', vendorCreditId] })
+  }
+
+  async markAsOpen(vendorCreditId: string): Promise<ConvertToOpenResponse> {
+    return this.http.post<ConvertToOpenResponse>({
+      path: ['vendorcredits', vendorCreditId, 'status', 'open'],
+    })
+  }
+
+  async markAsVoid(vendorCreditId: string): Promise<VoidVendorCreditResponse> {
+    return this.http.post<VoidVendorCreditResponse>({
+      path: ['vendorcredits', vendorCreditId, 'status', 'void'],
+    })
+  }
+
+  async submit(vendorCreditId: string): Promise<SubmitVendorCreditForApprovalResponse> {
+    return this.http.post<SubmitVendorCreditForApprovalResponse>({
+      path: ['vendorcredits', vendorCreditId, 'submit'],
+    })
+  }
+
+  async approve(vendorCreditId: string): Promise<ApproveVendorCreditResponse> {
+    return this.http.post<ApproveVendorCreditResponse>({
+      path: ['vendorcredits', vendorCreditId, 'approve'],
+    })
+  }
+
+  async listBills(vendorCreditId: string): Promise<ListBillsCreditedResponse['bills_credited']> {
+    const { bills_credited } = await this.http.get<ListBillsCreditedResponse>({
+      path: ['vendorcredits', vendorCreditId, 'bills'],
+    })
+    return bills_credited
+  }
+
+  async applyToBill(
+    vendorCreditId: string,
+    data: ApplyCreditsToBillRequest
+  ): Promise<ApplyCreditsToBillResponse> {
+    return this.http.post<ApplyCreditsToBillResponse>({
+      path: ['vendorcredits', vendorCreditId, 'bills'],
+      body: data,
+    })
+  }
+
+  async deleteBill(vendorCreditId: string, vendorCreditBillId: string): Promise<void> {
+    await this.http.delete({
+      path: ['vendorcredits', vendorCreditId, 'bills', vendorCreditBillId],
+    })
+  }
+
+  async listRefunds(
+    vendorCreditId: string,
+    params?: Record<string, string | number | boolean | undefined>
+  ): Promise<ListRefundsOfVendorCreditResponse['vendor_credit_refunds']> {
+    const { vendor_credit_refunds } = await this.http.get<ListRefundsOfVendorCreditResponse>({
+      path: ['vendorcredits', vendorCreditId, 'refunds'],
+      query: { ...params },
+    })
+    return vendor_credit_refunds
+  }
+
+  async createRefund(
+    vendorCreditId: string,
+    data: RefundVendorCreditRequest
+  ): Promise<RefundVendorCreditResponse['vendor_credit_refund']> {
+    const { vendor_credit_refund } = await this.http.post<RefundVendorCreditResponse>({
+      path: ['vendorcredits', vendorCreditId, 'refunds'],
+      body: data,
+    })
+    return vendor_credit_refund
+  }
+
+  async getRefund(
+    vendorCreditId: string,
+    vendorCreditRefundId: string
+  ): Promise<GetVendorCreditRefundResponse['vendor_credit_refund']> {
+    const { vendor_credit_refund } = await this.http.get<GetVendorCreditRefundResponse>({
+      path: ['vendorcredits', vendorCreditId, 'refunds', vendorCreditRefundId],
+    })
+    return vendor_credit_refund
+  }
+
+  async updateRefund(
+    vendorCreditId: string,
+    vendorCreditRefundId: string,
+    data: UpdateVendorCreditRefundRequest
+  ): Promise<UpdateVendorCreditRefundResponse['vendor_credit_refund']> {
+    const { vendor_credit_refund } = await this.http.put<UpdateVendorCreditRefundResponse>({
+      path: ['vendorcredits', vendorCreditId, 'refunds', vendorCreditRefundId],
+      body: data,
+    })
+    return vendor_credit_refund
+  }
+
+  async deleteRefund(vendorCreditId: string, vendorCreditRefundId: string): Promise<void> {
+    await this.http.delete({
+      path: ['vendorcredits', vendorCreditId, 'refunds', vendorCreditRefundId],
+    })
+  }
+
+  async listAllRefunds(
+    params?: Record<string, string | number | boolean | undefined>
+  ): Promise<ListVendorCreditRefundsResponse['vendor_credit_refunds']> {
+    const { vendor_credit_refunds } = await this.http.get<ListVendorCreditRefundsResponse>({
+      path: ['vendorcredits', 'refunds'],
+      query: { ...params },
+    })
+    return vendor_credit_refunds
+  }
+
+  async listComments(
+    vendorCreditId: string
+  ): Promise<ListVendorCreditCommentsAndHistoryResponse['comments']> {
+    const { comments } = await this.http.get<ListVendorCreditCommentsAndHistoryResponse>({
+      path: ['vendorcredits', vendorCreditId, 'comments'],
+    })
+    return comments
+  }
+
+  async addComment(
+    vendorCreditId: string,
+    data: VendorCreditsAddCommentRequest
+  ): Promise<VendorCreditsAddCommentResponse['comment']> {
+    const { comment } = await this.http.post<VendorCreditsAddCommentResponse>({
+      path: ['vendorcredits', vendorCreditId, 'comments'],
+      body: data,
+    })
+    return comment
+  }
+
+  async deleteComment(vendorCreditId: string, commentId: string): Promise<void> {
+    await this.http.delete({
+      path: ['vendorcredits', vendorCreditId, 'comments', commentId],
+    })
+  }
+}

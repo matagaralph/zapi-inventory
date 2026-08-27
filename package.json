@@ -1,0 +1,28 @@
+{
+  "name": "zapi-inventory",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "generate": "turbo run generate",
+    "build": "turbo run build",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "format": "oxfmt --write",
+    "format:check": "oxfmt --check",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "husky": "^9.1.7",
+    "oxfmt": "^0.65.0",
+    "oxlint": "^1.80.0",
+    "turbo": "^2.10.12"
+  },
+  "peerDependencies": {
+    "typescript": "^7"
+  },
+  "packageManager": "bun@1.4.0"
+}

@@ -1,0 +1,1071 @@
+openapi: 3.0.0
+info:
+  title: Putaways
+  description: Putaways let you record stock moved into storage locations after inbound operations. Use these APIs to create, update, list, and delete putaway transactions in Zoho Inventory.
+  contact: {}
+  version: 1.0.0
+servers:
+  - url: https://www.zohoapis.com/inventory/v1
+    description: API Endpoint
+tags:
+  - name: putaways
+    description: Putaways Module
+paths:
+  /putaways:
+    x-mcp-group:
+      - Putaways
+    post:
+      tags:
+        - putaways
+      operationId: create_putaway
+      summary: Create a putaway
+      description: Creates a new putaway transaction in Zoho Inventory.
+      parameters:
+        - name: ignore_auto_number_generation
+          in: query
+          description: When auto number generation is enabled for putaways, set to true to supply your own putaway number instead of using the auto-generated value. Default is false.
+          required: false
+          schema:
+            type: boolean
+          example: false
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-a-putaway-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-a-putaway-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.putaway.CREATE
+    get:
+      tags:
+        - putaways
+      operationId: list_putaways
+      summary: List all putaways
+      description: Lists putaway transactions with optional filters and pagination.
+      parameters:
+        - name: page
+          in: query
+          description: Page number to fetch. Default is 1.
+          required: false
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: per_page
+          in: query
+          description: Number of records per page. Default is 200.
+          required: false
+          schema:
+            type: integer
+            default: 200
+          example: 200
+        - name: sort_column
+          in: query
+          description: Column used for sorting the list.
+          required: false
+          schema:
+            type: string
+          example: created_time
+        - name: sort_order
+          in: query
+          description: Sort order. A for ascending, D for descending.
+          required: false
+          schema:
+            type: string
+            enum:
+              - A
+              - D
+          example: D
+        - name: filter_by
+          in: query
+          description: Filter expression supported by the putaway list view.
+          required: false
+          schema:
+            type: string
+        - name: customview_id
+          in: query
+          description: Custom view ID to apply.
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: putaway_number
+          in: query
+          description: Search by putaway number.
+          required: false
+          schema:
+            type: string
+        - name: date
+          in: query
+          description: Filter by putaway date (yyyy-mm-dd).
+          required: false
+          schema:
+            type: string
+        - name: warehouse_id
+          in: query
+          description: Filter by warehouse ID.
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: location_id
+          in: query
+          description: Filter by location (branch) ID when locations are enabled.
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-putaways-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.putaway.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /putaways/{putaway_id}:
+    x-mcp-group:
+      - Putaways
+    get:
+      tags:
+        - putaways
+      operationId: get_putaway
+      summary: Retrieve a putaway
+      description: Fetches details of an existing putaway, including line items.
+      parameters:
+        - name: include
+          in: query
+          description: When set to HTML, additional HTML content may be included in the response when supported.
+          required: false
+          schema:
+            type: string
+        - name: print
+          in: query
+          description: 'Export putaway pdf with default print option. Allowed Values: <code>true</code>, <code>false</code>'
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-a-putaway-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.putaway.READ
+    put:
+      tags:
+        - putaways
+      operationId: update_putaway
+      summary: Update a putaway
+      description: Updates an existing putaway transaction.
+      parameters:
+        - name: ignore_auto_number_generation
+          in: query
+          description: When auto number generation is enabled for putaways, set to true to keep a manually supplied putaway number. Default is false.
+          required: false
+          schema:
+            type: boolean
+          example: false
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-a-putaway-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-a-putaway-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.putaway.UPDATE
+    delete:
+      tags:
+        - putaways
+      operationId: delete_putaway
+      summary: Delete a putaway
+      description: Deletes an existing putaway transaction.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-a-putaway-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.putaway.DELETE
+    parameters:
+      - name: putaway_id
+        in: path
+        required: true
+        description: Unique identifier of the putaway.
+        schema:
+          type: string
+        example: '4815000000044895'
+      - $ref: '#/components/parameters/organization_id'
+  /putaways/{putaway_id}/comments:
+    x-mcp-group:
+      - Putaways
+    get:
+      tags:
+        - putaways
+      operationId: list_putaway_comments
+      summary: List comments for a putaway
+      description: Returns all comments recorded on a putaway.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-putaway-comments-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.putaway.READ
+    parameters:
+      - name: putaway_id
+        in: path
+        required: true
+        description: Unique identifier of the putaway.
+        schema:
+          type: string
+        example: '4815000000044895'
+      - $ref: '#/components/parameters/organization_id'
+  /putaways/{putaway_id}/attachment:
+    x-mcp-group:
+      - Putaways
+    post:
+      tags:
+        - putaways
+      operationId: add_putaway_attachment
+      summary: Attach files to a putaway
+      description: Uploads one or more files and associates them with the putaway.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                attachment:
+                  type: string
+                  format: binary
+                  description: File to attach.
+                doc:
+                  type: string
+                  description: Optional JSON metadata for the document.
+                totalFiles:
+                  type: integer
+                  description: Number of file parts included in this multipart request when the client sends multiple attachments.
+                document_ids:
+                  type: string
+                  description: Comma-separated existing document IDs when applicable.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/putaway-attachment-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.putaway.CREATE
+    parameters:
+      - name: putaway_id
+        in: path
+        required: true
+        description: Unique identifier of the putaway.
+        schema:
+          type: string
+        example: '4815000000044895'
+      - $ref: '#/components/parameters/organization_id'
+  /putaways/{putaway_id}/documents/{document_id}:
+    x-mcp-group:
+      - Putaways
+    get:
+      tags:
+        - putaways
+      operationId: get_putaway_document
+      summary: Download a putaway document
+      description: Returns the binary content of an attached document (image or PDF).
+      parameters:
+        - name: image_size
+          in: query
+          description: Preferred image size when the service returns a rasterized preview.
+          required: false
+          schema:
+            type: string
+            enum:
+              - xlarge
+              - large
+              - small
+              - tiny
+        - name: print
+          in: query
+          description: 'Allowed Values: <code>true</code>, <code>false</code>'
+          required: false
+          schema:
+            type: boolean
+        - name: inline
+          in: query
+          description: When true, the response may be suitable for inline display in a browser when supported.
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+              examples:
+                binary_body:
+                  summary: Raw document bytes
+                  description: Response is binary PDF or image data, not a JSON envelope.
+                  value: << binary body >>
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.putaway.READ
+    delete:
+      tags:
+        - putaways
+      operationId: delete_putaway_document
+      summary: Remove an attachment from a putaway
+      description: Deletes or unlinks a document from the putaway.
+      parameters:
+        - name: un_associate
+          in: query
+          description: When true, only dissociates the file without deleting the underlying document when supported.
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-a-putaway-document-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.putaway.DELETE
+    parameters:
+      - name: putaway_id
+        in: path
+        required: true
+        description: Unique identifier of the putaway.
+        schema:
+          type: string
+        example: '4815000000044895'
+      - name: document_id
+        in: path
+        required: true
+        description: Unique identifier of the document.
+        schema:
+          type: string
+        example: '4815000000044897'
+      - $ref: '#/components/parameters/organization_id'
+  /settings/putaways:
+    x-mcp-group:
+      - Putaways
+    get:
+      tags:
+        - putaways
+      operationId: get_putaway_settings
+      summary: Get putaway auto number generation settings
+      description: Returns auto number generation preferences for putaways.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-putaway-settings-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+components:
+  parameters:
+    organization_id:
+      name: organization_id
+      description: ID of the organization
+      in: query
+      required: true
+      schema:
+        type: string
+      example: '10234695'
+  schemas:
+    gendoc-attributes-schema:
+      $ref: '#/components/schemas/putaway-response'
+    putaway-settings:
+      type: object
+      properties:
+        auto_generate:
+          type: boolean
+          description: Whether putaway numbers are auto-generated.
+        prefix_string:
+          type: string
+          description: Prefix for auto-generated putaway numbers.
+        next_number:
+          type: string
+          description: Next number in the auto-number sequence.
+    putaway-line-batch-node:
+      type: object
+      description: One batch allocation on a putaway line when batch tracking is enabled (see server BatchNumberCreate / BatchNumberEdit).
+      properties:
+        batch_id:
+          type: integer
+          format: int64
+          description: Existing inventory batch ID when selecting stock from an existing batch.
+        batch_in_id:
+          type: integer
+          format: int64
+          description: Batch-in row reference when supplied by the client.
+        batch_number:
+          type: string
+          description: Batch number for a new batch line when not using an existing batch_id.
+        manufacturer_batch_number:
+          type: string
+          description: Manufacturer or external batch reference.
+        manufactured_date:
+          type: string
+          description: Manufacturing date (yyyy-mm-dd).
+        expiry_date:
+          type: string
+          description: Expiry date (yyyy-mm-dd).
+        in_quantity:
+          type: number
+          format: double
+          description: Quantity for this batch when the line quantity is split across batches.
+        sales_rate:
+          type: number
+          format: double
+          description: Selling rate for the batch when batch pricing is enabled.
+        label_rate:
+          type: number
+          format: double
+          description: Label (MRP) rate for the batch when applicable.
+        balance_quantity:
+          type: number
+          format: double
+          readOnly: true
+          description: On read, returns the remaining quantity in the batch.
+        status:
+          type: string
+          readOnly: true
+          description: On read, batch status when returned by the service.
+    putaway-line-serial-node:
+      type: object
+      description: Serial number row for a putaway line when serial tracking is enabled.
+      properties:
+        serialnumber_id:
+          type: integer
+          format: int64
+          description: Serial number master record ID.
+        serial_number:
+          type: string
+          description: Serial code.
+        status:
+          type: string
+          description: Serial status when returned by the service.
+    putaway-line-storage-node:
+      type: object
+      description: Storage-bin allocation for a putaway line when storage tracking is enabled.
+      properties:
+        storage_id:
+          type: integer
+          format: int64
+          description: Storage location ID.
+        quantity:
+          type: number
+          format: double
+          description: Quantity put away into this storage for the line.
+    putaway-document-attachment:
+      type: object
+      description: File attached to a putaway (DocumentDetailsForEntity).
+      properties:
+        document_id:
+          type: integer
+          format: int64
+          description: Attachment document ID; use with GET/DELETE `/putaways/{putaway_id}/documents/{document_id}`.
+        file_name:
+          type: string
+          description: Original file name.
+        file_type:
+          type: string
+          description: MIME or file type classification.
+        file_size:
+          type: integer
+          format: int64
+          description: File size in bytes.
+        file_size_formatted:
+          type: string
+          description: Human-readable file size.
+    serial_numbers:
+      description: Serial numbers for the line item. Applicable only for items with serial tracking enabled.
+      type: array
+      items:
+        type: string
+        example: ARMP-0078
+    batches:
+      description: Batches for the line item. Reference an existing batch using <code>batch_id</code>. Applicable only for items with batch tracking enabled.
+      type: array
+      items:
+        type: object
+        required:
+          - in_quantity
+        properties:
+          batch_id:
+            description: Unique identifier of a batch. Use when adding inward quantity to an existing batch or updating a batch.
+            type: string
+            example: '6780203000001066789'
+          in_quantity:
+            description: Inward quantity for the batch.
+            type: number
+            format: float
+            example: 2
+          storages:
+            description: Bin locations allocated for stock received against this batch.
+            type: array
+            x-node_available_in:
+              - Batch with Bin tracked items
+            items:
+              type: object
+              required:
+                - storage_id
+                - in_quantity
+              properties:
+                storage_id:
+                  description: Unique identifier of the bin location.
+                  type: string
+                  example: '6780203000001066003'
+                in_quantity:
+                  description: Inward quantity into the bin.
+                  type: number
+                  format: float
+                  example: 2
+    storages:
+      description: Bin locations allocated for the line item. Applicable only for items with bin tracking enabled.
+      type: array
+      items:
+        type: object
+        required:
+          - storage_id
+          - in_quantity
+        properties:
+          storage_id:
+            description: Unique identifier of the bin location.
+            type: string
+            example: '6780203000000093226'
+          in_quantity:
+            description: Inward quantity into the bin.
+            type: number
+            format: float
+            example: 2
+          serial_numbers:
+            description: Serial numbers allocated to this bin.
+            type: array
+            x-node_available_in:
+              - Serial with Bin tracked items
+            items:
+              type: string
+              example: TC-IO-09
+    batches-update:
+      description: Batches for the line item. Reference an existing batch using <code>batch_id</code>. Applicable only for items with batch tracking enabled.
+      type: array
+      items:
+        type: object
+        required:
+          - in_quantity
+        properties:
+          batch_id:
+            description: Unique identifier of a batch. Use when adding inward quantity to an existing batch or updating a batch.
+            type: string
+            example: '6780203000001066789'
+          in_quantity:
+            description: Inward quantity for the batch.
+            type: number
+            format: float
+            example: 2
+          batch_in_id:
+            description: Unique identifier of the batch record. Applicable only when updating an existing batch entry.
+            type: string
+            example: '6780203000001066797'
+          storages:
+            description: Bin locations allocated for stock received against this batch.
+            type: array
+            x-node_available_in:
+              - Batch with Bin tracked items
+            items:
+              type: object
+              required:
+                - storage_id
+                - in_quantity
+              properties:
+                storage_id:
+                  description: Unique identifier of the bin location.
+                  type: string
+                  example: '6780203000001066003'
+                storage_in_id:
+                  description: Unique identifier of the storage record. Applicable only when updating an existing storage entry.
+                  type: string
+                  example: '6780203000001066792'
+                in_quantity:
+                  description: Inward quantity into the bin.
+                  type: number
+                  format: float
+                  example: 2
+    storages-update:
+      description: Bin locations allocated for the line item. Applicable only for items with bin tracking enabled.
+      type: array
+      items:
+        type: object
+        required:
+          - storage_id
+          - in_quantity
+        properties:
+          storage_id:
+            description: Unique identifier of the bin location.
+            type: string
+            example: '6780203000000093226'
+          storage_in_id:
+            description: Unique identifier of the storage record. Applicable only when updating an existing storage entry.
+            type: string
+            example: '6780203000001066795'
+          in_quantity:
+            description: Inward quantity into the bin.
+            type: number
+            format: float
+            example: 2
+          serial_numbers:
+            description: Serial numbers allocated to this bin.
+            type: array
+            x-node_available_in:
+              - Serial with Bin tracked items
+            items:
+              type: string
+              example: TC-IO-09
+    putaway-line-item-request:
+      type: object
+      required:
+        - item_id
+        - quantity_transferred
+      properties:
+        line_item_id:
+          type: integer
+          format: int64
+          description: Line item ID returned by the server. Required on update when modifying existing line items.
+        item_id:
+          type: integer
+          format: int64
+          description: Item (product) ID for the line. Required for every line item (same role as <code>item_id</code> on transfer order line items).
+        description:
+          type: string
+          description: Line-level description or notes for the item. Optional.
+        quantity_transferred:
+          type: number
+          format: double
+          description: Quantity put away for this line. Required for every line item (same role as <code>quantity_transfer</code> on transfer orders).
+        serial_numbers:
+          $ref: '#/components/schemas/serial_numbers'
+        batches:
+          $ref: '#/components/schemas/batches'
+        storages:
+          $ref: '#/components/schemas/storages'
+    putaway-line-item-request-update:
+      type: object
+      required:
+        - item_id
+        - quantity_transferred
+      properties:
+        line_item_id:
+          type: integer
+          format: int64
+          description: Line item ID returned by the server. Required on update when modifying existing line items.
+        item_id:
+          type: integer
+          format: int64
+          description: Item (product) ID for the line. Required for every line item (same role as <code>item_id</code> on transfer order line items).
+        description:
+          type: string
+          description: Line-level description or notes for the item. Optional.
+        quantity_transferred:
+          type: number
+          format: double
+          description: Quantity put away for this line. Required for every line item (same role as <code>quantity_transfer</code> on transfer orders).
+        serial_numbers:
+          $ref: '#/components/schemas/serial_numbers'
+        batches:
+          $ref: '#/components/schemas/batches-update'
+        storages:
+          $ref: '#/components/schemas/storages-update'
+    create-a-putaway-request:
+      type: object
+      required:
+        - date
+        - line_items
+      properties:
+        putaway_number:
+          type: string
+          description: Putaway number; optional when auto-generation is enabled.
+        date:
+          type: string
+          description: Transaction date (yyyy-mm-dd).
+        warehouse_id:
+          type: integer
+          format: int64
+          description: Warehouse ID when warehouses are enabled.
+        location_id:
+          type: integer
+          format: int64
+          description: Location (branch) ID when locations are enabled.
+        notes:
+          type: string
+          description: Internal notes for the putaway.
+        line_items:
+          type: array
+          description: 'A putaway can contain multiple line items. Each object must include <code>item_id</code> and <code>quantity_transferred</code>. Optional fields: <code>line_item_id</code> (required on update for existing lines), <code>description</code>, <code>serial_numbers</code>, <code>batches</code>, and <code>storages</code> when serial, batch, or bin storage tracking applies in your organization.'
+          items:
+            $ref: '#/components/schemas/putaway-line-item-request'
+    update-a-putaway-request:
+      type: object
+      required:
+        - date
+        - line_items
+      properties:
+        putaway_number:
+          type: string
+          description: Putaway number; optional when auto-generation is enabled.
+        date:
+          type: string
+          description: Transaction date (yyyy-mm-dd).
+        warehouse_id:
+          type: integer
+          format: int64
+          description: Warehouse ID when warehouses are enabled.
+        location_id:
+          type: integer
+          format: int64
+          description: Location (branch) ID when locations are enabled.
+        notes:
+          type: string
+          description: Internal notes for the putaway.
+        line_items:
+          type: array
+          description: 'A putaway can contain multiple line items. Each object must include <code>item_id</code> and <code>quantity_transferred</code>. Optional fields: <code>line_item_id</code> (required on update for existing lines), <code>description</code>, <code>serial_numbers</code>, <code>batches</code>, and <code>storages</code> when serial, batch, or bin storage tracking applies in your organization.'
+          items:
+            $ref: '#/components/schemas/putaway-line-item-request-update'
+    putaway-comment:
+      type: object
+      properties:
+        comment_id:
+          type: integer
+          format: int64
+        putaway_id:
+          type: integer
+          format: int64
+        description:
+          type: string
+        commented_by_id:
+          type: integer
+          format: int64
+        commented_by:
+          type: string
+        comment_type:
+          type: string
+        date:
+          type: string
+        date_description:
+          type: string
+        time:
+          type: string
+        operation_type:
+          type: string
+    putaway-line-item-response:
+      type: object
+      properties:
+        line_item_id:
+          type: integer
+          format: int64
+        item_id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        sku:
+          type: string
+        unit:
+          type: string
+        image_document_id:
+          type: integer
+          format: int64
+        description:
+          type: string
+        quantity_transferred:
+          type: number
+          format: double
+        track_serial_number:
+          type: boolean
+        track_batch_number:
+          type: boolean
+        serial_numbers:
+          type: array
+          items:
+            $ref: '#/components/schemas/putaway-line-serial-node'
+        batches:
+          type: array
+          items:
+            $ref: '#/components/schemas/putaway-line-batch-node'
+        is_combo_product:
+          type: boolean
+        storages:
+          type: array
+          items:
+            $ref: '#/components/schemas/putaway-line-storage-node'
+        is_storage_location_enabled:
+          type: boolean
+    putaway-response:
+      type: object
+      properties:
+        putaway_id:
+          type: integer
+          format: int64
+        putaway_number:
+          type: string
+        date:
+          type: string
+        notes:
+          type: string
+        created_by_id:
+          type: integer
+          format: int64
+        created_by_name:
+          type: string
+        warehouse_id:
+          type: integer
+          format: int64
+        warehouse_name:
+          type: string
+        location_id:
+          type: integer
+          format: int64
+        location_name:
+          type: string
+        html_string:
+          type: string
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/putaway-comment'
+        line_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/putaway-line-item-response'
+        documents:
+          type: array
+          description: Attachments on the putaway when returned by the service.
+          items:
+            $ref: '#/components/schemas/putaway-document-attachment'
+    putaway-list-row:
+      type: object
+      properties:
+        putaway_id:
+          type: integer
+          format: int64
+        putaway_number:
+          type: string
+        date:
+          type: string
+        notes:
+          type: string
+        warehouse_id:
+          type: integer
+          format: int64
+        warehouse_name:
+          type: string
+        location_id:
+          type: integer
+          format: int64
+        location_name:
+          type: string
+        has_attachment:
+          type: boolean
+        created_time:
+          type: string
+        last_modified_time:
+          type: string
+    page_context:
+      type: object
+      description: Pagination and list context for the current result set.
+      properties:
+        page:
+          type: integer
+          example: 1
+        per_page:
+          type: integer
+          example: 200
+        has_more_page:
+          type: boolean
+        report_name:
+          type: string
+        applied_filter:
+          type: string
+        sort_column:
+          type: string
+        sort_order:
+          type: string
+    create-a-putaway-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          readOnly: true
+        putaway:
+          $ref: '#/components/schemas/putaway-response'
+    list-putaways-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        putaways:
+          type: array
+          items:
+            $ref: '#/components/schemas/putaway-list-row'
+        page_context:
+          $ref: '#/components/schemas/page_context'
+    get-a-putaway-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        putaway:
+          $ref: '#/components/schemas/putaway-response'
+    update-a-putaway-response:
+      $ref: '#/components/schemas/get-a-putaway-response'
+    delete-a-putaway-response:
+      type: object
+      description: Returned when a putaway is deleted.
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Putaway deleted successfully.
+          readOnly: true
+    delete-a-putaway-document-response:
+      type: object
+      description: Returned when a document is removed from a putaway.
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Your file is no longer attached to the Putaway.
+          readOnly: true
+    list-putaway-comments-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          readOnly: true
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/putaway-comment'
+    putaway-attachment-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          readOnly: true
+        document:
+          $ref: '#/components/schemas/putaway-document-attachment'
+    get-putaway-settings-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          readOnly: true
+        putaway_settings:
+          $ref: '#/components/schemas/putaway-settings'
+  securitySchemes:
+    Zoho_Auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://accounts.zoho.com/oauth/v2/auth
+          scopes:
+            ZohoInventory.putaway.CREATE: Create Putaway
+            ZohoInventory.putaway.READ: Read Putaway
+            ZohoInventory.putaway.UPDATE: Update Putaway
+            ZohoInventory.putaway.DELETE: Delete Putaway
+            ZohoInventory.settings.READ: Read Settings

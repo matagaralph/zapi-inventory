@@ -1,0 +1,1720 @@
+openapi: 3.0.0
+info:
+  title: Purchase Receives
+  description: A new purchase receive can be created. To create a purchase receive, the URL parameter <code>purchaseorder_id</code> is needed.
+  contact: {}
+  version: 1.0.0
+servers:
+  - url: https://www.zohoapis.com/inventory/v1
+    description: API Endpoint
+tags:
+  - name: purchasereceives
+    description: PurchaseReceives Module
+paths:
+  /purchasereceives:
+    x-mcp-group:
+      - Purchase Receives
+    post:
+      tags:
+        - purchasereceives
+      operationId: create_purchase_receive
+      summary: Create a purchase receive
+      description: A new purchase receive can be created. To create a purchase receive, the URL parameter <code>purchaseorder_id</code> is needed.
+      parameters:
+        - name: purchaseorder_id
+          in: query
+          description: Unique identifier of the purchase order for which the purchase receive is created.
+          required: true
+          schema:
+            type: string
+          example: '4815000000044972'
+        - name: ignore_auto_number_generation
+          in: query
+          description: Ignore auto purchase receive number generation for this purchase receive. This mandates the purchase receive number. Allowed values are <code>true</code> and <code>false</code>.
+          required: false
+          schema:
+            type: boolean
+          example: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-purchase-receive-request'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-purchase-receive-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.purchasereceives.CREATE
+    get:
+      tags:
+        - purchasereceives
+      operationId: list_purchase_receives
+      summary: List all purchase receives
+      description: List all purchase receives, with options to filter by status, vendor, date range, and other criteria.
+      parameters:
+        - name: filter_by
+          in: query
+          description: 'Filter purchase receives by date range or status. Allowed values: <code>ReceiveDate.Today</code>, <code>ReceiveDate.ThisWeek</code>, <code>ReceiveDate.ThisMonth</code>, <code>ReceiveDate.ThisQuarter</code>, <code>ReceiveDate.ThisYear</code>, <code>ReceiveDate.PreviousDay</code>, <code>ReceiveDate.PreviousWeek</code>, <code>ReceiveDate.PreviousMonth</code>, <code>ReceiveDate.PreviousQuarter</code>, <code>ReceiveDate.PreviousYear</code>, <code>ReceiveDate.CustomDate</code>, <code>Status.All</code>, <code>Status.InTransit</code>, <code>Status.Received</code>, <code>Status.Billed</code>, <code>Status.PartiallyBilled</code>.'
+          required: false
+          schema:
+            type: string
+          example: Status.All
+        - name: status
+          in: query
+          description: 'Filter by status. Allowed values: <code>in_transit</code>, <code>received</code>, <code>billed</code>, <code>partially_billed</code>.'
+          required: false
+          schema:
+            type: string
+          example: received
+        - name: vendor_id
+          in: query
+          description: Filter purchase receives by vendor ID.
+          required: false
+          schema:
+            type: string
+          example: '4815000000044080'
+        - name: from_date
+          in: query
+          description: 'Start date for filtering purchase receives. Format: <code>yyyy-MM-dd</code>.'
+          required: false
+          schema:
+            type: string
+          example: '2024-01-01'
+        - name: to_date
+          in: query
+          description: 'End date for filtering purchase receives. Format: <code>yyyy-MM-dd</code>.'
+          required: false
+          schema:
+            type: string
+          example: '2024-12-31'
+        - name: search_text
+          in: query
+          description: Search purchase receives by purchase receive number, vendor name, or purchase order number.
+          required: false
+          schema:
+            type: string
+          example: PR-00002
+        - name: sort_column
+          in: query
+          description: 'Sort purchase receives by a specific column. Allowed values: <code>receive_date</code>, <code>created_time</code>, <code>last_modified_time</code>, <code>purchaseorder_number</code>, <code>purchasereceive_number</code>.'
+          required: false
+          schema:
+            type: string
+          example: created_time
+        - name: warehouse_id
+          in: query
+          description: Filter purchase receives by warehouse ID.
+          required: false
+          schema:
+            type: string
+          example: '4815000000049002'
+        - name: location_id
+          in: query
+          description: Filter purchase receives by location ID.
+          required: false
+          schema:
+            type: string
+          example: '4815000000049001'
+        - name: receive_date
+          in: query
+          description: 'Filter purchase receives by receive date. Supports modifiers such as <code>receive_date_start</code>, <code>receive_date_end</code>, <code>receive_date_before</code>, and <code>receive_date_after</code>. Format: <code>yyyy-MM-dd</code>.'
+          required: false
+          schema:
+            type: string
+          example: '2024-06-15'
+        - name: vendor_name
+          in: query
+          description: Filter purchase receives by vendor name. Supports modifiers such as <code>vendor_name_startswith</code> and <code>vendor_name_contains</code>.
+          required: false
+          schema:
+            type: string
+          example: Molly
+        - name: purchasereceive_number
+          in: query
+          description: Filter purchase receives by purchase receive number. Supports modifiers such as <code>purchasereceive_number_startswith</code> and <code>purchasereceive_number_contains</code>.
+          required: false
+          schema:
+            type: string
+          example: PR-00002
+        - name: purchaseorder_number
+          in: query
+          description: Filter purchase receives by the associated purchase order number. Supports modifiers such as <code>purchaseorder_number_startswith</code> and <code>purchaseorder_number_contains</code>.
+          required: false
+          schema:
+            type: string
+          example: PO-00002
+        - name: tracking_number
+          in: query
+          description: Filter purchase receives by tracking number. Supports modifiers such as <code>tracking_number_startswith</code> and <code>tracking_number_contains</code>.
+          required: false
+          schema:
+            type: string
+          example: TRK123456789
+        - name: page
+          in: query
+          description: Page number to be listed. Default value is 1.
+          required: false
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: per_page
+          in: query
+          description: Number of records to be listed per page. Default value is 200.
+          required: false
+          schema:
+            type: integer
+            default: 200
+          example: 200
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-purchase-receives-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.purchasereceives.READ
+    delete:
+      tags:
+        - purchasereceives
+      operationId: bulk_delete_purchase_receives
+      summary: Delete purchase receives in bulk
+      description: Delete multiple purchase receives at once. A maximum of 25 purchase receives can be deleted in a single request.
+      parameters:
+        - name: receive_ids
+          in: query
+          description: Comma-separated list of purchase receive IDs to be deleted. Maximum 25.
+          required: true
+          schema:
+            type: string
+          example: 4815000000045035,4815000000045036
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-purchase-receive-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.purchasereceives.DELETE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /purchasereceives/{purchasereceive_id}:
+    x-mcp-group:
+      - Purchase Receives
+    get:
+      tags:
+        - purchasereceives
+      operationId: get_purchase_receive
+      summary: Retrieve a purchase receive
+      description: Retrieve a purchase receive from Zoho Inventory.
+      parameters:
+        - name: print
+          in: query
+          description: Set to <code>true</code> to retrieve the printable format of the purchase receive.
+          required: false
+          schema:
+            type: boolean
+          example: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-purchase-receive-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.purchasereceives.READ
+    put:
+      tags:
+        - purchasereceives
+      operationId: update_purchase_receive
+      summary: Update a purchase receive
+      description: Update an existing purchase receive in Zoho Inventory.
+      parameters:
+        - name: ignore_auto_number_generation
+          in: query
+          description: Ignore auto purchase receive number generation for this purchase receive. This mandates the purchase receive number. Allowed values are <code>true</code> and <code>false</code>.
+          required: false
+          schema:
+            type: boolean
+          example: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-purchase-receive-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-purchase-receive-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.purchasereceives.UPDATE
+    delete:
+      tags:
+        - purchasereceives
+      operationId: delete_purchase_receive
+      summary: Delete a purchase receive
+      description: Delete a purchase receive from Zoho Inventory.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-purchase-receive-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.purchasereceives.DELETE
+    parameters:
+      - name: purchasereceive_id
+        in: path
+        required: true
+        description: Unique identifier of the purchase receive.
+        schema:
+          type: string
+        example: '4815000000045035'
+      - $ref: '#/components/parameters/organization_id'
+  /purchasereceives/{purchasereceive_id}/submit:
+    x-mcp-group:
+      - Purchase Receives
+    post:
+      tags:
+        - purchasereceives
+      operationId: submit_purchase_receive
+      summary: Submit a purchase receive for approval
+      description: Submit a purchase receive for approval.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/submit-purchase-receive-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.purchasereceives.CREATE
+    parameters:
+      - name: purchasereceive_id
+        in: path
+        required: true
+        description: Unique identifier of the purchase receive.
+        schema:
+          type: string
+        example: '4815000000045035'
+      - $ref: '#/components/parameters/organization_id'
+  /purchasereceives/{purchasereceive_id}/approve:
+    x-mcp-group:
+      - Purchase Receives
+    post:
+      tags:
+        - purchasereceives
+      operationId: approve_purchase_receive
+      summary: Approve a purchase receive
+      description: Approve a purchase receive that has been submitted for approval.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/approve-purchase-receive-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.purchasereceives.CREATE
+    parameters:
+      - name: purchasereceive_id
+        in: path
+        required: true
+        description: Unique identifier of the purchase receive.
+        schema:
+          type: string
+        example: '4815000000045035'
+      - $ref: '#/components/parameters/organization_id'
+  /purchasereceives/{purchasereceive_id}/reject:
+    x-mcp-group:
+      - Purchase Receives
+    post:
+      tags:
+        - purchasereceives
+      operationId: reject_purchase_receive
+      summary: Reject a purchase receive
+      description: Reject a purchase receive that has been submitted for approval.
+      parameters:
+        - name: reason
+          in: query
+          description: Reason for rejecting the purchase receive. Max length [500].
+          required: false
+          schema:
+            type: string
+            maxLength: 500
+          example: Items do not match the order specifications.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reject-purchase-receive-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.purchasereceives.CREATE
+    parameters:
+      - name: purchasereceive_id
+        in: path
+        required: true
+        description: Unique identifier of the purchase receive.
+        schema:
+          type: string
+        example: '4815000000045035'
+      - $ref: '#/components/parameters/organization_id'
+  /purchasereceives/{purchasereceive_id}/setstatusasreceived:
+    x-mcp-group:
+      - Purchase Receives
+    post:
+      tags:
+        - purchasereceives
+      operationId: mark_purchase_receive_as_received
+      summary: Mark a purchase receive as received
+      description: Mark a purchase receive as received.
+      parameters:
+        - name: date
+          in: query
+          description: 'Date on which the items were received. Format: <code>yyyy-MM-dd</code>.'
+          required: false
+          schema:
+            type: string
+          example: '2024-06-15'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mark-as-received-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.purchasereceives.CREATE
+    parameters:
+      - name: purchasereceive_id
+        in: path
+        required: true
+        description: Unique identifier of the purchase receive.
+        schema:
+          type: string
+        example: '4815000000045035'
+      - $ref: '#/components/parameters/organization_id'
+  /purchasereceives/{purchasereceive_id}/setstatusasintransit:
+    x-mcp-group:
+      - Purchase Receives
+    post:
+      tags:
+        - purchasereceives
+      operationId: mark_purchase_receive_as_in_transit
+      summary: Mark a purchase receive as in transit
+      description: Mark a purchase receive as in transit.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mark-as-in-transit-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.purchasereceives.CREATE
+    parameters:
+      - name: purchasereceive_id
+        in: path
+        required: true
+        description: Unique identifier of the purchase receive.
+        schema:
+          type: string
+        example: '4815000000045035'
+      - $ref: '#/components/parameters/organization_id'
+  /purchasereceives/setstatusasreceived:
+    x-mcp-group:
+      - Purchase Receives
+    post:
+      tags:
+        - purchasereceives
+      operationId: bulk_mark_purchase_receives_as_received
+      summary: Mark purchase receives as received in bulk
+      description: Mark multiple purchase receives as received.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bulk-status-update-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mark-as-received-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.purchasereceives.CREATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /purchasereceives/setstatusasintransit:
+    x-mcp-group:
+      - Purchase Receives
+    post:
+      tags:
+        - purchasereceives
+      operationId: bulk_mark_purchase_receives_as_in_transit
+      summary: Mark purchase receives as in transit in bulk
+      description: Mark multiple purchase receives as in transit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bulk-status-update-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mark-as-in-transit-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.purchasereceives.CREATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /purchasereceives/{purchasereceive_id}/attachment:
+    x-mcp-group:
+      - Purchase Receives
+    post:
+      tags:
+        - purchasereceives
+      operationId: add_attachment_to_purchase_receive
+      summary: Add an attachment to a purchase receive
+      description: Attach a file to an existing purchase receive. Maximum file size is 10 MB. Up to 20 files can be attached.
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                attachment:
+                  type: string
+                  format: binary
+                  description: 'File to attach to the purchase receive. A maximum of 20 files can be associated with a purchase receive, each up to 10 MB. Allowed extensions: gif, png, jpeg, jpg, bmp, webp, pdf, xls, xlsx, doc, docx, xml, csv, txt, tif, tiff, msg, eml, dwg, ai, eps, ppt, pptx, odt, ods, odf, rtf, json, zip, rar, 7z, key, numbers, pages, dst, asice.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/add-attachment-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.purchasereceives.CREATE
+    parameters:
+      - name: purchasereceive_id
+        in: path
+        required: true
+        description: Unique identifier of the purchase receive.
+        schema:
+          type: string
+        example: '4815000000045035'
+      - $ref: '#/components/parameters/organization_id'
+  /purchasereceives/{purchasereceive_id}/documents/{document_id}:
+    x-mcp-group:
+      - Purchase Receives
+    get:
+      tags:
+        - purchasereceives
+      operationId: get_purchase_receive_attachment
+      summary: Get a purchase receive attachment
+      description: Retrieve or download an attachment from a purchase receive.
+      parameters:
+        - name: image_size
+          in: query
+          description: 'Size of the image to retrieve if the attachment is an image. Allowed values: <code>xlarge</code>, <code>large</code>, <code>small</code>, <code>tiny</code>.'
+          required: false
+          schema:
+            type: string
+          example: large
+        - name: inline
+          in: query
+          description: Set to <code>true</code> to display the attachment inline rather than as a download.
+          required: false
+          schema:
+            type: boolean
+          example: false
+      responses:
+        '200':
+          description: OK
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.purchasereceives.READ
+    delete:
+      tags:
+        - purchasereceives
+      operationId: delete_purchase_receive_attachment
+      summary: Delete a purchase receive attachment
+      description: Delete an attachment from a purchase receive.
+      parameters:
+        - name: un_associate
+          in: query
+          description: Set to <code>true</code> to only un-associate the document from the purchase receive without deleting it.
+          required: false
+          schema:
+            type: boolean
+          example: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-attachment-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.purchasereceives.DELETE
+    parameters:
+      - name: purchasereceive_id
+        in: path
+        required: true
+        description: Unique identifier of the purchase receive.
+        schema:
+          type: string
+        example: '4815000000045035'
+      - name: document_id
+        in: path
+        required: true
+        description: Unique identifier of the document (attachment).
+        schema:
+          type: string
+        example: '4815000000045060'
+      - $ref: '#/components/parameters/organization_id'
+  /purchasereceives/{purchasereceive_id}/comments:
+    x-mcp-group:
+      - Purchase Receives
+    post:
+      tags:
+        - purchasereceives
+      operationId: add_comment_to_purchase_receive
+      summary: Add a comment to a purchase receive
+      description: Add a comment to an existing purchase receive.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/add-comment-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/add-comment-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.purchasereceives.CREATE
+    parameters:
+      - name: purchasereceive_id
+        in: path
+        required: true
+        description: Unique identifier of the purchase receive.
+        schema:
+          type: string
+        example: '4815000000045035'
+      - $ref: '#/components/parameters/organization_id'
+  /purchasereceives/{purchasereceive_id}/comments/{comment_id}:
+    x-mcp-group:
+      - Purchase Receives
+    delete:
+      tags:
+        - purchasereceives
+      operationId: delete_purchase_receive_comment
+      summary: Delete a purchase receive comment
+      description: Delete a comment from a purchase receive.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-comment-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.purchasereceives.DELETE
+    parameters:
+      - name: purchasereceive_id
+        in: path
+        required: true
+        description: Unique identifier of the purchase receive.
+        schema:
+          type: string
+        example: '4815000000045035'
+      - name: comment_id
+        in: path
+        required: true
+        description: Unique identifier of the comment.
+        schema:
+          type: string
+        example: '4815000000045070'
+      - $ref: '#/components/parameters/organization_id'
+components:
+  parameters:
+    organization_id:
+      name: organization_id
+      description: ID of the organization
+      in: query
+      required: true
+      schema:
+        type: string
+      example: '10234695'
+  schemas:
+    gendoc-attributes-schema:
+      $ref: '#/components/schemas/purchase-receive-response'
+    purchase-receive-response:
+      type: object
+      properties:
+        purchaseorder_id:
+          $ref: '#/components/schemas/purchaseorder_id'
+        purchaseorder_number:
+          $ref: '#/components/schemas/purchaseorder_number'
+        receive_id:
+          $ref: '#/components/schemas/receive_id'
+        receive_number:
+          $ref: '#/components/schemas/receive_number'
+        date:
+          $ref: '#/components/schemas/date'
+        status:
+          $ref: '#/components/schemas/status'
+        received_status:
+          $ref: '#/components/schemas/received_status'
+        billed_status:
+          $ref: '#/components/schemas/billed_status'
+        is_billed:
+          description: Whether the purchase receive has been fully billed.
+          type: boolean
+          example: true
+        is_po_marked_as_received:
+          description: Whether the associated purchase order has been marked as received.
+          type: boolean
+          example: false
+        branch_id:
+          description: Unique identifier of the branch associated with the purchase receive.
+          type: string
+          example: '4815000000049050'
+        branch_name:
+          description: Name of the branch associated with the purchase receive.
+          type: string
+          example: Head Office
+        location_id:
+          description: Unique identifier of the warehouse location at the header level.
+          type: string
+          example: '4815000000049001'
+        location_name:
+          description: Name of the warehouse location at the header level.
+          type: string
+          example: Head Office
+        vendor_id:
+          $ref: '#/components/schemas/vendor_id'
+        vendor_name:
+          $ref: '#/components/schemas/vendor_name'
+        total_quantity_received:
+          $ref: '#/components/schemas/total_quantity_received'
+        notes:
+          $ref: '#/components/schemas/notes'
+        custom_fields:
+          $ref: '#/components/schemas/custom_fields'
+        line_items:
+          $ref: '#/components/schemas/line_items'
+        documents:
+          $ref: '#/components/schemas/documents'
+        comments:
+          $ref: '#/components/schemas/comments_list'
+        bills:
+          $ref: '#/components/schemas/bills'
+        billing_address:
+          $ref: '#/components/schemas/billing_address'
+        shipping_address:
+          $ref: '#/components/schemas/shipping_address'
+        tracking_number:
+          $ref: '#/components/schemas/tracking_number'
+        tracking_link:
+          description: URL to the shipment tracking page.
+          type: string
+          example: https://www.fedex.com/track?trknbr=TRK123456789
+        expected_delivery_date:
+          description: Expected delivery date and time for the shipment.
+          type: string
+          example: 2024-06-20T10:00:00.000+0530
+        shipment_delivered_date:
+          description: Date and time when the shipment was delivered.
+          type: string
+          example: 2024-06-18T14:30:00.000+0530
+        carrier:
+          description: Name of the shipping carrier.
+          type: string
+          example: FedEx
+        delivery_method:
+          $ref: '#/components/schemas/delivery_method'
+        delivery_method_id:
+          $ref: '#/components/schemas/delivery_method_id'
+        created_time:
+          $ref: '#/components/schemas/created_time'
+        last_modified_time:
+          $ref: '#/components/schemas/last_modified_time'
+        created_by_id:
+          $ref: '#/components/schemas/created_by_id'
+        last_modified_by_id:
+          $ref: '#/components/schemas/last_modified_by_id'
+        owner_id:
+          description: Unique identifier of the user who owns the purchase receive.
+          type: string
+          example: '4815000000000001'
+        submitted_date:
+          description: 'Date on which the purchase receive was submitted for approval. Format: <code>yyyy-MM-dd</code>.'
+          type: string
+          example: '2024-06-15'
+        submitted_by:
+          description: Unique identifier of the user who submitted the purchase receive.
+          type: string
+          example: '4815000000000001'
+        submitted_by_name:
+          description: Name of the user who submitted the purchase receive.
+          type: string
+          example: John Smith
+        submitted_by_email:
+          description: Email of the user who submitted the purchase receive.
+          type: string
+          example: john.smith@example.com
+        submitted_by_photo_url:
+          description: URL to the photo of the user who submitted the purchase receive.
+          type: string
+          example: https://contacts.zoho.com/file?ID=12345&fs=thumb
+        approver_id:
+          description: Unique identifier of the approver assigned to the purchase receive.
+          type: string
+          example: '4815000000000002'
+        approval_reason:
+          description: Reason provided while approving or rejecting the purchase receive.
+          type: string
+          example: Items verified successfully.
+        approvals:
+          description: List of approval records for the purchase receive.
+          type: array
+          items:
+            type: object
+            properties:
+              approver_id:
+                description: Unique identifier of the approver.
+                type: string
+                example: '4815000000000002'
+              approver_name:
+                description: Name of the approver.
+                type: string
+                example: Jane Approver
+              status:
+                description: Approval status recorded for this approver.
+                type: string
+                example: approved
+              approved_date:
+                description: Date on which the approval was recorded.
+                type: string
+                example: '2024-06-15'
+        is_tracking_supported:
+          description: Whether shipment tracking is supported for this purchase receive.
+          type: boolean
+          example: true
+        is_tracking_enabled:
+          description: Whether shipment tracking is enabled for this purchase receive.
+          type: boolean
+          example: true
+    purchase-receive-list-item:
+      type: object
+      properties:
+        purchasereceive_id:
+          description: Unique identifier of the purchase receive.
+          type: string
+          example: '4815000000045035'
+        purchasereceive_number:
+          description: Number of the purchase receive.
+          type: string
+          example: PR-00002
+        receive_date:
+          description: Date of the purchase receive.
+          type: string
+          example: '2024-06-15'
+        status:
+          $ref: '#/components/schemas/status'
+        received_status:
+          $ref: '#/components/schemas/received_status'
+        billed_status:
+          $ref: '#/components/schemas/billed_status'
+        vendor_id:
+          $ref: '#/components/schemas/vendor_id'
+        vendor_name:
+          $ref: '#/components/schemas/vendor_name'
+        purchaseorder_id:
+          $ref: '#/components/schemas/purchaseorder_id'
+        purchaseorder_number:
+          $ref: '#/components/schemas/purchaseorder_number'
+        is_salesreturn:
+          description: Whether the purchase receive is a sales return receive.
+          type: boolean
+          example: false
+        quantity_received:
+          description: Total quantity received in this purchase receive.
+          type: number
+          format: double
+          example: 10
+        has_attachment:
+          description: Whether the purchase receive has an attachment.
+          type: boolean
+          example: false
+        branch_id:
+          description: Unique identifier of the branch associated with the purchase receive.
+          type: string
+          example: '4815000000049050'
+        branch_name:
+          description: Name of the branch associated with the purchase receive.
+          type: string
+          example: Head Office
+        location_id:
+          description: Unique identifier of the warehouse location.
+          type: string
+          example: '4815000000049001'
+        location_name:
+          description: Name of the warehouse location.
+          type: string
+          example: Head Office
+        created_time:
+          $ref: '#/components/schemas/created_time'
+        last_modified_time:
+          $ref: '#/components/schemas/last_modified_time'
+    purchaseorder_id:
+      description: Unique ID generated by the server for the Purchase Order.
+      type: string
+      example: '4815000000044972'
+    purchaseorder_number:
+      description: Purchase Order number.
+      type: string
+      example: PO-00002
+    receive_id:
+      description: Unique ID generated by the server for the Purchase Receive. This is used as identifier.
+      type: string
+      example: '4815000000045035'
+    receive_number:
+      description: Number of the Purchase Receive.
+      type: string
+      example: PR-00002
+    date:
+      description: 'Date of the purchase receive. Format: <code>yyyy-MM-dd</code>.'
+      type: string
+      example: '2024-06-15'
+    status:
+      description: Overall status of the purchase receive.
+      type: string
+      example: received
+    received_status:
+      description: 'Received status of the purchase receive. Allowed values: <code>draft</code>, <code>in_transit</code>, <code>received</code>.'
+      type: string
+      example: received
+    billed_status:
+      description: 'Billing status of the purchase receive. Allowed values: <code>billed</code>, <code>partially_billed</code>, <code>unbilled</code>.'
+      type: string
+      example: partially_billed
+    vendor_id:
+      description: Unique ID generated by the server for the vendor.
+      type: string
+      example: '4815000000044080'
+    vendor_name:
+      description: Name of the vendor.
+      type: string
+      example: Molly
+    total_quantity_received:
+      description: Total quantity of items received.
+      type: number
+      format: double
+      example: 10
+    notes:
+      description: Purchase Receive notes.
+      type: string
+      example: Sample Note.
+    customfield_id:
+      type: string
+      description: Unique identifier of the custom field
+      example: '46000000012845'
+    value:
+      description: Value of the Custom Field
+      type: string
+      example: Normal
+    custom_fields:
+      description: Custom fields for a purchasereceive.
+      type: array
+      items:
+        type: object
+        properties:
+          customfield_id:
+            $ref: '#/components/schemas/customfield_id'
+          value:
+            $ref: '#/components/schemas/value'
+    documents:
+      description: List of documents attached to the purchase receive.
+      type: array
+      items:
+        type: object
+        properties:
+          document_id:
+            description: Unique identifier of the document.
+            type: string
+            example: '4815000000045060'
+          file_name:
+            description: Name of the document file.
+            type: string
+            example: receipt.pdf
+          file_type:
+            description: Type of the document file.
+            type: string
+            example: pdf
+          file_size:
+            description: Size of the document in bytes.
+            type: integer
+            example: 12345
+    line_item_id:
+      description: Unique ID generated by the server for each line item. This is used as an identifier.
+      type: string
+      example: '4815000000044897'
+    item_id:
+      description: Unique ID generated by the server for the item. This is used as an identifier.
+      type: string
+      example: '4815000000044100'
+    name:
+      description: Name of the line item.
+      type: string
+      example: Laptop-white/15inch/dell
+    description:
+      description: Description of the line item.
+      type: string
+      example: Just a sample description.
+    item_order:
+      description: The order of the line items, starts from <code>0</code> by default.
+      type: integer
+      example: 0
+    quantity:
+      description: Quantity of the line item.
+      type: number
+      format: double
+      example: 2
+    unit:
+      description: Unit of line item.
+      type: string
+      example: qty
+    rate:
+      description: Rate of the line item.
+      type: number
+      format: double
+      example: 1000
+    item_total:
+      description: Total amount for the line item.
+      type: number
+      format: double
+      example: 2000
+    warehouse_id:
+      description: Unique identifier of the warehouse.
+      type: string
+      example: '4815000000049002'
+    line_items:
+      description: Line items of the purchase receive. Each line item contains <code>line_item_id</code>, <code>item_id</code>, <code>name</code>, <code>description</code>, <code>item_order</code>, <code>quantity</code> and <code>unit</code>.
+      type: array
+      items:
+        type: object
+        properties:
+          line_item_id:
+            $ref: '#/components/schemas/line_item_id'
+          item_id:
+            $ref: '#/components/schemas/item_id'
+          name:
+            $ref: '#/components/schemas/name'
+          description:
+            $ref: '#/components/schemas/description'
+          item_order:
+            $ref: '#/components/schemas/item_order'
+          quantity:
+            $ref: '#/components/schemas/quantity'
+          unit:
+            $ref: '#/components/schemas/unit'
+          rate:
+            $ref: '#/components/schemas/rate'
+          item_total:
+            $ref: '#/components/schemas/item_total'
+          warehouse_id:
+            $ref: '#/components/schemas/warehouse_id'
+          serial_numbers:
+            description: Serial numbers for items tracked by serial number.
+            type: array
+            items:
+              type: string
+              example: SN-001
+          batches:
+            description: Batch tracking details for items tracked by batch.
+            type: array
+            items:
+              type: object
+              properties:
+                batch_number:
+                  description: Batch number.
+                  type: string
+                  example: BATCH-001
+                quantity_in:
+                  description: Quantity received in this batch.
+                  type: number
+                  format: double
+                  example: 5
+                manufacturer_batch_number:
+                  description: Manufacturer-assigned batch number.
+                  type: string
+                  example: MFG-001
+                manufactured_date:
+                  description: 'Date the batch was manufactured. Format: <code>yyyy-MM-dd</code>.'
+                  type: string
+                  example: '2024-05-01'
+                expiry_date:
+                  description: 'Batch expiry date. Format: <code>yyyy-MM-dd</code>.'
+                  type: string
+                  example: '2025-05-01'
+          storages:
+            description: Storage-location tracking details for items tracked by storage.
+            type: array
+            items:
+              type: object
+              properties:
+                storage_id:
+                  description: Unique identifier of the storage location.
+                  type: string
+                  example: '4815000000049020'
+                quantity:
+                  description: Quantity stored at this location.
+                  type: number
+                  format: double
+                  example: 5
+    address:
+      description: Street address of the vendor.
+      type: string
+      example: No:234,90 Church Street
+    street2:
+      description: Second line of the street address.
+      type: string
+      example: Suite 100
+    city:
+      description: City of the vendor's address.
+      type: string
+      example: New York City
+    state:
+      description: State of the vendor's address.
+      type: string
+      example: New York
+    zip:
+      description: ZIP Code of the vendor's address.
+      type: string
+      example: '10048'
+    country:
+      description: Country of the vendor's address.
+      type: string
+      example: U.S.A
+    fax:
+      description: Fax number of the vendor.
+      type: string
+      example: 324-524242
+    phone:
+      description: Phone number.
+      type: string
+      example: 212-5550123
+    attention:
+      description: Attention to person.
+      type: string
+      example: John Smith
+    billing_address:
+      description: Vendor's billing address. It contains - <code>address</code>, <code>city</code>, <code>state</code>, <code>zip</code>, <code>country</code> and <code>fax</code>.
+      type: object
+      properties:
+        address:
+          $ref: '#/components/schemas/address'
+        street2:
+          $ref: '#/components/schemas/street2'
+        city:
+          $ref: '#/components/schemas/city'
+        state:
+          $ref: '#/components/schemas/state'
+        zip:
+          $ref: '#/components/schemas/zip'
+        country:
+          $ref: '#/components/schemas/country'
+        fax:
+          $ref: '#/components/schemas/fax'
+        phone:
+          $ref: '#/components/schemas/phone'
+        attention:
+          $ref: '#/components/schemas/attention'
+    shipping_address:
+      description: Vendor's shipping address. It contains - <code>address</code>, <code>city</code>, <code>state</code>, <code>zip</code>, <code>country</code> and <code>fax</code>.
+      type: object
+      properties:
+        address:
+          $ref: '#/components/schemas/address'
+        street2:
+          $ref: '#/components/schemas/street2'
+        city:
+          $ref: '#/components/schemas/city'
+        state:
+          $ref: '#/components/schemas/state'
+        zip:
+          $ref: '#/components/schemas/zip'
+        country:
+          $ref: '#/components/schemas/country'
+        fax:
+          $ref: '#/components/schemas/fax'
+        phone:
+          $ref: '#/components/schemas/phone'
+        attention:
+          $ref: '#/components/schemas/attention'
+    tracking_number:
+      description: Tracking number for the shipment.
+      type: string
+      example: TRK123456789
+    delivery_method:
+      description: Delivery method used for the shipment.
+      type: string
+      example: FedEx
+    delivery_method_id:
+      description: Unique identifier of the delivery method.
+      type: string
+      example: '4815000000049010'
+    created_time:
+      description: Time at which the purchase receive was created.
+      type: string
+      example: 2024-06-15T10:30:00.000+0530
+    last_modified_time:
+      description: Time at which the purchase receive was last modified.
+      type: string
+      example: 2024-06-15T10:30:00.000+0530
+    created_by_id:
+      description: Unique identifier of the user who created the purchase receive.
+      type: string
+      example: '4815000000000001'
+    last_modified_by_id:
+      description: Unique identifier of the user who last modified the purchase receive.
+      type: string
+      example: '4815000000000001'
+    comments_list:
+      description: List of comments on the purchase receive.
+      type: array
+      items:
+        type: object
+        properties:
+          comment_id:
+            description: Unique identifier of the comment.
+            type: string
+            example: '4815000000045070'
+          purchasereceive_id:
+            description: Unique identifier of the associated purchase receive.
+            type: string
+            example: '4815000000045035'
+          description:
+            description: Comment text.
+            type: string
+            example: Items received and verified.
+          commented_by_id:
+            description: Unique identifier of the user who posted the comment.
+            type: string
+            example: '4815000000000001'
+          commented_by:
+            description: Name of the user who posted the comment.
+            type: string
+            example: John Smith
+          comment_type:
+            description: Type of the comment.
+            type: string
+            example: system
+          date:
+            description: Date and time when the comment was posted.
+            type: string
+            example: '2024-06-15T10:45:00.000Z'
+    bills:
+      description: List of bills associated with the purchase receive.
+      type: array
+      items:
+        type: object
+        properties:
+          bill_id:
+            description: Unique identifier of the bill.
+            type: string
+            example: '4815000000046001'
+          bill_number:
+            description: Number of the bill.
+            type: string
+            example: BILL-00001
+          status:
+            description: Status of the bill.
+            type: string
+            example: open
+          date:
+            description: Date of the bill.
+            type: string
+            example: '2024-06-20'
+          due_date:
+            description: Due date of the bill.
+            type: string
+            example: '2024-07-20'
+          total:
+            description: Total amount of the bill.
+            type: number
+            format: double
+            example: 2100
+          balance:
+            description: Outstanding balance on the bill.
+            type: number
+            format: double
+            example: 2100
+    page:
+      description: Current page number.
+      type: integer
+      example: 1
+    per_page:
+      description: Number of records per page.
+      type: integer
+      example: 200
+    has_more_page:
+      description: Whether there are more pages.
+      type: boolean
+      example: false
+    sort_column:
+      description: Column by which the list is sorted.
+      type: string
+      example: created_time
+    sort_order:
+      description: 'Sort order. Allowed values: <code>A</code> for ascending, <code>D</code> for descending.'
+      type: string
+      example: A
+    applied_filter:
+      description: Filter applied to the list.
+      type: string
+      example: Status.All
+    report_name:
+      description: Name of the report.
+      type: string
+      example: Purchase Receives
+    page_context:
+      type: object
+      properties:
+        page:
+          $ref: '#/components/schemas/page'
+        per_page:
+          $ref: '#/components/schemas/per_page'
+        has_more_page:
+          $ref: '#/components/schemas/has_more_page'
+        sort_column:
+          $ref: '#/components/schemas/sort_column'
+        sort_order:
+          $ref: '#/components/schemas/sort_order'
+        applied_filter:
+          $ref: '#/components/schemas/applied_filter'
+        report_name:
+          $ref: '#/components/schemas/report_name'
+    list-purchase-receives-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        purchasereceives:
+          type: array
+          items:
+            $ref: '#/components/schemas/purchase-receive-list-item'
+        page_context:
+          $ref: '#/components/schemas/page_context'
+    get-purchase-receive-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        purchase_receive:
+          $ref: '#/components/schemas/purchase-receive-response'
+    create-purchase-receive-request:
+      required:
+        - line_items
+      type: object
+      properties:
+        receive_number:
+          $ref: '#/components/schemas/receive_number'
+        date:
+          $ref: '#/components/schemas/date'
+        status:
+          description: 'Status of the purchase receive. Allowed values: <code>in_transit</code>, <code>received</code>.'
+          type: string
+          example: received
+        notes:
+          $ref: '#/components/schemas/notes'
+        terms:
+          description: Terms and conditions of the purchase receive. Max-length [10000].
+          type: string
+          maxLength: 10000
+          example: Standard terms and conditions apply.
+        reference_number:
+          description: Reference number for the purchase receive. Max-length [50].
+          type: string
+          maxLength: 50
+          example: REF-00123
+        custom_fields:
+          $ref: '#/components/schemas/custom_fields'
+        line_items:
+          description: Line items of the purchase receive.
+          type: array
+          items:
+            type: object
+            properties:
+              line_item_id:
+                description: Purchase order line item ID to map this receive line item.
+                type: string
+                example: '4815000000044897'
+              quantity:
+                description: Quantity of the item being received.
+                type: number
+                format: double
+                example: 10
+              item_custom_fields:
+                description: Custom fields defined at the line-item level.
+                type: array
+                items:
+                  type: object
+                  properties:
+                    customfield_id:
+                      $ref: '#/components/schemas/customfield_id'
+                    value:
+                      $ref: '#/components/schemas/value'
+              serial_numbers:
+                description: Serial numbers for items tracked by serial number.
+                type: array
+                items:
+                  type: string
+                  example: SN-001
+              batches:
+                description: Batch tracking details for items tracked by batch.
+                type: array
+                items:
+                  type: object
+                  properties:
+                    batch_number:
+                      description: Batch number.
+                      type: string
+                      example: BATCH-001
+                    quantity_in:
+                      description: Quantity received in this batch.
+                      type: number
+                      format: double
+                      example: 5
+                    manufacturer_batch_number:
+                      description: Manufacturer-assigned batch number.
+                      type: string
+                      example: MFG-001
+                    manufactured_date:
+                      description: 'Date the batch was manufactured. Format: <code>yyyy-MM-dd</code>.'
+                      type: string
+                      example: '2024-05-01'
+                    expiry_date:
+                      description: 'Batch expiry date. Format: <code>yyyy-MM-dd</code>.'
+                      type: string
+                      example: '2025-05-01'
+              storages:
+                description: Storage-location tracking details for items tracked by storage.
+                type: array
+                items:
+                  type: object
+                  properties:
+                    storage_id:
+                      description: Unique identifier of the storage location.
+                      type: string
+                      example: '4815000000049020'
+                    quantity:
+                      description: Quantity stored at this location.
+                      type: number
+                      format: double
+                      example: 5
+    create-purchase-receive-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        purchase_receive:
+          $ref: '#/components/schemas/purchase-receive-response'
+    update-purchase-receive-request:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/create-purchase-receive-request'
+        - type: object
+          properties:
+            line_items:
+              description: Line items of the purchase receive.
+              type: array
+              items:
+                type: object
+                properties:
+                  receive_item_id:
+                    description: Unique identifier of the receive item, used when updating.
+                    type: string
+                    example: '4815000000045040'
+    update-purchase-receive-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        purchase_receive:
+          $ref: '#/components/schemas/purchase-receive-response'
+    delete-purchase-receive-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Purchase Receive Deleted Successfully.
+          readOnly: true
+    submit-purchase-receive-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The purchase receive has been submitted for approval.
+          readOnly: true
+    approve-purchase-receive-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The purchase receive has been approved.
+          readOnly: true
+    reject-purchase-receive-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The purchase receive has been rejected.
+          readOnly: true
+    mark-as-received-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The purchase receive has been marked as received.
+          readOnly: true
+    mark-as-in-transit-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The purchase receive has been marked as in transit.
+          readOnly: true
+    bulk-status-update-request:
+      required:
+        - purchasereceives
+      type: object
+      properties:
+        purchasereceives:
+          description: List of purchase receives to update.
+          type: array
+          items:
+            type: object
+            required:
+              - receive_id
+            properties:
+              receive_id:
+                description: Unique ID of the purchase receive.
+                type: string
+                example: '5000000023151'
+          example:
+            - receive_id: '5000000023151'
+            - receive_id: '5000000076261'
+    add-attachment-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The document has been attached.
+          readOnly: true
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              document_id:
+                description: Unique identifier of the document.
+                type: string
+                example: '4815000000045060'
+              file_name:
+                description: Name of the document file.
+                type: string
+                example: receipt.pdf
+    delete-attachment-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The attachment has been deleted.
+          readOnly: true
+    add-comment-request:
+      required:
+        - description
+      type: object
+      properties:
+        description:
+          description: Comment text to add to the purchase receive.
+          type: string
+          example: Items received and verified.
+    add-comment-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Comments added.
+          readOnly: true
+        comment:
+          type: object
+          properties:
+            comment_id:
+              description: Unique identifier of the comment.
+              type: string
+              example: '4815000000045070'
+            purchasereceive_id:
+              description: Unique identifier of the associated purchase receive.
+              type: string
+              example: '4815000000045035'
+            description:
+              description: Comment text.
+              type: string
+              example: Items received and verified.
+            commented_by_id:
+              description: Unique identifier of the user who posted the comment.
+              type: string
+              example: '4815000000000001'
+            commented_by:
+              description: Name of the user who posted the comment.
+              type: string
+              example: John Smith
+            comment_type:
+              description: Type of the comment.
+              type: string
+              example: system
+            date:
+              description: Date and time when the comment was posted.
+              type: string
+              example: '2024-06-15T10:45:00.000Z'
+    delete-comment-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The comment has been deleted.
+          readOnly: true
+  securitySchemes:
+    Zoho_Auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://accounts.zoho.com/oauth/v2/auth
+          scopes:
+            ZohoInventory.purchasereceives.CREATE: Create Purchasereceives
+            ZohoInventory.purchasereceives.READ: Read Purchasereceives
+            ZohoInventory.purchasereceives.UPDATE: Update Purchasereceives
+            ZohoInventory.purchasereceives.DELETE: Delete Purchasereceives

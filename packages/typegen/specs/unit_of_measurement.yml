@@ -1,0 +1,881 @@
+openapi: 3.0.0
+info:
+  title: Units of Measurement
+  description: Units of Measurement lets you create units (e.g., kg, g, lb) and organize them into unit groups with defined conversions. Units are the base entities that represent individual measurement types, while unit groups group related units and their conversion rates. You can associate these units with items to track quantities in multiple units of measurement.
+  contact: {}
+  version: 1.0.0
+servers:
+  - url: https://www.zohoapis.com/inventory/v1
+    description: API Endpoint
+tags:
+  - name: unit_of_measurement
+    description: Units of Measurement Module
+paths:
+  /unitgroups:
+    x-mcp-group:
+      - Unit of Measurement
+    post:
+      tags:
+        - unit_of_measurement
+      operationId: create_unit_group
+      summary: Create a unit group
+      description: Creates a new unit group in Zoho Inventory.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-unit-group-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-unit-group-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.CREATE
+    get:
+      tags:
+        - unit_of_measurement
+      operationId: list_unit_groups
+      summary: List all unit groups
+      description: Lists all the unit groups configured in Zoho Inventory.
+      parameters:
+        - name: page
+          in: query
+          description: Page number to be fetched. Default value is 1.
+          required: false
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: per_page
+          in: query
+          description: Number of records to be fetched per page. Default value is 50.
+          required: false
+          schema:
+            type: integer
+            default: 50
+          example: 50
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-unit-groups-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /unitgroups/{unit_group_id}:
+    x-mcp-group:
+      - Unit of Measurement
+    get:
+      tags:
+        - unit_of_measurement
+      operationId: get_unit_group
+      summary: Retrieve a unit group
+      description: Fetches the details of an existing unit group.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-unit-group-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.READ
+    put:
+      tags:
+        - unit_of_measurement
+      operationId: update_unit_group
+      summary: Update a unit group
+      description: Updates the details of an existing unit group.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-unit-group-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-unit-group-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.UPDATE
+    delete:
+      tags:
+        - unit_of_measurement
+      operationId: delete_unit_group
+      summary: Delete a unit group
+      description: Deletes an existing unit group from Zoho Inventory.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-unit-group-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.DELETE
+    parameters:
+      - name: unit_group_id
+        in: path
+        required: true
+        description: Unique identifier of the unit group.
+        schema:
+          type: string
+        example: 4815000000044350
+      - $ref: '#/components/parameters/organization_id'
+  /units:
+    x-mcp-group:
+      - Unit of Measurement
+    post:
+      tags:
+        - unit_of_measurement
+      operationId: create_unit
+      summary: Create a unit
+      description: Creates a new unit in Zoho Inventory.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-unit-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-unit-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.CREATE
+    get:
+      tags:
+        - unit_of_measurement
+      operationId: list_units
+      summary: List all units
+      description: Lists all the units configured in Zoho Inventory.
+      parameters:
+        - name: include_unit_conversions
+          in: query
+          description: If <code>true</code>, includes the unit conversions for each unit in the response.
+          required: false
+          schema:
+            type: boolean
+          example: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-units-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /units/{unit_id}:
+    x-mcp-group:
+      - Unit of Measurement
+    put:
+      tags:
+        - unit_of_measurement
+      operationId: update_unit
+      summary: Update a unit
+      description: Updates the details of an existing unit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-unit-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-unit-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.UPDATE
+    delete:
+      tags:
+        - unit_of_measurement
+      operationId: delete_unit
+      summary: Delete a unit
+      description: Deletes an existing unit from Zoho Inventory.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-unit-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.DELETE
+    parameters:
+      - name: unit_id
+        in: path
+        required: true
+        description: Unique identifier of the unit.
+        schema:
+          type: string
+        example: 4815000000044400
+      - $ref: '#/components/parameters/organization_id'
+  /units/{unit_id}/unitconversions:
+    x-mcp-group:
+      - Unit of Measurement
+    post:
+      tags:
+        - unit_of_measurement
+      operationId: create_unit_conversion
+      summary: Create a unit conversion
+      description: Creates a new unit conversion for a unit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-unit-conversion-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-unit-conversion-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.CREATE
+    get:
+      tags:
+        - unit_of_measurement
+      operationId: list_unit_conversions
+      summary: List unit conversions
+      description: Lists all the unit conversions for a unit.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-unit-conversions-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.READ
+    parameters:
+      - name: unit_id
+        in: path
+        required: true
+        description: Unique identifier of the unit.
+        schema:
+          type: string
+        example: 4815000000044400
+      - $ref: '#/components/parameters/organization_id'
+  /units/{unit_id}/unitconversions/{unit_conversion_id}:
+    x-mcp-group:
+      - Unit of Measurement
+    put:
+      tags:
+        - unit_of_measurement
+      operationId: update_unit_conversion
+      summary: Update a unit conversion
+      description: Updates an existing unit conversion for a unit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-unit-conversion-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-unit-conversion-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.UPDATE
+    delete:
+      tags:
+        - unit_of_measurement
+      operationId: delete_unit_conversion
+      summary: Delete a unit conversion
+      description: Deletes an existing unit conversion from a unit.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-unit-conversion-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.DELETE
+    parameters:
+      - name: unit_id
+        in: path
+        required: true
+        description: Unique identifier of the unit.
+        schema:
+          type: string
+        example: 4815000000044400
+      - name: unit_conversion_id
+        in: path
+        required: true
+        description: Unique identifier of the unit conversion.
+        schema:
+          type: string
+        example: 4815000000044354
+      - $ref: '#/components/parameters/organization_id'
+components:
+  parameters:
+    organization_id:
+      name: organization_id
+      description: ID of the organization
+      in: query
+      required: true
+      schema:
+        type: string
+      example: '10234695'
+  schemas:
+    gendoc-attributes-schema:
+      $ref: '#/components/schemas/unit-group-response'
+    unit-group-response:
+      type: object
+      properties:
+        unit_group_id:
+          description: Unique ID generated by the server for the unit group.
+          type: string
+          example: 4815000000044350
+        unit_group_name:
+          description: Name of the unit group.
+          type: string
+          example: Weight
+        base_unit_id:
+          description: Unique ID of the base unit in the unit group.
+          type: string
+          example: 4815000000044352
+        base_unit_name:
+          description: Name of the base unit.
+          type: string
+          example: kilogram
+        base_unit:
+          description: Short code of the base unit.
+          type: string
+          example: kg
+        base_unit_decimal:
+          description: Number of decimal places for the base unit.
+          type: integer
+          example: 2
+        unit_conversions:
+          type: array
+          description: List of unit conversions in the unit group.
+          items:
+            $ref: '#/components/schemas/unit-conversion-response'
+    unit-conversion-response:
+      type: object
+      properties:
+        unit_conversion_id:
+          description: Unique ID of the unit conversion.
+          type: string
+          example: 4815000000044354
+        target_unit_id:
+          description: Unique ID of the target unit.
+          type: string
+          example: 4815000000044356
+        conversion_rate:
+          description: Conversion rate from the base unit to the target unit.
+          type: number
+          format: double
+          example: 1000
+        target_unit_name:
+          description: Name of the target unit.
+          type: string
+          example: gram
+        target_unit:
+          description: Short code of the target unit.
+          type: string
+          example: g
+        quantity_decimal_place:
+          description: Number of decimal places for the target unit.
+          type: integer
+          example: 0
+    unit-groups-page-context:
+      type: object
+      properties:
+        page:
+          description: Current page number.
+          type: integer
+          example: 1
+        per_page:
+          description: Number of records per page.
+          type: integer
+          example: 50
+        has_more_page:
+          description: Indicates whether more pages are available.
+          type: boolean
+          example: false
+        sort_column:
+          description: Column by which the results are sorted.
+          type: string
+          example: unit_group_name
+        sort_order:
+          description: Order in which the results are sorted.
+          type: string
+          example: A
+    list-unit-groups-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        unit_groups:
+          type: array
+          items:
+            type: object
+            properties:
+              unit_group_id:
+                description: Unique ID generated by the server for the unit group.
+                type: string
+                example: 4815000000044350
+              unit_group_name:
+                description: Name of the unit group.
+                type: string
+                example: Weight
+              base_unit_id:
+                description: Unique ID of the base unit in the unit group.
+                type: string
+                example: 4815000000044352
+              base_unit_name:
+                description: Name of the base unit.
+                type: string
+                example: kilogram
+              base_unit:
+                description: Short code of the base unit.
+                type: string
+                example: kg
+              unit_conversion_count:
+                description: Number of unit conversions in the unit group.
+                type: integer
+                example: 2
+        page_context:
+          $ref: '#/components/schemas/unit-groups-page-context'
+    get-unit-group-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        unit_group:
+          $ref: '#/components/schemas/unit-group-response'
+    create-unit-group-request:
+      required:
+        - unit_group_name
+        - base_unit_id
+      type: object
+      properties:
+        unit_group_name:
+          description: Name of the unit group.
+          type: string
+          example: Weight
+        base_unit_id:
+          description: Unique ID of the base unit for the unit group.
+          type: string
+          example: 4815000000044352
+        unit_conversions:
+          type: array
+          description: List of unit conversions to add to the unit group.
+          items:
+            type: object
+            properties:
+              target_unit_id:
+                description: Unique ID of the target unit.
+                type: string
+                example: 4815000000044356
+              conversion_rate:
+                description: Conversion rate from the base unit to the target unit.
+                type: number
+                format: double
+                example: 1000
+    create-unit-group-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Unit group has been added.
+          readOnly: true
+        unit_group:
+          $ref: '#/components/schemas/unit-group-response'
+    update-unit-group-request:
+      type: object
+      properties:
+        unit_group_name:
+          description: Name of the unit group.
+          type: string
+          example: Weight
+        base_unit_id:
+          description: Unique ID of the base unit for the unit group.
+          type: string
+          example: 4815000000044352
+        unit_conversions:
+          type: array
+          description: List of unit conversions in the unit group.
+          items:
+            type: object
+            properties:
+              unit_conversion_id:
+                description: Unique ID of the unit conversion. Required when updating an existing conversion.
+                type: string
+                example: 4815000000044354
+              target_unit_id:
+                description: Unique ID of the target unit.
+                type: string
+                example: 4815000000044356
+              conversion_rate:
+                description: Conversion rate from the base unit to the target unit.
+                type: number
+                format: double
+                example: 1000
+    update-unit-group-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Unit group has been updated.
+          readOnly: true
+        unit_group:
+          $ref: '#/components/schemas/unit-group-response'
+    delete-unit-group-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The unit group has been deleted.
+          readOnly: true
+    unit-response:
+      type: object
+      properties:
+        unit_id:
+          description: Unique ID generated by the server for the unit.
+          type: string
+          example: 4815000000044400
+        name:
+          description: Name of the unit.
+          type: string
+          example: kilogram
+        unit:
+          description: Short code of the unit.
+          type: string
+          example: kg
+        uqc:
+          description: Unique Quantity Code of the unit.
+          type: string
+        quantity_decimal_place:
+          description: Number of decimal places for the unit.
+          type: integer
+          example: 2
+        unit_conversions:
+          type: array
+          description: List of unit conversions for this unit. Returned only when <code>include_unit_conversions</code> is <code>true</code>.
+          items:
+            type: object
+            properties:
+              unit_conversion_id:
+                description: Unique ID of the unit conversion.
+                type: string
+                example: 4815000000044354
+              target_unit_id:
+                description: Unique ID of the target unit.
+                type: string
+                example: 4815000000044356
+              conversion_rate:
+                description: Conversion rate from this unit to the target unit.
+                type: number
+                format: double
+                example: 1000
+              unit_group_id:
+                description: Unique ID of the unit group the conversion belongs to.
+                type: string
+                example: 4815000000044350
+    unit-conversion-detail-response:
+      type: object
+      properties:
+        unit_conversion_id:
+          description: Unique ID of the unit conversion.
+          type: string
+          example: 4815000000044354
+        target_unit_id:
+          description: Unique ID of the target unit.
+          type: string
+          example: 4815000000044356
+        conversion_rate:
+          description: Conversion rate from the base unit to the target unit.
+          type: number
+          format: double
+          example: 1000
+        target_unit:
+          description: Short code of the target unit.
+          type: string
+          example: g
+    list-units-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        units:
+          type: array
+          items:
+            $ref: '#/components/schemas/unit-response'
+    create-unit-request:
+      required:
+        - name
+        - unit
+      type: object
+      properties:
+        name:
+          description: Name of the unit.
+          type: string
+          example: kilogram
+        unit:
+          description: Short code of the unit.
+          type: string
+          example: kg
+        uqc:
+          description: Unique Quantity Code of the unit.
+          type: string
+        quantity_decimal_place:
+          description: Number of decimal places for the unit.
+          type: integer
+          example: 2
+        unit_conversions:
+          type: array
+          description: List of unit conversions to add to the unit.
+          items:
+            type: object
+            properties:
+              target_unit_id:
+                description: Unique ID of the target unit.
+                type: string
+                example: 4815000000044356
+              conversion_rate:
+                description: Conversion rate from this unit to the target unit.
+                type: number
+                format: double
+                example: 1000
+    create-unit-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Unit has been added.
+          readOnly: true
+        unit:
+          $ref: '#/components/schemas/unit-response'
+    update-unit-request:
+      type: object
+      properties:
+        name:
+          description: Name of the unit.
+          type: string
+          example: kilogram
+        unit:
+          description: Short code of the unit.
+          type: string
+          example: kg
+        uqc:
+          description: Unique Quantity Code of the unit.
+          type: string
+        quantity_decimal_place:
+          description: Number of decimal places for the unit.
+          type: integer
+          example: 2
+        unit_conversions:
+          type: array
+          description: List of unit conversions for this unit.
+          items:
+            type: object
+            properties:
+              unit_conversion_id:
+                description: Unique ID of the unit conversion. Required when updating an existing conversion.
+                type: string
+                example: 4815000000044354
+              target_unit_id:
+                description: Unique ID of the target unit.
+                type: string
+                example: 4815000000044356
+              conversion_rate:
+                description: Conversion rate from this unit to the target unit.
+                type: number
+                format: double
+                example: 1000
+    update-unit-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Unit has been updated.
+          readOnly: true
+        unit:
+          $ref: '#/components/schemas/unit-response'
+    delete-unit-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The unit has been deleted.
+          readOnly: true
+    create-unit-conversion-request:
+      required:
+        - target_unit_id
+        - conversion_rate
+      type: object
+      properties:
+        target_unit_id:
+          description: Unique ID of the target unit.
+          type: string
+          example: 4815000000044356
+        conversion_rate:
+          description: Conversion rate from the base unit to the target unit.
+          type: number
+          format: double
+          example: 1000
+    create-unit-conversion-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Unit conversion has been added.
+          readOnly: true
+        unit_conversion:
+          $ref: '#/components/schemas/unit-conversion-detail-response'
+    list-unit-conversions-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        unit_conversions:
+          type: array
+          items:
+            $ref: '#/components/schemas/unit-conversion-detail-response'
+    update-unit-conversion-request:
+      type: object
+      properties:
+        target_unit_id:
+          description: Unique ID of the target unit.
+          type: string
+          example: 4815000000044356
+        conversion_rate:
+          description: Conversion rate from the base unit to the target unit.
+          type: number
+          format: double
+          example: 1000
+    update-unit-conversion-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Unit conversion has been updated.
+          readOnly: true
+        unit_conversion:
+          $ref: '#/components/schemas/unit-conversion-detail-response'
+    delete-unit-conversion-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The unit conversion has been deleted.
+          readOnly: true
+  securitySchemes:
+    Zoho_Auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://accounts.zoho.com/oauth/v2/auth
+          scopes:
+            ZohoInventory.items.CREATE: Create Items
+            ZohoInventory.items.READ: Read Items
+            ZohoInventory.items.UPDATE: Update Items
+            ZohoInventory.items.DELETE: Delete Items

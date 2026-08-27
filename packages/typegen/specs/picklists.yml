@@ -1,0 +1,2405 @@
+openapi: 3.0.0
+info:
+  title: Picklists
+  description: Picklists help teams track and manage the picking of items for sales orders and purchase returns. You can create picklists, assign them to staff, track picking progress by status, and add comments for collaboration.
+  contact: {}
+  version: 1.0.0
+servers:
+  - url: https://www.zohoapis.com/inventory/v1
+    description: API Endpoint
+tags:
+  - name: picklists
+    description: Picklists Module
+paths:
+  /picklists:
+    x-mcp-group:
+      - Picklists
+    get:
+      tags:
+        - picklists
+      operationId: list_picklists
+      summary: List Picklists
+      description: Retrieve the list of all picklists in the organization.
+      parameters:
+        - $ref: '#/components/parameters/organization_id'
+        - name: sort_column
+          in: query
+          description: Column by which the list is sorted.
+          schema:
+            type: string
+            enum:
+              - salesorder_number
+              - picklist_number
+              - date
+              - created_time
+              - last_modified_time
+              - purchase_return_number
+          example: date
+        - name: sort_order
+          in: query
+          description: Sort order. `A` for ascending, `D` for descending.
+          schema:
+            type: string
+            enum:
+              - A
+              - D
+          example: D
+        - name: search_text
+          in: query
+          description: Search text to filter picklists by name or number.
+          schema:
+            type: string
+          example: Pick-00001
+        - name: filter_by
+          in: query
+          description: 'Filter picklists by status. Example: `Status.All`, `Status.YetToStart`, `Status.InProgress`, `Status.OnHold`, `Status.Completed`, or `MissingAdvancedTrackingDetails`.'
+          schema:
+            type: string
+          example: Status.InProgress
+        - name: salesorder_number
+          in: query
+          description: Filter by sales order number.
+          schema:
+            type: string
+          example: SO-00001
+        - name: salesorder_number_startswith
+          in: query
+          description: Filter picklists where the associated sales order number starts with the given value.
+          schema:
+            type: string
+          example: SO-0
+        - name: salesorder_number_contains
+          in: query
+          description: Filter picklists where the associated sales order number contains the given value.
+          schema:
+            type: string
+          example: '0001'
+        - name: purchase_return_number
+          in: query
+          description: Filter by purchase return number.
+          schema:
+            type: string
+          example: PR-00001
+        - name: purchase_return_number_startswith
+          in: query
+          description: Filter picklists where the associated purchase return number starts with the given value.
+          schema:
+            type: string
+          example: PR-0
+        - name: purchase_return_number_contains
+          in: query
+          description: Filter picklists where the associated purchase return number contains the given value.
+          schema:
+            type: string
+          example: '0001'
+        - name: picklist_number
+          in: query
+          description: Filter by picklist number.
+          schema:
+            type: string
+          example: Pick-00001
+        - name: picklist_number_startswith
+          in: query
+          description: Filter picklists where the picklist number starts with the given value.
+          schema:
+            type: string
+          example: Pick-0
+        - name: picklist_number_contains
+          in: query
+          description: Filter picklists where the picklist number contains the given value.
+          schema:
+            type: string
+          example: '0001'
+        - name: item_id
+          in: query
+          description: Filter picklists that contain the specified item.
+          schema:
+            type: string
+          example: '130426000000664040'
+        - name: location_id
+          in: query
+          description: Filter picklists by location.
+          schema:
+            type: string
+          example: '130426000000664030'
+        - name: customer_id
+          in: query
+          description: Filter picklists by customer.
+          schema:
+            type: string
+          example: '130426000000664050'
+        - name: assignee_id
+          in: query
+          description: Filter picklists by the assigned user.
+          schema:
+            type: string
+          example: '130426000000664060'
+        - name: date
+          in: query
+          description: Filter picklists by a specific date (yyyy-mm-dd).
+          schema:
+            type: string
+            format: date
+          example: '2024-01-15'
+        - name: date_start
+          in: query
+          description: Filter picklists from this start date (yyyy-mm-dd).
+          schema:
+            type: string
+            format: date
+          example: '2024-01-01'
+        - name: date_end
+          in: query
+          description: Filter picklists up to this end date (yyyy-mm-dd).
+          schema:
+            type: string
+            format: date
+          example: '2024-01-31'
+        - name: status
+          in: query
+          description: Filter picklists by status.
+          schema:
+            type: string
+            enum:
+              - yettostart
+              - inprogress
+              - onhold
+              - completed
+          example: inprogress
+        - name: customview_id
+          in: query
+          description: ID of a custom view to apply.
+          schema:
+            type: string
+          example: '130426000000664070'
+        - name: page
+          in: query
+          description: Page number for pagination.
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: per_page
+          in: query
+          description: Number of records per page.
+          schema:
+            type: integer
+            default: 10
+          example: 10
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-picklists-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.picklists.READ
+    post:
+      tags:
+        - picklists
+      operationId: create_picklist
+      summary: Create a Picklist
+      description: Create a new picklist for picking items.
+      parameters:
+        - $ref: '#/components/parameters/organization_id'
+        - name: ignore_auto_number_generation
+          in: query
+          description: Set to `true` to use a custom picklist number instead of the auto-generated one.
+          schema:
+            type: boolean
+          example: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-a-picklist-request'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/picklist-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.picklists.CREATE
+    delete:
+      tags:
+        - picklists
+      operationId: bulk_delete_picklists
+      summary: Bulk Delete Picklists
+      description: Delete multiple picklists at once.
+      parameters:
+        - $ref: '#/components/parameters/organization_id'
+        - name: picklist_ids
+          in: query
+          description: Comma-separated list of picklist IDs to delete. Maximum 200 IDs.
+          required: true
+          schema:
+            type: string
+          example: 130426000000810001,130426000000810002
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/message-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.picklists.DELETE
+  /picklists/{picklist_id}:
+    x-mcp-group:
+      - Picklists
+    get:
+      tags:
+        - picklists
+      operationId: get_picklist
+      summary: Get a Picklist
+      description: Retrieve the details of an existing picklist.
+      parameters:
+        - name: print
+          in: query
+          description: Set to `true` to return print-friendly content.
+          schema:
+            type: boolean
+          example: false
+        - $ref: '#/components/parameters/organization_id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/picklist-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.picklists.READ
+    put:
+      tags:
+        - picklists
+      operationId: update_picklist
+      summary: Update a Picklist
+      description: Update the details of an existing picklist.
+      parameters:
+        - name: ignore_auto_number_generation
+          in: query
+          description: Set to `true` to use a custom picklist number instead of the auto-generated one.
+          schema:
+            type: boolean
+          example: false
+        - $ref: '#/components/parameters/organization_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-a-picklist-request'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/picklist-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.picklists.UPDATE
+    delete:
+      tags:
+        - picklists
+      operationId: delete_picklist
+      summary: Delete a Picklist
+      description: Delete an existing picklist.
+      parameters:
+        - $ref: '#/components/parameters/organization_id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/message-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.picklists.DELETE
+    parameters:
+      - name: picklist_id
+        in: path
+        required: true
+        description: Unique identifier of the picklist.
+        schema:
+          type: string
+        example: '130426000000810001'
+  /picklists/{picklist_id}/setstatus:
+    x-mcp-group:
+      - Picklists
+    post:
+      tags:
+        - picklists
+      operationId: set_picklist_status
+      summary: Set Status of a Picklist
+      description: Update the status of a specific picklist.
+      parameters:
+        - name: status
+          in: query
+          required: true
+          description: The new status to set for the picklist.
+          schema:
+            type: string
+            enum:
+              - yettostart
+              - inprogress
+              - onhold
+              - completed
+          example: completed
+        - $ref: '#/components/parameters/organization_id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/message-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.picklists.UPDATE
+    parameters:
+      - name: picklist_id
+        in: path
+        required: true
+        description: Unique identifier of the picklist.
+        schema:
+          type: string
+        example: '130426000000810001'
+  /picklists/setstatus:
+    x-mcp-group:
+      - Picklists
+    post:
+      tags:
+        - picklists
+      operationId: bulk_set_picklist_status
+      summary: Bulk Set Status of Picklists
+      description: Update the status of multiple picklists at once.
+      parameters:
+        - name: picklist_ids
+          in: query
+          required: true
+          description: Comma-separated list of picklist IDs. Maximum 25 IDs.
+          schema:
+            type: string
+          example: 130426000000810001,130426000000810002
+        - name: picklist_item_ids
+          in: query
+          description: Comma-separated list of picklist item IDs to update. Maximum 50 IDs.
+          schema:
+            type: string
+          example: 130426000000810011,130426000000810012
+        - name: status
+          in: query
+          required: true
+          description: The new status to assign to the specified picklists.
+          schema:
+            type: string
+            enum:
+              - yettostart
+              - inprogress
+              - onhold
+              - completed
+          example: completed
+        - $ref: '#/components/parameters/organization_id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/message-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.picklists.UPDATE
+  /picklists/{picklist_id}/comments:
+    x-mcp-group:
+      - Picklists
+    post:
+      tags:
+        - picklists
+      operationId: add_comment_to_picklist
+      summary: Add a Comment to a Picklist
+      description: Add a comment or note to an existing picklist.
+      parameters:
+        - $ref: '#/components/parameters/organization_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/add-comment-request'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/comment-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.picklists.UPDATE
+    parameters:
+      - name: picklist_id
+        in: path
+        required: true
+        description: Unique identifier of the picklist.
+        schema:
+          type: string
+        example: '130426000000810001'
+  /picklists/{picklist_id}/comments/{comment_id}:
+    x-mcp-group:
+      - Picklists
+    delete:
+      tags:
+        - picklists
+      operationId: delete_picklist_comment
+      summary: Delete a Comment on a Picklist
+      description: Delete a comment from an existing picklist.
+      parameters:
+        - $ref: '#/components/parameters/organization_id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/message-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.picklists.DELETE
+    parameters:
+      - name: picklist_id
+        in: path
+        required: true
+        description: Unique identifier of the picklist.
+        schema:
+          type: string
+        example: '130426000000810001'
+      - name: comment_id
+        in: path
+        required: true
+        description: Unique identifier of the comment.
+        schema:
+          type: string
+        example: '130426000000810021'
+  /picklists/{picklist_id}/advancedtrackingdetails:
+    x-mcp-group:
+      - Picklists
+    get:
+      tags:
+        - picklists
+      operationId: get_picklist_advanced_tracking_details
+      summary: Get Advanced Tracking Details for a Picklist
+      description: Retrieve the serial number and batch tracking details for a picklist.
+      parameters:
+        - $ref: '#/components/parameters/organization_id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/advanced-tracking-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.picklists.READ
+    put:
+      tags:
+        - picklists
+      operationId: update_picklist_advanced_tracking_details
+      summary: Update Advanced Tracking Details for a Picklist
+      description: Update serial number and batch tracking details for items in a picklist.
+      parameters:
+        - $ref: '#/components/parameters/organization_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-advanced-tracking-request'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/message-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.picklists.UPDATE
+    parameters:
+      - name: picklist_id
+        in: path
+        required: true
+        description: Unique identifier of the picklist.
+        schema:
+          type: string
+        example: '130426000000810001'
+  /picklists/searchsolineitems:
+    x-mcp-group:
+      - Picklists
+    get:
+      tags:
+        - picklists
+      operationId: search_so_line_items_for_picklist
+      summary: Search Sales Order Line Items
+      description: Search for sales order line items that can be added to a picklist.
+      parameters:
+        - $ref: '#/components/parameters/organization_id'
+        - name: customer_ids_in
+          in: query
+          description: Comma-separated list of customer IDs to filter by. Maximum 50.
+          schema:
+            type: string
+          example: 130426000000664050,130426000000664051
+        - name: salesorder_ids_in
+          in: query
+          description: Comma-separated list of sales order IDs to filter by. Maximum 50.
+          schema:
+            type: string
+          example: 130426000000700001,130426000000700002
+        - name: item_ids_in
+          in: query
+          description: Comma-separated list of item IDs to filter by. Maximum 50.
+          schema:
+            type: string
+          example: 130426000000664040,130426000000664041
+        - name: location_id
+          in: query
+          description: Filter by location.
+          schema:
+            type: string
+          example: '130426000000664030'
+        - name: line_item_location_id
+          in: query
+          description: Filter by the location associated with the line item.
+          schema:
+            type: string
+          example: '130426000000664031'
+        - name: sort_column
+          in: query
+          description: Column by which the results are sorted.
+          schema:
+            type: string
+            enum:
+              - salesorder_number
+              - name
+              - sku
+          example: salesorder_number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/search-so-line-items-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.salesorders.READ
+  /picklists/searchso:
+    x-mcp-group:
+      - Picklists
+    get:
+      tags:
+        - picklists
+      operationId: search_sales_orders_for_picklist
+      summary: Search Sales Orders
+      description: Search for sales orders that can be used when creating a picklist.
+      parameters:
+        - $ref: '#/components/parameters/organization_id'
+        - name: customer_ids_in
+          in: query
+          description: Comma-separated list of customer IDs to filter by. Maximum 50.
+          schema:
+            type: string
+          example: 130426000000664050,130426000000664051
+        - name: location_id
+          in: query
+          description: Filter by location.
+          schema:
+            type: string
+          example: '130426000000664030'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/search-sales-orders-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.salesorders.READ
+  /picklists/searchprlineitems:
+    x-mcp-group:
+      - Picklists
+    get:
+      tags:
+        - picklists
+      operationId: search_pr_line_items_for_picklist
+      summary: Search Purchase Return Line Items
+      description: Search for purchase return line items that can be added to a picklist.
+      parameters:
+        - $ref: '#/components/parameters/organization_id'
+        - name: vendor_ids_in
+          in: query
+          description: Comma-separated list of vendor IDs to filter by. Maximum 50.
+          schema:
+            type: string
+          example: 130426000000664055,130426000000664056
+        - name: purchasereturn_ids_in
+          in: query
+          description: Comma-separated list of purchase return IDs to filter by. Maximum 50.
+          schema:
+            type: string
+          example: 130426000000720001,130426000000720002
+        - name: item_ids_in
+          in: query
+          description: Comma-separated list of item IDs to filter by. Maximum 50.
+          schema:
+            type: string
+          example: 130426000000664040,130426000000664041
+        - name: location_id
+          in: query
+          description: Filter by location.
+          schema:
+            type: string
+          example: '130426000000664030'
+        - name: line_item_location_id
+          in: query
+          description: Filter by the location associated with the line item.
+          schema:
+            type: string
+          example: '130426000000664031'
+        - name: sort_column
+          in: query
+          description: Column by which the results are sorted.
+          schema:
+            type: string
+            enum:
+              - purchasereturn_number
+              - name
+              - sku
+          example: purchasereturn_number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/search-pr-line-items-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.purchasereturns.READ
+components:
+  parameters:
+    organization_id:
+      name: organization_id
+      description: ID of the organization
+      in: query
+      required: true
+      schema:
+        type: string
+      example: '10234695'
+  schemas:
+    picklist_id:
+      description: Unique ID generated by the server for the picklist.
+      type: string
+      readOnly: true
+      example: '130426000000810001'
+    picklist_number:
+      description: Unique number assigned to the picklist. Auto-generated unless overridden.
+      type: string
+      maxLength: 50
+      example: Pick-00001
+    picklist-line-item:
+      description: |
+        A line item in a picklist representing one item to be picked.
+
+        The fields depend on `group_by`:
+
+        - **`group_by=none` (flat)** - every pick-related fields below (item, quantities, tracking, storages, status, and similar) is added directly on the line item. `mapping_entity_details` is **not** used.
+        - **`group_by=item` or `sales_order` (grouped)** - only the grouping fields (`line_item_id`, `assignee_id`, `assignee_name`, `parent_id`, `parent_name`, item-summary fields, and for `sales_order` also `customer_name`, `order_date`, `shipment_date`, `delivery_method`) are added on the parent. The actual per-pick fields (quantities, status, storages, tracking) are added inside `mapping_entity_details`.
+
+        > Grouping is applicable only for sales-order picklists. Purchase-return picklists are always flat (`group_by=none`).
+      type: object
+      properties:
+        line_item_id:
+          description: Unique ID of the line item
+          type: string
+          example: '130426000000810011'
+        parent_id:
+          description: 'Grouping entity ID: the `item_id` for `group_by=item`, or the `salesorder_id` for `group_by=sales_order`. Returned only for grouped picklists.'
+          type: string
+          example: '130426000000664040'
+        parent_name:
+          description: Display name of the grouping entity (item name or sales order number). Returned only for grouped picklists.
+          type: string
+          example: Office Chair
+        customer_name:
+          description: Customer name of the grouped sales order. Returned only when `group_by=sales_order`.
+          type: string
+          example: Acme Corp
+        order_date:
+          description: Date of the grouped sales order. Returned only when `group_by=sales_order`.
+          type: string
+          format: date
+          example: '2024-01-12'
+        shipment_date:
+          description: Expected shipment date of the grouped sales order. Returned only when `group_by=sales_order`.
+          type: string
+          format: date
+          example: '2024-01-18'
+        delivery_method:
+          description: Delivery method of the grouped sales order. Returned only when `group_by=sales_order`.
+          type: string
+          example: FedEx
+        assignee_id:
+          description: ID of the user assigned to pick this line item. For grouped picklists this is the picker assigned to the entire group.
+          type: string
+          example: '130426000000664060'
+        assignee_name:
+          description: Name of the assigned user.
+          type: string
+          example: John Doe
+        mapping_entity_details:
+          description: Child pick entries grouped under this parent line item. Returned **only** for grouped picklists (`group_by=item` or `sales_order`). For `group_by=none`, this field is omitted and pick details are returned directly on the line item.
+          type: array
+          items:
+            $ref: '#/components/schemas/picklist-line-item-mapping'
+        salesorder_id:
+          description: ID of the associated sales order. Returned for `group_by=none` and `group_by=sales_order`.
+          type: string
+          example: '130426000000700001'
+        salesorder_number:
+          description: Number of the associated sales order. Returned only for `group_by=none`.
+          type: string
+          example: SO-00001
+        purchasereturn_id:
+          description: ID of the associated purchase return. Returned for purchase-return picklists.
+          type: string
+          example: '130426000000720001'
+        purchasereturn_number:
+          description: Number of the associated purchase return. Returned for purchase-return picklists.
+          type: string
+          example: PR-00001
+        so_line_item_id:
+          description: ID of the underlying sales order line item. Returned only for `group_by=none`.
+          type: string
+          example: '130426000000700011'
+        pr_line_item_id:
+          description: ID of the underlying purchase return line item. Returned for purchase-return picklists.
+          type: string
+          example: '130426000000720011'
+        item_id:
+          description: ID of the item to be picked. Returned only for `group_by=none`.
+          type: string
+          example: '130426000000664040'
+        name:
+          description: Name of the item. Returned only for `group_by=none`.
+          type: string
+          example: Office Chair
+        sku:
+          description: SKU of the item. Returned for `group_by=none` and `group_by=item`.
+          type: string
+          example: CHAIR-001
+        is_storage_location_enabled:
+          description: Whether storage location tracking is enabled for this item. Returned only when Zoho Inventory and storage tracking are enabled, and `group_by` is `none` or `item`.
+          type: boolean
+          example: true
+        is_combo_product:
+          description: Whether the item is a composite/combo product. Returned only when Zoho Inventory is enabled, and `group_by` is `none` or `item`.
+          type: boolean
+          example: false
+        unit:
+          description: Usage unit of the line item. Returned only for `group_by=none`.
+          type: string
+          example: pcs
+        base_unit:
+          description: Base unit configured on the item. Returned only for `group_by=none`.
+          type: string
+          example: pcs
+        base_unit_id:
+          description: ID of the base unit. Returned only when unit conversion is enabled and `group_by=none`.
+          type: string
+          example: '130426000000900020'
+        unit_conversion_id:
+          description: ID of the unit conversion applied. Returned only when unit conversion is enabled and `group_by=none`.
+          type: string
+          example: '130426000000900001'
+        conversion_rate:
+          description: Unit conversion rate. Returned only when unit conversion is enabled and `group_by=none`.
+          type: number
+          example: 1
+        quantity_decimal_place:
+          description: Number of decimal places used for quantity values on this line item. Returned only for `group_by=none`.
+          type: integer
+          example: 2
+        description:
+          description: Description of the line item. Returned only for `group_by=none`.
+          type: string
+          example: Ergonomic mesh office chair.
+        image_name:
+          description: File name of the item image. Returned only for `group_by=none`.
+          type: string
+          example: chair.png
+        image_type:
+          description: File type of the item image. Returned only for `group_by=none`.
+          type: string
+          example: png
+        image_document_id:
+          description: Document ID of the item image. Returned only for `group_by=none`.
+          type: string
+          example: '130426000000910001'
+        quantity_ordered:
+          description: Quantity ordered on the underlying sales order line item, normalized to the picking unit. Returned only for `group_by=none`.
+          type: number
+          example: 10
+        quantity_returned:
+          description: Quantity on the underlying purchase return line item. Returned for purchase-return picklists.
+          type: number
+          example: 5
+        so_quantity_ordered:
+          description: Total quantity ordered on the underlying sales order line item (in the SO unit). Returned only for `group_by=none`.
+          type: number
+          example: 10
+        pr_quantity_returned:
+          description: Total quantity on the underlying purchase return line item. Returned for purchase-return picklists.
+          type: number
+          example: 5
+        so_quantity_picked:
+          description: Quantity already picked across all picklists for the underlying sales order line item. Returned only for `group_by=none`.
+          type: number
+          example: 3
+        pr_quantity_picked:
+          description: Quantity already picked across all picklists for the underlying purchase return line item. Returned for purchase-return picklists.
+          type: number
+          example: 2
+        quantity_to_be_picked:
+          description: Quantity of the item to be picked. Returned only for `group_by=none`.
+          type: number
+          example: 5
+        quantity_picked:
+          description: Quantity already picked. Returned only for `group_by=none`.
+          type: number
+          example: 3
+        quantity_picked_remaining:
+          description: Remaining quantity yet to be picked. Returned only for `group_by=none`.
+          type: number
+          example: 2
+        quantity_packed:
+          description: Quantity that has been packed. Returned only for `group_by=none`.
+          type: number
+          example: 3
+        quantity_manually_fulfilled:
+          description: Quantity that was manually fulfilled. Returned only for `group_by=none`.
+          type: number
+          example: 0
+        rate:
+          description: Unit price/rate of the underlying line item. Returned only for `group_by=none`.
+          type: number
+          example: 199.99
+        status:
+          description: Status of the line item. Returned only for `group_by=none` (for grouped picklists, status lives on each child entry inside `mapping_entity_details`).
+          type: string
+          example: inprogress
+        preferred_storage_id:
+          description: ID of the preferred storage location for this item. Returned when storage tracking is enabled and `group_by` is `none` or `item`.
+          type: string
+          example: '130426000000801001'
+        preferred_storage_name:
+          description: Name of the preferred storage location. Returned when storage tracking is enabled and `group_by` is `none` or `item`.
+          type: string
+          example: A-R1-B01
+        storages:
+          description: Storage location breakdown used for picking. Returned only when storage tracking is enabled and `group_by=none`.
+          type: array
+          items:
+            type: object
+            properties:
+              storage_id:
+                type: string
+                example: '130426000000801001'
+              storage_name:
+                type: string
+                example: A-R1-B01
+              out_quantity:
+                type: number
+                example: 5
+        serial_numbers:
+          description: Serial numbers picked. Returned only when serial-number tracking is enabled and `group_by=none`.
+          type: array
+          items:
+            type: string
+          example:
+            - SN-001
+            - SN-002
+        batches:
+          description: Batch details picked. Returned only when batch tracking is enabled and `group_by=none`.
+          type: array
+          items:
+            type: object
+            properties:
+              batch_number:
+                type: string
+                example: BATCH-001
+              out_quantity:
+                type: number
+                example: 5
+        track_serial_number:
+          description: Whether serial-number tracking is enabled for this item. Returned only when serial-number tracking is enabled and `group_by=none`.
+          type: boolean
+          example: false
+        track_batch_number:
+          description: Whether batch tracking is enabled for this item. Returned only when batch tracking is enabled and `group_by=none`.
+          type: boolean
+          example: false
+        track_serial_for_package:
+          description: Whether serial numbers are required at the package level for this line item. Returned only for `group_by=none`.
+          type: boolean
+          example: false
+        track_batch_for_package:
+          description: Whether batch numbers are required at the package level for this line item. Returned only for `group_by=none`.
+          type: boolean
+          example: false
+        item_custom_fields:
+          description: Custom field values for the picked item. Returned only for `group_by=none`.
+          type: array
+          items:
+            type: object
+            properties:
+              label:
+                type: string
+                example: Lot
+              value:
+                type: string
+                example: L-2024-01
+        available_stock_for_picking:
+          description: Stock currently available for picking. Returned only when `showAvailableStockForPicking` is enabled and `group_by` is `none` or `item`.
+          type: number
+          example: 25
+        advanced_tracking_missing_quantity:
+          description: Quantity for which advanced tracking (serial / batch) details are missing. Returned only on create when tracking relaxation is enabled and `group_by=none`.
+          type: number
+          example: 0
+        upc:
+          description: Universal Product Code of the item. Returned only when Zoho Inventory is enabled, the request is from a Zoho Books client, and `group_by=none`.
+          type: string
+          example: '012345678905'
+        ean:
+          description: European Article Number of the item. Same return conditions as `upc`.
+          type: string
+          example: '4006381333931'
+        isbn:
+          description: International Standard Book Number of the item. Same return conditions as `upc`.
+          type: string
+          example: 978-3-16-148410-0
+    picklist-line-item-mapping:
+      description: A child pick entry under a grouped picklist line item. Returned only for grouped picklists (`group_by=item` or `sales_order`). Each entry describes one underlying sales order line item being picked under the parent group, and carries the per-pick details (quantities, status, storages, tracking) that, in flat picklists, would live on the line item itself.
+      type: object
+      properties:
+        mapping_line_item_id:
+          description: Unique ID of this child mapping line item.
+          type: string
+          example: '130426000000810031'
+        mapping_entity_id:
+          description: ID of the underlying child entity (sales order or item) this child entry belongs to.
+          type: string
+          example: '130426000000700001'
+        mapping_entity_name:
+          description: Number / name of the underlying child entity (sales order number or item name).
+          type: string
+          example: SO-00001
+        mapping_entity_item_id:
+          description: ID of the underlying sales order or purchase return line item being picked under this group.
+          type: string
+          example: '130426000000700011'
+        so_quantity_ordered:
+          description: Total quantity ordered on the underlying sales order line item. Returned when the underlying entity is a sales order.
+          type: number
+          example: 10
+        quantity_ordered:
+          description: Quantity ordered, normalized to the picking unit.
+          type: number
+          example: 10
+        so_quantity_picked:
+          description: Quantity already picked across all picklists for the underlying sales order line item. Returned when the underlying entity is a sales order.
+          type: number
+          example: 3
+        item_id:
+          description: ID of the item being picked. Returned when the parent group is grouped by sales order.
+          type: string
+          example: '130426000000664040'
+        name:
+          description: Name of the item being picked.
+          type: string
+          example: Office Chair
+        sku:
+          description: SKU of the item being picked.
+          type: string
+          example: CHAIR-001
+        is_storage_location_enabled:
+          description: Whether storage location tracking is enabled for this item. Returned only when Zoho Inventory and storage tracking are enabled.
+          type: boolean
+          example: true
+        is_combo_product:
+          description: Whether the item is a composite/combo product. Returned only when Zoho Inventory is enabled.
+          type: boolean
+          example: false
+        unit:
+          description: Usage unit of the line item.
+          type: string
+          example: pcs
+        base_unit:
+          description: Base unit configured on the item.
+          type: string
+          example: pcs
+        base_unit_id:
+          description: ID of the base unit. Returned only when unit conversion is enabled.
+          type: string
+          example: '130426000000900020'
+        unit_conversion_id:
+          description: ID of the unit conversion applied. Returned only when unit conversion is enabled.
+          type: string
+          example: '130426000000900001'
+        conversion_rate:
+          description: Unit conversion rate. Returned only when unit conversion is enabled.
+          type: number
+          example: 1
+        quantity_decimal_place:
+          description: Number of decimal places used for quantity values on this line item.
+          type: integer
+          example: 2
+        description:
+          description: Description of the underlying line item.
+          type: string
+          example: Ergonomic mesh office chair.
+        image_name:
+          description: File name of the item image.
+          type: string
+          example: chair.png
+        image_type:
+          description: File type of the item image.
+          type: string
+          example: png
+        image_document_id:
+          description: Document ID of the item image.
+          type: string
+          example: '130426000000910001'
+        quantity_to_be_picked:
+          description: Quantity to be picked for this child entry.
+          type: number
+          example: 5
+        quantity_picked:
+          description: Quantity already picked for this child entry.
+          type: number
+          example: 3
+        quantity_picked_remaining:
+          description: Remaining quantity yet to be picked for this child entry.
+          type: number
+          example: 2
+        quantity_packed:
+          description: Quantity already packed for this child entry.
+          type: number
+          example: 0
+        quantity_manually_fulfilled:
+          description: Quantity that was manually fulfilled for this child entry.
+          type: number
+          example: 0
+        rate:
+          description: Unit price/rate of the underlying line item.
+          type: number
+          example: 199.99
+        status:
+          description: Status of this child mapping entry.
+          type: string
+          pattern: (yet_to_start|in_progress|on_hold|completed)
+          example: in_progress
+        preferred_storage_id:
+          description: ID of the preferred storage location for this child entry.
+          type: string
+          example: '130426000000801001'
+        preferred_storage_name:
+          description: Name of the preferred storage location.
+          type: string
+          example: A-R1-B01
+        storages:
+          description: Storage location breakdown used for picking this child entry.
+          type: array
+          items:
+            type: object
+            properties:
+              storage_id:
+                type: string
+                example: '130426000000801001'
+              storage_name:
+                type: string
+                example: A-R1-B01
+              out_quantity:
+                type: number
+                example: 5
+        serial_numbers:
+          description: Serial numbers picked for this child entry.
+          type: array
+          items:
+            type: string
+          example:
+            - SN-001
+            - SN-002
+        batches:
+          description: Batch details picked for this child entry.
+          type: array
+          items:
+            type: object
+            properties:
+              batch_number:
+                type: string
+                example: BATCH-001
+              out_quantity:
+                type: number
+                example: 5
+              storages:
+                description: Storage location breakdown used for picking this child entry.
+                type: array
+                items:
+                  type: object
+                  properties:
+                    storage_id:
+                      type: string
+                      example: '130426000000801001'
+                    storage_name:
+                      type: string
+                      example: A-R1-B01
+                    out_quantity:
+                      type: number
+                      example: 5
+        item_custom_fields:
+          description: Custom field values for the picked item in this child entry.
+          type: array
+          items:
+            type: object
+            properties:
+              label:
+                type: string
+                example: Lot
+              value:
+                type: string
+                example: L-2024-01
+        track_serial_number:
+          description: Whether serial-number tracking is enabled for this item. Returned only when serial-number tracking is enabled in the org.
+          type: boolean
+          example: false
+        track_batch_number:
+          description: Whether batch tracking is enabled for this item. Returned only when batch tracking is enabled in the org.
+          type: boolean
+          example: false
+        track_serial_for_package:
+          description: Whether serial numbers are required at the package level for this line item.
+          type: boolean
+          example: false
+        track_batch_for_package:
+          description: Whether batch numbers are required at the package level for this line item.
+          type: boolean
+          example: false
+        available_stock_for_picking:
+          description: Stock currently available for picking. Returned only when `showAvailableStockForPicking` is enabled.
+          type: number
+          example: 25
+        advanced_tracking_missing_quantity:
+          description: Quantity for which advanced tracking (serial / batch) details are missing. Returned only on create when tracking relaxation is enabled in the org.
+          type: number
+          example: 0
+        upc:
+          description: Universal Product Code of the item. Returned only when Zoho Inventory is enabled and the request is from a Zoho Books client.
+          type: string
+          example: '012345678905'
+        ean:
+          description: European Article Number of the item. Returned only when Zoho Inventory is enabled and the request is from a Zoho Books client.
+          type: string
+          example: '4006381333931'
+        isbn:
+          description: International Standard Book Number of the item. Returned only when Zoho Inventory is enabled and the request is from a Zoho Books client.
+          type: string
+          example: 978-3-16-148410-0
+    picklist-line-item-mapping-request:
+      description: A child pick entry under a grouped picklist line item. Used only when `group_by` is `item` or `sales_order`. Provide one entry inside `mapping_entity_details` for every underlying sales order line item to be picked under the parent group.
+      type: object
+      properties:
+        mapping_line_item_id:
+          description: ID of an existing child entry. Pass on update to identify the row being modified; omit when adding a new one.
+          type: string
+          example: '130426000000810031'
+        mapping_entity_item_id:
+          description: ID of the underlying sales order line item to be picked. Required when adding a new child entry.
+          type: string
+          example: '130426000000700011'
+        quantity_to_be_picked:
+          description: Quantity to be picked for this child entry.
+          type: number
+          example: 5
+        quantity_picked:
+          description: Quantity already picked for this child entry.
+          type: number
+          example: 3
+        status:
+          description: Status of this child mapping entry.
+          type: string
+          enum:
+            - yettostart
+            - inprogress
+            - onhold
+            - completed
+          example: inprogress
+        preferred_storage_id:
+          description: ID of the preferred storage location for this child entry.
+          type: string
+          example: '130426000000801001'
+        storages:
+          description: Storage location assignments for this child entry. Maximum 100.
+          type: array
+          maxItems: 100
+          items:
+            type: object
+            properties:
+              storage_id:
+                description: ID of the storage location.
+                type: string
+                example: '130426000000801001'
+              out_quantity:
+                description: Quantity assigned to this storage location.
+                type: number
+                example: 5
+        serial_numbers:
+          description: Serial numbers picked for this child entry. Maximum 10000.
+          type: array
+          maxItems: 10000
+          items:
+            type: string
+          example:
+            - SN-001
+            - SN-002
+        batches:
+          description: Batch details picked for this child entry. Maximum 100.
+          type: array
+          maxItems: 100
+          items:
+            type: object
+            properties:
+              batch_id:
+                description: Batch identifier.
+                type: string
+                example: '130426000000810031'
+              out_quantity:
+                description: Quantity in this batch.
+                type: number
+                example: 5
+              storages:
+                description: Storage location breakdown used for picking this child entry.
+                type: array
+                items:
+                  type: object
+                  properties:
+                    storage_id:
+                      description: ID of the storage location.
+                      type: string
+                      example: '130426000000801001'
+                    out_quantity:
+                      description: Quantity assigned to this storage location.
+                      type: number
+                      example: 5
+        item_custom_fields:
+          description: Custom field values for the picked item in this child entry. Maximum 1000.
+          type: array
+          maxItems: 1000
+          items:
+            type: object
+            properties:
+              label:
+                description: Label of the custom field.
+                type: string
+                example: Lot
+              value:
+                description: Value for the custom field.
+                type: string
+                example: L-2024-01
+    picklist-line-item-request:
+      description: |
+        A line item in a picklist create/update request. Two mutually-exclusive shapes, controlled by `group_by`:
+
+        - **Flat (`group_by=none`)** - populate pick fields (`quantity_to_be_picked`, `storages`, `serial_numbers`, `batches`, `status`, `preferred_storage_id`, `item_custom_fields`, the `*_line_item_id` references) directly on this object. Do **not** send `mapping_entity_details`.
+        - **Grouped (`group_by=item` or `sales_order`)** - only `line_item_id` (on update), `assignee_id` and `mapping_entity_details` are valid here. All actual pick details belong to each child entry inside `mapping_entity_details`.
+      type: object
+      properties:
+        line_item_id:
+          description: ID of an existing picklist line item. Pass on update to identify the row being modified; omit on create.
+          type: string
+          example: '130426000000810011'
+        salesorder_id:
+          description: ID of the associated sales order. Flat mode or group by sales order.
+          type: string
+          example: '130426000000700001'
+        parent_entity_id:
+          description: ID of the parent entity (sales order or purchase return). Flat mode only.
+          type: string
+          example: '130426000000700001'
+        so_line_item_id:
+          description: ID of the underlying sales order line item. Flat mode only.
+          type: string
+          example: '130426000000700011'
+        pr_line_item_id:
+          description: ID of the underlying purchase return line item. Flat mode only.
+          type: string
+          example: '130426000000720011'
+        parent_line_item_id:
+          description: ID of the parent line item on the source entity. Flat mode only.
+          type: string
+          example: '130426000000700011'
+        quantity_to_be_picked:
+          description: Quantity of the item to be picked. Flat mode only.
+          type: number
+          example: 5
+        quantity_picked:
+          description: Quantity already picked. Flat mode only.
+          type: number
+          example: 3
+        status:
+          description: Status of the line item. Flat mode only.
+          type: string
+          enum:
+            - yettostart
+            - inprogress
+            - onhold
+            - completed
+          example: inprogress
+        preferred_storage_id:
+          description: ID of the preferred storage location for this item. Flat mode or group by item.
+          type: string
+          example: '130426000000801001'
+        storages:
+          description: Storage location assignments. Flat mode only. Maximum 100.
+          type: array
+          maxItems: 100
+          items:
+            type: object
+            properties:
+              storage_id:
+                description: ID of the storage location.
+                type: string
+                example: '130426000000801001'
+              out_quantity:
+                description: Quantity assigned to this storage location.
+                type: number
+                example: 5
+        serial_numbers:
+          description: Serial numbers assigned to this line item. Flat mode only. Maximum 10000.
+          type: array
+          maxItems: 10000
+          items:
+            type: string
+          example:
+            - SN-001
+            - SN-002
+        batches:
+          description: Batch details for this line item. Flat mode only. Maximum 100.
+          type: array
+          maxItems: 100
+          items:
+            type: object
+            properties:
+              batch_id:
+                description: Batch identifier.
+                type: string
+                example: '130426000000810031'
+              out_quantity:
+                description: Quantity in this batch.
+                type: number
+                example: 5
+              storages:
+                description: Storage location breakdown for this batch.
+                type: array
+                items:
+                  type: object
+                  properties:
+                    storage_id:
+                      description: ID of the storage location.
+                      type: string
+                      example: '130426000000801001'
+                    out_quantity:
+                      description: Quantity assigned to this storage location.
+                      type: number
+                      example: 5
+        item_custom_fields:
+          description: Custom field values for the item. Flat mode only. Maximum 1000.
+          type: array
+          maxItems: 1000
+          items:
+            type: object
+            properties:
+              label:
+                description: Label of the custom field.
+                type: string
+                example: Zone
+              value:
+                description: Value for the custom field.
+                type: string
+                example: Zone A
+        assignee_id:
+          description: ID of the user assigned to this line item. For grouped picklists, assigns the picker to the entire group. This is not used for non-grouped picklists.
+          type: string
+          example: '130426000000664060'
+        mapping_entity_details:
+          description: Child pick entries grouped under this parent line item. **Required for grouped picklists** (`group_by=item` or `sales_order`) and must contain at least one entry. Must be omitted for `group_by=none`. Maximum 1000 entries.
+          type: array
+          maxItems: 1000
+          items:
+            $ref: '#/components/schemas/picklist-line-item-mapping-request'
+    create-a-picklist-request:
+      description: Request body for creating a picklist.
+      type: object
+      required:
+        - line_items
+        - location_id
+      properties:
+        picklist_number:
+          description: Custom picklist number. Used when `ignore_auto_number_generation` is true.
+          type: string
+          maxLength: 50
+          example: Pick-00001
+        date:
+          description: Date of the picklist (yyyy-mm-dd).
+          type: string
+          format: date
+          example: '2024-01-15'
+        location_id:
+          description: ID of the location.
+          type: string
+          example: '130426000000664030'
+        parent_entity:
+          description: Type of the parent entity associated with the picklist.
+          type: string
+          enum:
+            - salesorder
+            - purchase_return
+          example: salesorder
+        group_by:
+          description: |
+            Grouping strategy for picklist items. Controls the shape of `line_items`.<br>
+
+            <code>none</code> - flat picklist; each entry is a single pick row with all pick fields supplied directly on the line item. <br>
+            <code>item</code> - grouped by item; each entry represents one product, with the actual picks supplied as child entries inside `mapping_entity_details`.<br>
+            <code>sales_order</code> - grouped by sales order; each entry represents one sales order, with picks supplied inside `mapping_entity_details`.<br>
+
+            Grouping (`item` / `sales_order`) is supported only when `parent_entity` is `salesorder`. Picklists for `parent_entity=purchase_return` must use `group_by=none`.<br>
+            Cannot be changed after creation.
+          type: string
+          enum:
+            - none
+            - item
+            - sales_order
+          example: none
+        assignee_id:
+          description: ID of the user to assign the picklist to.
+          type: string
+          example: '130426000000664060'
+        notes:
+          description: Internal notes for the picklist.
+          type: string
+          maxLength: 2000
+          example: Fragile items - handle with care.
+        line_items:
+          description: Picklist line items. Shape depends on `group_by`. Min 1, Max 1000.
+          type: array
+          minItems: 1
+          maxItems: 1000
+          items:
+            $ref: '#/components/schemas/picklist-line-item-request'
+        custom_fields:
+          description: Custom field values for the picklist.
+          type: array
+          maxItems: 250
+          items:
+            type: object
+            properties:
+              label:
+                description: Label of the custom field.
+                type: string
+                example: Zone
+              value:
+                description: Value for the custom field.
+                type: string
+                example: Zone A
+    update-a-picklist-request:
+      description: Request body for updating a picklist.
+      type: object
+      required:
+        - date
+        - line_items
+      properties:
+        picklist_number:
+          description: Custom picklist number. Used when `ignore_auto_number_generation` is true.
+          type: string
+          maxLength: 50
+          example: Pick-00001
+        date:
+          description: Date of the picklist (yyyy-mm-dd).
+          type: string
+          format: date
+          example: '2024-01-15'
+        location_id:
+          description: ID of the location.
+          type: string
+          example: '130426000000664030'
+        parent_entity:
+          description: Type of the parent entity associated with the picklist.
+          type: string
+          enum:
+            - salesorder
+            - purchase_return
+          example: salesorder
+        group_by:
+          description: Same semantics as on create; see `create-a-picklist-request.group_by`. Cannot be changed after creation; resend the original value.
+          type: string
+          enum:
+            - none
+            - item
+            - sales_order
+          example: none
+        assignee_id:
+          description: ID of the user to assign the picklist to.
+          type: string
+          example: '130426000000664060'
+        notes:
+          description: Internal notes for the picklist.
+          type: string
+          maxLength: 2000
+          example: Fragile items - handle with care.
+        line_items:
+          description: Updated list of picklist line items. Shape depends on `group_by`. On update, pass `line_item_id` / `mapping_line_item_id` to update existing rows; omit them to add new rows. Rows not included are removed. Min 1, Max 1000.
+          type: array
+          minItems: 1
+          maxItems: 1000
+          items:
+            $ref: '#/components/schemas/picklist-line-item-request'
+        custom_fields:
+          description: Custom field values for the picklist.
+          type: array
+          maxItems: 250
+          items:
+            type: object
+            properties:
+              label:
+                description: Label of the custom field.
+                type: string
+                example: Zone
+              value:
+                description: Value for the custom field.
+                type: string
+                example: Zone A
+    picklist-object:
+      description: A picklist record.
+      type: object
+      properties:
+        picklist_id:
+          $ref: '#/components/schemas/picklist_id'
+        picklist_number:
+          $ref: '#/components/schemas/picklist_number'
+        date:
+          description: Date of the picklist.
+          type: string
+          format: date
+          readOnly: true
+          example: '2024-01-15'
+        notes:
+          description: Internal notes for the picklist.
+          type: string
+          readOnly: true
+          example: Fragile items - handle with care.
+        assignee_id:
+          description: ID of the user assigned to the picklist.
+          type: string
+          readOnly: true
+          example: '130426000000664060'
+        assignee_name:
+          description: Name of the user assigned to the picklist.
+          type: string
+          readOnly: true
+          example: John Doe
+        location_id:
+          description: ID of the location.
+          type: string
+          readOnly: true
+          example: '130426000000664030'
+        location_name:
+          description: Name of the location.
+          type: string
+          readOnly: true
+          example: New York
+        status:
+          description: Current status of the picklist.
+          type: string
+          readOnly: true
+          example: inprogress
+        created_time:
+          description: Timestamp when the picklist was created.
+          type: string
+          readOnly: true
+          example: '2024-01-15T10:30:00+05:30'
+        last_modified_time:
+          description: Timestamp when the picklist was last modified.
+          type: string
+          readOnly: true
+          example: '2024-01-15T11:00:00+05:30'
+        salesorder_numbers:
+          description: List of sales order numbers associated with this picklist.
+          type: array
+          readOnly: true
+          items:
+            type: string
+          example:
+            - SO-00001
+            - SO-00002
+        purchase_return_numbers:
+          description: List of purchase return numbers associated with this picklist.
+          type: array
+          readOnly: true
+          items:
+            type: string
+          example:
+            - PR-00001
+        customer_names:
+          description: List of customer names associated with this picklist.
+          type: array
+          readOnly: true
+          items:
+            type: string
+          example:
+            - Acme Corp
+    picklist-detail-object:
+      description: Detailed picklist record including line items and comments.
+      allOf:
+        - $ref: '#/components/schemas/picklist-object'
+        - type: object
+          properties:
+            group_by:
+              description: 'Grouping strategy used for the picklist items: `none`, `item`, or `sales_order`. See `create-a-picklist-request.group_by` for full semantics.'
+              type: string
+              readOnly: true
+              example: none
+            group_by_formatted:
+              description: Formatted display label for the group-by value.
+              type: string
+              readOnly: true
+              example: None
+            total_picking_quantity:
+              description: Total quantity of all items to be picked.
+              type: number
+              readOnly: true
+              example: 25
+            parent_entity:
+              description: Type of the parent entity.
+              type: string
+              readOnly: true
+              example: salesorder
+            line_items:
+              description: Line items in the picklist.
+              type: array
+              readOnly: true
+              items:
+                $ref: '#/components/schemas/picklist-line-item'
+            comments:
+              description: Comments added to the picklist.
+              type: array
+              readOnly: true
+              items:
+                type: object
+                properties:
+                  comment_id:
+                    description: Unique ID of the comment.
+                    type: string
+                    readOnly: true
+                    example: '130426000000810021'
+                  description:
+                    description: Text content of the comment.
+                    type: string
+                    readOnly: true
+                    example: Items checked and ready for dispatch.
+                  commented_by:
+                    description: Name of the user who added the comment.
+                    type: string
+                    readOnly: true
+                    example: John Doe
+                  date:
+                    description: Date the comment was added.
+                    type: string
+                    readOnly: true
+                    example: '2024-01-15'
+            custom_fields:
+              description: Custom field values for the picklist.
+              type: array
+              readOnly: true
+              items:
+                type: object
+                properties:
+                  label:
+                    type: string
+                    readOnly: true
+                    example: Zone
+                  value:
+                    type: string
+                    readOnly: true
+                    example: Zone A
+    list-picklists-response:
+      description: Response for listing picklists.
+      type: object
+      properties:
+        code:
+          type: integer
+          readOnly: true
+          example: 0
+        message:
+          type: string
+          readOnly: true
+          example: success
+        picklists:
+          type: array
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/picklist-object'
+        page_context:
+          type: object
+          readOnly: true
+          properties:
+            page:
+              type: integer
+              readOnly: true
+              example: 1
+            per_page:
+              type: integer
+              readOnly: true
+              example: 10
+            has_more_page:
+              type: boolean
+              readOnly: true
+              example: false
+    picklist-response:
+      description: Response containing a single picklist record.
+      type: object
+      properties:
+        code:
+          type: integer
+          readOnly: true
+          example: 0
+        message:
+          type: string
+          readOnly: true
+          example: Picklist has been created.
+        picklist:
+          readOnly: true
+          allOf:
+            - $ref: '#/components/schemas/picklist-detail-object'
+    message-response:
+      description: Generic success response with a message.
+      type: object
+      properties:
+        code:
+          type: integer
+          readOnly: true
+          example: 0
+        message:
+          type: string
+          readOnly: true
+          example: The picklist has been deleted.
+    add-comment-request:
+      description: Request body for adding a comment to a picklist.
+      type: object
+      properties:
+        description:
+          description: Text content of the comment.
+          type: string
+          example: Items checked and ready for dispatch.
+    comment-response:
+      description: Response containing the created comment.
+      type: object
+      properties:
+        code:
+          type: integer
+          readOnly: true
+          example: 0
+        message:
+          type: string
+          readOnly: true
+          example: Comment has been added.
+        comment:
+          type: object
+          readOnly: true
+          properties:
+            comment_id:
+              description: Unique ID of the comment.
+              type: string
+              readOnly: true
+              example: '130426000000810021'
+            description:
+              description: Text content of the comment.
+              type: string
+              readOnly: true
+              example: Items checked and ready for dispatch.
+            commented_by:
+              description: Name of the user who added the comment.
+              type: string
+              readOnly: true
+              example: John Doe
+            date:
+              description: Date the comment was added.
+              type: string
+              readOnly: true
+              example: '2024-01-15'
+    advanced-tracking-response:
+      description: Response containing advanced tracking details for a picklist.
+      type: object
+      properties:
+        code:
+          type: integer
+          readOnly: true
+          example: 0
+        message:
+          type: string
+          readOnly: true
+          example: success
+        transaction:
+          type: object
+          readOnly: true
+          properties:
+            transaction_id:
+              $ref: '#/components/schemas/picklist_id'
+            line_items:
+              description: Line items with tracking details.
+              type: array
+              readOnly: true
+              items:
+                type: object
+                properties:
+                  line_item_id:
+                    type: string
+                    readOnly: true
+                    example: '130426000000810011'
+                  item_id:
+                    type: string
+                    readOnly: true
+                    example: '130426000000664040'
+                  name:
+                    type: string
+                    readOnly: true
+                    example: Office Chair
+                  serial_numbers:
+                    description: Serial numbers tracked for this line item.
+                    type: array
+                    readOnly: true
+                    items:
+                      type: string
+                    example:
+                      - SN-001
+                      - SN-002
+                  batches:
+                    description: Batch details tracked for this line item.
+                    type: array
+                    readOnly: true
+                    items:
+                      type: object
+                      properties:
+                        batch_number:
+                          type: string
+                          readOnly: true
+                          example: BATCH-001
+                        out_quantity:
+                          type: number
+                          readOnly: true
+                          example: 5
+    update-advanced-tracking-request:
+      description: Request body for updating advanced tracking details of a picklist.
+      type: object
+      properties:
+        line_items:
+          description: Line items with updated tracking information.
+          type: array
+          items:
+            type: object
+            properties:
+              line_item_id:
+                description: ID of the line item to update.
+                type: string
+                example: '130426000000810011'
+              serial_numbers:
+                description: List of serial numbers for this line item. Maximum 10000.
+                type: array
+                maxItems: 10000
+                items:
+                  type: string
+                example:
+                  - SN-001
+                  - SN-002
+              batches:
+                description: Batch details for this line item. Maximum 100.
+                type: array
+                maxItems: 100
+                items:
+                  type: object
+                  properties:
+                    batch_id:
+                      description: Batch number identifier.
+                      type: string
+                      example: '130426000000810031'
+                    out_quantity:
+                      description: Quantity in this batch.
+                      type: number
+                      example: 5
+    search-so-line-items-response:
+      description: Response containing sales order line items available for picklist creation.
+      type: object
+      properties:
+        code:
+          type: integer
+          readOnly: true
+          example: 0
+        message:
+          type: string
+          readOnly: true
+          example: success
+        so_line_items:
+          type: array
+          readOnly: true
+          items:
+            type: object
+            properties:
+              so_line_item_id:
+                description: Unique ID of the sales order line item.
+                type: string
+                readOnly: true
+                example: '130426000000700011'
+              salesorder_id:
+                description: ID of the sales order.
+                type: string
+                readOnly: true
+                example: '130426000000700001'
+              salesorder_number:
+                description: Number of the sales order.
+                type: string
+                readOnly: true
+                example: SO-00001
+              item_id:
+                description: ID of the item.
+                type: string
+                readOnly: true
+                example: '130426000000664040'
+              name:
+                description: Name of the item.
+                type: string
+                readOnly: true
+                example: Office Chair
+              customer_id:
+                description: ID of the customer.
+                type: string
+                readOnly: true
+                example: '130426000000664040'
+              customer_name:
+                description: Name of the customer.
+                type: string
+                readOnly: true
+                example: alan
+              sku:
+                description: SKU of the item.
+                type: string
+                readOnly: true
+                example: CHAIR-001
+              quantity:
+                description: Ordered quantity.
+                type: number
+                readOnly: true
+                example: 10
+              quantity_picked:
+                description: Quantity already picked.
+                type: number
+                readOnly: true
+                example: 3
+              quantity_to_be_picked:
+                description: Quantity yet to be picked for this line item.
+                type: number
+                readOnly: true
+                example: 7
+              available_stock_for_picking:
+                description: Stock currently available for picking. Returned only when `showAvailableStockForPicking` is enabled.
+                type: number
+                readOnly: true
+                example: 25
+              unit:
+                description: Usage unit of the line item.
+                type: string
+                readOnly: true
+                example: pcs
+              base_unit:
+                description: Base unit configured on the item.
+                type: string
+                readOnly: true
+                example: pcs
+              quantity_decimal_place:
+                description: Number of decimal places used for quantity values on this line item.
+                type: integer
+                readOnly: true
+                example: 2
+              unit_conversion_id:
+                description: ID of the unit conversion applied. Returned only when unit conversion is enabled.
+                type: string
+                readOnly: true
+                example: '130426000000900001'
+              conversion_rate:
+                description: Unit conversion rate. Returned only when unit conversion is enabled.
+                type: number
+                readOnly: true
+                example: 1
+              unit_group_id:
+                description: ID of the unit group. Returned only when unit conversion is enabled.
+                type: string
+                readOnly: true
+                example: '130426000000900010'
+              description:
+                description: Description of the line item.
+                type: string
+                readOnly: true
+                example: Ergonomic mesh office chair.
+              image_name:
+                description: File name of the item image.
+                type: string
+                readOnly: true
+                example: chair.png
+              image_type:
+                description: File type of the item image.
+                type: string
+                readOnly: true
+                example: png
+              image_document_id:
+                description: Document ID of the item image.
+                type: string
+                readOnly: true
+                example: '130426000000910001'
+              is_storage_location_enabled:
+                description: Whether storage location tracking is enabled for this item. Returned only when Zoho Inventory and storage tracking are enabled.
+                type: boolean
+                readOnly: true
+                example: true
+              location_id:
+                description: ID of the location associated with the line item. Returned when locations are enabled.
+                type: string
+                readOnly: true
+                example: '130426000000664030'
+              location_name:
+                description: Name of the location.
+                type: string
+                readOnly: true
+                example: New York
+              item_custom_fields:
+                description: Custom field values configured on the item.
+                type: array
+                readOnly: true
+                items:
+                  type: object
+                  properties:
+                    label:
+                      type: string
+                      readOnly: true
+                      example: Color
+                    value:
+                      type: string
+                      readOnly: true
+                      example: Black
+              track_serial_number:
+                description: Whether serial-number tracking is enabled for this item. Returned only when serial-number tracking is enabled in the org.
+                type: boolean
+                readOnly: true
+                example: false
+              track_batch_number:
+                description: Whether batch tracking is enabled for this item. Returned only when batch tracking is enabled in the org.
+                type: boolean
+                readOnly: true
+                example: false
+              track_serial_for_package:
+                description: Whether serial numbers are required at the package level for this line item.
+                type: boolean
+                readOnly: true
+                example: false
+              track_batch_for_package:
+                description: Whether batch numbers are required at the package level for this line item.
+                type: boolean
+                readOnly: true
+                example: false
+    search-sales-orders-response:
+      description: Response containing sales orders available for picklist creation.
+      type: object
+      properties:
+        code:
+          type: integer
+          readOnly: true
+          example: 0
+        message:
+          type: string
+          readOnly: true
+          example: success
+        salesorders:
+          type: array
+          readOnly: true
+          items:
+            type: object
+            properties:
+              salesorder_id:
+                description: Unique ID of the sales order.
+                type: string
+                readOnly: true
+                example: '130426000000700001'
+              salesorder_number:
+                description: Number of the sales order.
+                type: string
+                readOnly: true
+                example: SO-00001
+              customer_id:
+                description: ID of the customer.
+                type: string
+                readOnly: true
+                example: '130426000000664050'
+              customer_name:
+                description: Name of the customer.
+                type: string
+                readOnly: true
+                example: Acme Corp
+              sales_channel:
+                description: Sales channel through which the order was placed.
+                type: string
+                readOnly: true
+                example: direct_sales
+              shipment_date:
+                description: Scheduled shipment date of the sales order (yyyy-mm-dd).
+                type: string
+                format: date
+                readOnly: true
+                example: '2024-01-20'
+              date:
+                description: Date of the sales order (yyyy-mm-dd).
+                type: string
+                format: date
+                readOnly: true
+                example: '2024-01-15'
+              delivery_method_id:
+                description: ID of the delivery method.
+                type: string
+                readOnly: true
+                example: '130426000000750001'
+              delivery_method:
+                description: Name of the delivery method.
+                type: string
+                readOnly: true
+                example: FedEx
+    search-pr-line-items-response:
+      description: Response containing purchase return line items available for picklist creation.
+      type: object
+      properties:
+        code:
+          type: integer
+          readOnly: true
+          example: 0
+        message:
+          type: string
+          readOnly: true
+          example: success
+        pr_line_items:
+          type: array
+          readOnly: true
+          items:
+            type: object
+            properties:
+              pr_line_item_id:
+                description: Unique ID of the purchase return line item.
+                type: string
+                readOnly: true
+                example: '130426000000720011'
+              purchasereturn_id:
+                description: ID of the purchase return.
+                type: string
+                readOnly: true
+                example: '130426000000720001'
+              purchasereturn_number:
+                description: Number of the purchase return.
+                type: string
+                readOnly: true
+                example: PR-00001
+              item_id:
+                description: ID of the item.
+                type: string
+                readOnly: true
+                example: '130426000000664040'
+              name:
+                description: Name of the item.
+                type: string
+                readOnly: true
+                example: Office Chair
+              sku:
+                description: SKU of the item.
+                type: string
+                readOnly: true
+                example: CHAIR-001
+              quantity:
+                description: Return quantity.
+                type: number
+                readOnly: true
+                example: 5
+              quantity_picked:
+                description: Quantity already picked.
+                type: number
+                readOnly: true
+                example: 2
+              quantity_to_be_picked:
+                description: Quantity yet to be picked for this line item.
+                type: number
+                readOnly: true
+                example: 3
+              available_stock_for_picking:
+                description: Stock currently available for picking. Returned only when `showAvailableStockForPicking` is enabled.
+                type: number
+                readOnly: true
+                example: 25
+              unit:
+                description: Usage unit of the line item.
+                type: string
+                readOnly: true
+                example: pcs
+              base_unit:
+                description: Base unit configured on the item.
+                type: string
+                readOnly: true
+                example: pcs
+              quantity_decimal_place:
+                description: Number of decimal places used for quantity values on this line item.
+                type: integer
+                readOnly: true
+                example: 2
+              unit_conversion_id:
+                description: ID of the unit conversion applied. Returned only when unit conversion is enabled.
+                type: string
+                readOnly: true
+                example: '130426000000900001'
+              conversion_rate:
+                description: Unit conversion rate. Returned only when unit conversion is enabled.
+                type: number
+                readOnly: true
+                example: 1
+              unit_group_id:
+                description: ID of the unit group. Returned only when unit conversion is enabled.
+                type: string
+                readOnly: true
+                example: '130426000000900010'
+              description:
+                description: Description of the line item.
+                type: string
+                readOnly: true
+                example: Ergonomic mesh office chair.
+              image_name:
+                description: File name of the item image.
+                type: string
+                readOnly: true
+                example: chair.png
+              image_type:
+                description: File type of the item image.
+                type: string
+                readOnly: true
+                example: png
+              image_document_id:
+                description: Document ID of the item image.
+                type: string
+                readOnly: true
+                example: '130426000000910001'
+              is_storage_location_enabled:
+                description: Whether storage location tracking is enabled for this item. Returned only when Zoho Inventory and storage tracking are enabled.
+                type: boolean
+                readOnly: true
+                example: true
+              location_id:
+                description: ID of the location associated with the line item. Returned when locations are enabled.
+                type: string
+                readOnly: true
+                example: '130426000000664030'
+              location_name:
+                description: Name of the location.
+                type: string
+                readOnly: true
+                example: New York
+              item_custom_fields:
+                description: Custom field values configured on the item.
+                type: array
+                readOnly: true
+                items:
+                  type: object
+                  properties:
+                    label:
+                      type: string
+                      readOnly: true
+                      example: Color
+                    value:
+                      type: string
+                      readOnly: true
+                      example: Black
+              track_serial_number:
+                description: Whether serial-number tracking is enabled for this item. Returned only when serial-number tracking is enabled in the org.
+                type: boolean
+                readOnly: true
+                example: false
+              track_batch_number:
+                description: Whether batch tracking is enabled for this item. Returned only when batch tracking is enabled in the org.
+                type: boolean
+                readOnly: true
+                example: false
+              track_serial_for_package:
+                description: Whether serial numbers are required at the package level for this line item.
+                type: boolean
+                readOnly: true
+                example: false
+              track_batch_for_package:
+                description: Whether batch numbers are required at the package level for this line item.
+                type: boolean
+                readOnly: true
+                example: false
+  securitySchemes:
+    Zoho_Auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://accounts.zoho.com/oauth/v2/auth
+          scopes:
+            ZohoInventory.picklists.CREATE: Create Picklists
+            ZohoInventory.picklists.READ: Read Picklists
+            ZohoInventory.picklists.UPDATE: Update Picklists
+            ZohoInventory.picklists.DELETE: Delete Picklists
+            ZohoInventory.salesorders.READ: Read Sales Orders
+            ZohoInventory.purchasereturns.READ: Read Purchase Returns
+  links: {}
+  callbacks: {}
+security: []

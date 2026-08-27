@@ -1,0 +1,1397 @@
+openapi: 3.0.0
+info:
+  title: Move Orders
+  description: Move orders track stock movement between storage locations within a warehouse. Use these APIs to create, update, list, delete, and change the status of move orders in Zoho Inventory.
+  contact: {}
+  version: 1.0.0
+servers:
+  - url: https://www.zohoapis.com/inventory/v1
+    description: API Endpoint
+tags:
+  - name: moveorders
+    description: MoveOrders Module
+paths:
+  /moveorders:
+    x-mcp-group:
+      - Move Orders
+    post:
+      tags:
+        - moveorders
+      operationId: create_move_order
+      summary: Create a move order
+      description: Creates a new move order in Zoho Inventory.
+      parameters:
+        - name: ignore_auto_number_generation
+          in: query
+          description: When auto number generation is enabled for move orders, set to true to supply your own move order number instead of using the auto-generated value. Default is false.
+          required: false
+          schema:
+            type: boolean
+          example: false
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-a-move-order-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-a-move-order-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.moveorder.CREATE
+    get:
+      tags:
+        - moveorders
+      operationId: list_move_orders
+      summary: List all move orders
+      description: Lists move orders with optional filters, search options, and pagination.
+      parameters:
+        - name: page
+          in: query
+          description: Page number to fetch. Default is 1.
+          required: false
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: per_page
+          in: query
+          description: Number of records per page. Default is 200.
+          required: false
+          schema:
+            type: integer
+            default: 200
+          example: 200
+        - name: sort_column
+          in: query
+          description: Column used for sorting. Allowed values include moveorder_number, date, created_time, last_modified_time.
+          required: false
+          schema:
+            type: string
+            enum:
+              - moveorder_number
+              - date
+              - created_time
+              - last_modified_time
+        - name: sort_order
+          in: query
+          description: Sort order. A for ascending, D for descending.
+          required: false
+          schema:
+            type: string
+            enum:
+              - A
+              - D
+          example: D
+        - name: search_text
+          in: query
+          description: Free-text search across supported move order fields.
+          required: false
+          schema:
+            type: string
+        - name: filter_by
+          in: query
+          description: 'Filter expression. Examples include: Status.All, Status.YetToStart, Status.InProgress, Status.OnHold, Status.Completed, Status.Discarded, AssigneeState.Unassigned, AssigneeState.PartiallyAssigned, AssigneeState.MultipleAssignee, AssigneeState.SingleAssignee, and search filters supported by the list view.'
+          required: false
+          schema:
+            type: string
+          example: Status.All
+        - name: moveorder_number
+          in: query
+          description: Search by move order number.
+          required: false
+          schema:
+            type: string
+        - name: moveorder_number_startswith
+          in: query
+          description: Match move order numbers that start with this value.
+          required: false
+          schema:
+            type: string
+        - name: moveorder_number_contains
+          in: query
+          description: Match move order numbers that contain this substring.
+          required: false
+          schema:
+            type: string
+        - name: item_id
+          in: query
+          description: Filter by item (product) ID when supported by the list view.
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: warehouse_id
+          in: query
+          description: Filter by warehouse ID.
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: location_id
+          in: query
+          description: Filter by location (branch) ID when locations are enabled.
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: assignee_id
+          in: query
+          description: Filter by assignee user ID.
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: date
+          in: query
+          description: Filter by move order date (yyyy-mm-dd).
+          required: false
+          schema:
+            type: string
+        - name: date_start
+          in: query
+          description: Start of date range filter (yyyy-mm-dd).
+          required: false
+          schema:
+            type: string
+        - name: date_end
+          in: query
+          description: End of date range filter (yyyy-mm-dd).
+          required: false
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: Filter by move order status when supported by the list view.
+          required: false
+          schema:
+            type: string
+        - name: customview_id
+          in: query
+          description: Custom view ID to apply.
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-move-orders-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.moveorder.READ
+    delete:
+      tags:
+        - moveorders
+      operationId: delete_move_orders
+      summary: Delete move orders
+      description: Deletes move orders.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-a-move-order-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.moveorder.DELETE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /moveorders/{moveorder_id}:
+    x-mcp-group:
+      - Move Orders
+    get:
+      tags:
+        - moveorders
+      operationId: get_move_order
+      summary: Retrieve a move order
+      description: Fetches details of an existing move order, including line items.
+      parameters:
+        - name: include
+          in: query
+          description: When set to HTML, additional HTML content may be included in the response when supported.
+          required: false
+          schema:
+            type: string
+        - name: print
+          in: query
+          description: 'Export move order pdf with default print option. Allowed Values: <code>true</code>, <code>false</code>.'
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-a-move-order-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.moveorder.READ
+    put:
+      tags:
+        - moveorders
+      operationId: update_move_order
+      summary: Update a move order
+      description: Updates an existing move order.
+      parameters:
+        - name: ignore_auto_number_generation
+          in: query
+          description: When auto number generation is enabled for move orders, set to true to keep a manually supplied move order number. Default is false.
+          required: false
+          schema:
+            type: boolean
+          example: false
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-a-move-order-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-a-move-order-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.moveorder.UPDATE
+    delete:
+      tags:
+        - moveorders
+      operationId: delete_move_order
+      summary: Delete a move order
+      description: Deletes a single move order.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-a-move-order-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.moveorder.DELETE
+    parameters:
+      - name: moveorder_id
+        in: path
+        required: true
+        description: Unique identifier of the move order.
+        schema:
+          type: string
+        example: '4815000000044895'
+      - $ref: '#/components/parameters/organization_id'
+  /moveorders/{moveorder_id}/comments:
+    x-mcp-group:
+      - Move Orders
+    get:
+      tags:
+        - moveorders
+      operationId: list_move_order_comments
+      summary: List comments for a move order
+      description: Returns all comments recorded on a move order.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-move-order-comments-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.moveorder.READ
+    parameters:
+      - name: moveorder_id
+        in: path
+        required: true
+        description: Unique identifier of the move order.
+        schema:
+          type: string
+        example: '4815000000044895'
+      - $ref: '#/components/parameters/organization_id'
+  /moveorders/{moveorder_id}/markasconfirmed:
+    x-mcp-group:
+      - Move Orders
+    post:
+      tags:
+        - moveorders
+      operationId: mark_move_order_as_confirmed
+      summary: Mark move order as confirmed
+      description: Updates the move order status to confirmed.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/move-order-status-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.moveorder.CREATE
+    parameters:
+      - name: moveorder_id
+        in: path
+        required: true
+        description: Unique identifier of the move order.
+        schema:
+          type: string
+        example: '4815000000044895'
+      - $ref: '#/components/parameters/organization_id'
+  /moveorders/{moveorder_id}/markasinprogress:
+    x-mcp-group:
+      - Move Orders
+    post:
+      tags:
+        - moveorders
+      operationId: mark_move_order_as_in_progress
+      summary: Mark move order as in progress
+      description: Updates the move order status to in progress.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/move-order-status-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.moveorder.CREATE
+    parameters:
+      - name: moveorder_id
+        in: path
+        required: true
+        description: Unique identifier of the move order.
+        schema:
+          type: string
+        example: '4815000000044895'
+      - $ref: '#/components/parameters/organization_id'
+  /moveorders/{moveorder_id}/markascompleted:
+    x-mcp-group:
+      - Move Orders
+    post:
+      tags:
+        - moveorders
+      operationId: mark_move_order_as_completed
+      summary: Mark move order as completed
+      description: Updates the move order status to completed. A completion date is required.
+      parameters:
+        - name: completed_date
+          in: query
+          required: true
+          description: Completion date (yyyy-mm-dd).
+          schema:
+            type: string
+          example: '2026-04-15'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/move-order-status-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.moveorder.CREATE
+    parameters:
+      - name: moveorder_id
+        in: path
+        required: true
+        description: Unique identifier of the move order.
+        schema:
+          type: string
+        example: '4815000000044895'
+      - $ref: '#/components/parameters/organization_id'
+  /moveorders/{moveorder_id}/attachment:
+    x-mcp-group:
+      - Move Orders
+    post:
+      tags:
+        - moveorders
+      operationId: add_move_order_attachment
+      summary: Attach files to a move order
+      description: Uploads one or more files and associates them with the move order.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                attachment:
+                  type: string
+                  format: binary
+                  description: File to attach.
+                doc:
+                  type: string
+                  description: Optional JSON metadata for the document.
+                totalFiles:
+                  type: integer
+                  description: Number of file parts included in this multipart request when the client sends multiple attachments.
+                document_ids:
+                  type: string
+                  description: Comma-separated existing document IDs when applicable.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/move-order-attachment-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.moveorder.CREATE
+    parameters:
+      - name: moveorder_id
+        in: path
+        required: true
+        description: Unique identifier of the move order.
+        schema:
+          type: string
+        example: '4815000000044895'
+      - $ref: '#/components/parameters/organization_id'
+  /moveorders/{moveorder_id}/documents/{document_id}:
+    x-mcp-group:
+      - Move Orders
+    get:
+      tags:
+        - moveorders
+      operationId: get_move_order_document
+      summary: Download a move order document
+      description: Returns the binary content of an attached document (image or PDF).
+      parameters:
+        - name: image_size
+          in: query
+          description: Preferred image size when the service returns a rasterized preview.
+          required: false
+          schema:
+            type: string
+            enum:
+              - xlarge
+              - large
+              - small
+              - tiny
+        - name: print
+          in: query
+          description: 'Allowed Values: <code>true</code>, <code>false</code>'
+          required: false
+          schema:
+            type: boolean
+        - name: inline
+          in: query
+          description: When true, the response may be suitable for inline display in a browser when supported.
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+              examples:
+                binary_body:
+                  summary: Raw document bytes
+                  description: Response is binary PDF or image data, not a JSON envelope.
+                  value: << binary body >>
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.moveorder.READ
+    delete:
+      tags:
+        - moveorders
+      operationId: delete_move_order_document
+      summary: Remove an attachment from a move order
+      description: Deletes or unlinks a document from the specified move order.
+      parameters:
+        - name: un_associate
+          in: query
+          description: When true, only dissociates the file without deleting the underlying document when supported.
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-a-move-order-document-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.moveorder.DELETE
+    parameters:
+      - name: moveorder_id
+        in: path
+        required: true
+        description: Unique identifier of the move order.
+        schema:
+          type: string
+        example: '4815000000044895'
+      - name: document_id
+        in: path
+        required: true
+        description: Unique identifier of the document.
+        schema:
+          type: string
+        example: '4815000000044897'
+      - $ref: '#/components/parameters/organization_id'
+  /settings/moveorders:
+    x-mcp-group:
+      - Move Orders
+    get:
+      tags:
+        - moveorders
+      operationId: get_move_order_settings
+      summary: Get move order auto number generation settings
+      description: Returns auto number generation preferences for move orders.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-move-order-settings-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.settings.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+components:
+  parameters:
+    organization_id:
+      name: organization_id
+      description: ID of the organization
+      in: query
+      required: true
+      schema:
+        type: string
+      example: '10234695'
+  schemas:
+    gendoc-attributes-schema:
+      $ref: '#/components/schemas/move-order-response'
+    move-order-settings:
+      type: object
+      properties:
+        auto_generate:
+          type: boolean
+          description: Whether move order numbers are auto-generated.
+        prefix_string:
+          type: string
+          description: Prefix for auto-generated move order numbers.
+        next_number:
+          type: string
+          description: Next number in the auto-number sequence.
+    move-order-line-batch-node:
+      type: object
+      description: One batch allocation on a move-order line. Use either an existing batch_id or new batch attributes as required by your org and item settings (see server BatchNumberCreate / BatchNumberEdit).
+      properties:
+        batch_id:
+          type: integer
+          format: int64
+          description: Existing inventory batch ID when selecting stock from an existing batch.
+        batch_in_id:
+          type: integer
+          format: int64
+          description: Batch-in row reference when supplied by the client.
+        batch_number:
+          type: string
+          description: Batch number for a new batch line when not using an existing batch_id.
+        manufacturer_batch_number:
+          type: string
+          description: Manufacturer or external batch reference.
+        manufactured_date:
+          type: string
+          description: Manufacturing date (yyyy-mm-dd).
+        expiry_date:
+          type: string
+          description: Expiry date (yyyy-mm-dd).
+        in_quantity:
+          type: number
+          format: double
+          description: Quantity for this batch when the line quantity is split across batches.
+        sales_rate:
+          type: number
+          format: double
+          description: Selling rate for the batch when batch pricing is enabled.
+        label_rate:
+          type: number
+          format: double
+          description: Label (MRP) rate for the batch when applicable.
+        balance_quantity:
+          type: number
+          format: double
+          readOnly: true
+          description: On read, returns the remaining quantity in the batch.
+        status:
+          type: string
+          readOnly: true
+          description: On read, batch status when returned by the service.
+    move-order-line-storage-node:
+      type: object
+      description: Storage-bin allocation for source (from_storages) or destination (to_storages) on a line when storage tracking is enabled.
+      properties:
+        storage_id:
+          type: integer
+          format: int64
+          description: Storage location ID.
+        quantity:
+          type: number
+          format: double
+          description: Quantity moved from or into this storage for the line.
+    move-order-line-serial-node:
+      type: object
+      description: Serial number row returned on a line when serial tracking is enabled.
+      properties:
+        serialnumber_id:
+          type: integer
+          format: int64
+          description: Serial number master record ID.
+        serial_number:
+          type: string
+          description: Serial code.
+        status:
+          type: string
+          description: Serial status when returned by the service.
+    move-order-document-attachment:
+      type: object
+      description: File attached to a move order (DocumentDetailsForEntity).
+      properties:
+        document_id:
+          type: integer
+          format: int64
+          description: Attachment document ID; use with GET/DELETE `/moveorders/{moveorder_id}/documents/{document_id}`.
+        file_name:
+          type: string
+          description: Original file name.
+        file_type:
+          type: string
+          description: MIME or file type classification.
+        file_size:
+          type: integer
+          format: int64
+          description: File size in bytes.
+        file_size_formatted:
+          type: string
+          description: Human-readable file size.
+    serial_numbers:
+      description: Serial numbers for the line item. Applicable only for items with serial tracking enabled.
+      type: array
+      items:
+        type: string
+        example: PKG-002
+    batches:
+      description: Batches for the line item. Reference an existing batch using <code>batch_id</code>. Applicable only for items with batch tracking enabled.
+      type: array
+      items:
+        type: object
+        required:
+          - batch_id
+          - out_quantity
+        properties:
+          batch_id:
+            description: Unique identifier of the batch.
+            type: string
+            example: '6780203000000162236'
+          out_quantity:
+            description: Outward quantity from the batch.
+            type: number
+            format: float
+            example: 2
+          from_storages:
+            description: Source bin locations from which stock was consumed for this batch.
+            type: array
+            x-node_available_in:
+              - Batch with Bin tracked items
+            items:
+              type: object
+              required:
+                - storage_id
+                - out_quantity
+              properties:
+                storage_id:
+                  description: Unique identifier of the source bin location.
+                  type: string
+                  example: '6780203000000093227'
+                out_quantity:
+                  description: Outward quantity from the bin.
+                  type: number
+                  format: float
+                  example: 2
+          to_storages:
+            description: Destination bin locations to which stock was transferred for this batch.
+            type: array
+            x-node_available_in:
+              - Batch with Bin tracked items
+            items:
+              type: object
+              required:
+                - storage_id
+                - in_quantity
+              properties:
+                storage_id:
+                  description: Unique identifier of the destination bin location.
+                  type: string
+                  example: '6780203000000206981'
+                in_quantity:
+                  description: Inward quantity into the bin.
+                  type: number
+                  format: float
+                  example: 2
+    from_storages:
+      description: Source bin locations for the line item. Applicable only for items with bin tracking enabled.
+      type: array
+      items:
+        type: object
+        required:
+          - storage_id
+          - out_quantity
+        properties:
+          storage_id:
+            description: Unique identifier of the source bin location.
+            type: string
+            example: '6780203000000093225'
+          out_quantity:
+            description: Outward quantity from the bin.
+            type: number
+            format: float
+            example: 1
+          serial_numbers:
+            description: Serial numbers transferred from this bin.
+            type: array
+            x-node_available_in:
+              - Serial with Bin tracked items
+            items:
+              type: string
+              example: PKG-002
+    to_storages:
+      description: Destination bin locations for the line item. Applicable only for items with bin tracking enabled.
+      type: array
+      items:
+        type: object
+        required:
+          - storage_id
+          - in_quantity
+        properties:
+          storage_id:
+            description: Unique identifier of the destination bin location.
+            type: string
+            example: '6780203000000206981'
+          in_quantity:
+            description: Inward quantity into the bin.
+            type: number
+            format: float
+            example: 1
+          serial_numbers:
+            description: Serial numbers transferred into this bin.
+            type: array
+            x-node_available_in:
+              - Serial with Bin tracked items
+            items:
+              type: string
+              example: PKG-002
+    batches-update:
+      description: Batches for the line item. Reference an existing batch using <code>batch_id</code>. Use <code>batch_in_number_id</code> to update an existing batch entry on the transfer order. Applicable only for items with batch tracking enabled.
+      type: array
+      items:
+        type: object
+        required:
+          - batch_id
+          - out_quantity
+        properties:
+          batch_id:
+            description: Unique identifier of the batch.
+            type: string
+            example: '6780203000000162236'
+          batch_in_number_id:
+            description: Unique identifier of the destination batch entry on the line item. Required to update an existing batch entry on the transfer order.
+            type: string
+            example: '6780203000001106137'
+          out_quantity:
+            description: Outward quantity from the batch.
+            type: number
+            format: float
+            example: 2
+          from_storages:
+            description: Source bin locations from which stock was consumed for this batch.
+            type: array
+            x-node_available_in:
+              - Batch with Bin tracked items
+            items:
+              type: object
+              required:
+                - storage_id
+                - out_quantity
+              properties:
+                storage_id:
+                  description: Unique identifier of the source bin location.
+                  type: string
+                  example: '6780203000000093227'
+                out_quantity:
+                  description: Outward quantity from the bin.
+                  type: number
+                  format: float
+                  example: 2
+                storage_out_id:
+                  description: Unique identifier of the storage record. Applicable only when updating the transfer order.
+                  type: string
+                  example: '6780203000001106131'
+          to_storages:
+            description: Destination bin locations to which stock was transferred for this batch.
+            type: array
+            x-node_available_in:
+              - Batch with Bin tracked items
+            items:
+              type: object
+              required:
+                - storage_id
+                - in_quantity
+              properties:
+                storage_id:
+                  description: Unique identifier of the destination bin location.
+                  type: string
+                  example: '6780203000000206981'
+                in_quantity:
+                  description: Inward quantity into the bin.
+                  type: number
+                  format: float
+                  example: 2
+                storage_in_id:
+                  description: Unique identifier of the storage record. Applicable only when updating the transfer order.
+                  type: string
+                  example: '6780203000001106128'
+    from_storages-update:
+      description: Source bin locations for the line item. Applicable only for items with bin tracking enabled.
+      type: array
+      items:
+        type: object
+        required:
+          - storage_id
+          - out_quantity
+        properties:
+          storage_id:
+            description: Unique identifier of the source bin location.
+            type: string
+            example: '6780203000000093225'
+          out_quantity:
+            description: Outward quantity from the bin.
+            type: number
+            format: float
+            example: 1
+          storage_out_id:
+            description: Unique identifier of the storage record. Applicable only when updating the transfer order.
+            type: string
+            example: '6780203000001106135'
+          serial_numbers:
+            description: Serial numbers transferred from this bin.
+            type: array
+            x-node_available_in:
+              - Serial with Bin tracked items
+            items:
+              type: string
+              example: PKG-002
+    to_storages-update:
+      description: Destination bin locations for the line item. Applicable only for items with bin tracking enabled.
+      type: array
+      items:
+        type: object
+        required:
+          - storage_id
+          - in_quantity
+        properties:
+          storage_id:
+            description: Unique identifier of the destination bin location.
+            type: string
+            example: '6780203000000206981'
+          in_quantity:
+            description: Inward quantity into the bin.
+            type: number
+            format: float
+            example: 1
+          storage_in_id:
+            description: Unique identifier of the storage record. Applicable only when updating the transfer order.
+            type: string
+            example: '6780203000001106133'
+          serial_numbers:
+            description: Serial numbers transferred into this bin.
+            type: array
+            x-node_available_in:
+              - Serial with Bin tracked items
+            items:
+              type: string
+              example: PKG-002
+    move-order-line-item-request:
+      type: object
+      required:
+        - item_id
+        - quantity_transferred
+      properties:
+        line_item_id:
+          type: integer
+          format: int64
+          description: Line item ID returned by the server. Required on update when modifying existing line items.
+        item_id:
+          type: integer
+          format: int64
+          description: Item (product) ID for this line. Required for every line item (same role as <code>item_id</code> on transfer order line items).
+        description:
+          type: string
+          description: Line-level description or notes for the item. Optional.
+        quantity_transferred:
+          type: number
+          format: double
+          description: Quantity to move for this line. Required for every line item (same role as <code>quantity_transfer</code> on transfer orders).
+        serial_numbers:
+          $ref: '#/components/schemas/serial_numbers'
+        batches:
+          $ref: '#/components/schemas/batches'
+        from_storages:
+          $ref: '#/components/schemas/from_storages'
+        to_storages:
+          $ref: '#/components/schemas/to_storages'
+    move-order-line-item-request-update:
+      type: object
+      required:
+        - item_id
+        - quantity_transferred
+      properties:
+        line_item_id:
+          type: integer
+          format: int64
+          description: Line item ID returned by the server. Required on update when modifying existing line items.
+        item_id:
+          type: integer
+          format: int64
+          description: Item (product) ID for this line. Required for every line item (same role as <code>item_id</code> on transfer order line items).
+        description:
+          type: string
+          description: Line-level description or notes for the item. Optional.
+        quantity_transferred:
+          type: number
+          format: double
+          description: Quantity to move for this line. Required for every line item (same role as <code>quantity_transfer</code> on transfer orders).
+        serial_numbers:
+          $ref: '#/components/schemas/serial_numbers'
+        batches:
+          $ref: '#/components/schemas/batches-update'
+        from_storages:
+          $ref: '#/components/schemas/from_storages-update'
+        to_storages:
+          $ref: '#/components/schemas/to_storages-update'
+    create-a-move-order-request:
+      type: object
+      required:
+        - date
+        - line_items
+      properties:
+        moveorder_number:
+          type: string
+          description: Move order number; optional when auto-generation is enabled.
+        date:
+          type: string
+          description: Transaction date (yyyy-mm-dd).
+        completed_date:
+          type: string
+          description: Completed date when applicable (yyyy-mm-dd).
+        assignee_id:
+          type: integer
+          format: int64
+          description: User ID of the assignee for this move order.
+        warehouse_id:
+          type: integer
+          format: int64
+          description: Warehouse ID when warehouses are enabled.
+        location_id:
+          type: integer
+          format: int64
+          description: Location (branch) ID when locations are enabled.
+        notes:
+          type: string
+          description: Internal notes for the move order.
+        status:
+          type: string
+          description: Move order status when supplied on create or update.
+        line_items:
+          type: array
+          description: 'A move order can contain multiple line items. Each object must include <code>item_id</code> and <code>quantity_transferred</code>. Optional fields: <code>line_item_id</code> (required on update for existing lines), <code>description</code>, <code>batches</code>, <code>from_storages</code>, and <code>to_storages</code> when batch or bin storage tracking applies in your organization.'
+          items:
+            $ref: '#/components/schemas/move-order-line-item-request'
+    update-a-move-order-request:
+      type: object
+      required:
+        - date
+        - line_items
+      properties:
+        moveorder_number:
+          type: string
+          description: Move order number; optional when auto-generation is enabled.
+        date:
+          type: string
+          description: Transaction date (yyyy-mm-dd).
+        completed_date:
+          type: string
+          description: Completed date when applicable (yyyy-mm-dd).
+        assignee_id:
+          type: integer
+          format: int64
+          description: User ID of the assignee for this move order.
+        warehouse_id:
+          type: integer
+          format: int64
+          description: Warehouse ID when warehouses are enabled.
+        location_id:
+          type: integer
+          format: int64
+          description: Location (branch) ID when locations are enabled.
+        notes:
+          type: string
+          description: Internal notes for the move order.
+        status:
+          type: string
+          description: Move order status when supplied on create or update.
+        line_items:
+          type: array
+          description: 'A move order can contain multiple line items. Each object must include <code>item_id</code> and <code>quantity_transferred</code>. Optional fields: <code>line_item_id</code> (required on update for existing lines), <code>description</code>, <code>batches</code>, <code>from_storages</code>, and <code>to_storages</code> when batch or bin storage tracking applies in your organization.'
+          items:
+            $ref: '#/components/schemas/move-order-line-item-request-update'
+    move-order-comment:
+      type: object
+      properties:
+        comment_id:
+          type: integer
+          format: int64
+        moveorder_id:
+          type: integer
+          format: int64
+        description:
+          type: string
+        commented_by_id:
+          type: integer
+          format: int64
+        commented_by:
+          type: string
+        comment_type:
+          type: string
+        date:
+          type: string
+        date_description:
+          type: string
+        time:
+          type: string
+        operation_type:
+          type: string
+    move-order-line-item-response:
+      type: object
+      properties:
+        line_item_id:
+          type: integer
+          format: int64
+        item_id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        sku:
+          type: string
+        unit:
+          type: string
+        unit_id:
+          type: integer
+          format: int64
+        image_document_id:
+          type: integer
+          format: int64
+        description:
+          type: string
+        quantity_transferred:
+          type: number
+          format: double
+        track_serial_number:
+          type: boolean
+        track_batch_number:
+          type: boolean
+        serial_numbers:
+          type: array
+          items:
+            $ref: '#/components/schemas/move-order-line-serial-node'
+        batches:
+          type: array
+          items:
+            $ref: '#/components/schemas/move-order-line-batch-node'
+        is_combo_product:
+          type: boolean
+        from_storages:
+          type: array
+          items:
+            $ref: '#/components/schemas/move-order-line-storage-node'
+        to_storages:
+          type: array
+          items:
+            $ref: '#/components/schemas/move-order-line-storage-node'
+        is_storage_location_enabled:
+          type: boolean
+    move-order-response:
+      type: object
+      properties:
+        moveorder_id:
+          type: integer
+          format: int64
+        moveorder_number:
+          type: string
+        date:
+          type: string
+        notes:
+          type: string
+        status:
+          type: string
+        completed_date:
+          type: string
+        assignee_id:
+          type: integer
+          format: int64
+        assignee_name:
+          type: string
+        created_by_id:
+          type: integer
+          format: int64
+        created_by_name:
+          type: string
+        warehouse_id:
+          type: integer
+          format: int64
+        warehouse_name:
+          type: string
+        location_id:
+          type: integer
+          format: int64
+        location_name:
+          type: string
+        html_string:
+          type: string
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/move-order-comment'
+        line_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/move-order-line-item-response'
+        documents:
+          type: array
+          description: Attachments on the move order when returned by the service.
+          items:
+            $ref: '#/components/schemas/move-order-document-attachment'
+    move-order-list-row:
+      type: object
+      properties:
+        moveorder_id:
+          type: integer
+          format: int64
+        moveorder_number:
+          type: string
+        date:
+          type: string
+        notes:
+          type: string
+        status:
+          type: string
+        assignee_id:
+          type: integer
+          format: int64
+        assignee_name:
+          type: string
+        warehouse_id:
+          type: integer
+          format: int64
+        warehouse_name:
+          type: string
+        location_id:
+          type: integer
+          format: int64
+        location_name:
+          type: string
+        has_attachment:
+          type: boolean
+        created_time:
+          type: string
+        last_modified_time:
+          type: string
+    page_context:
+      type: object
+      description: Pagination and list context for the current result set.
+      properties:
+        page:
+          type: integer
+          example: 1
+        per_page:
+          type: integer
+          example: 200
+        has_more_page:
+          type: boolean
+        report_name:
+          type: string
+        applied_filter:
+          type: string
+        sort_column:
+          type: string
+        sort_order:
+          type: string
+    create-a-move-order-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          readOnly: true
+        moveorder:
+          $ref: '#/components/schemas/move-order-response'
+    list-move-orders-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        moveorders:
+          type: array
+          items:
+            $ref: '#/components/schemas/move-order-list-row'
+        page_context:
+          $ref: '#/components/schemas/page_context'
+    get-a-move-order-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        moveorder:
+          $ref: '#/components/schemas/move-order-response'
+    update-a-move-order-response:
+      $ref: '#/components/schemas/get-a-move-order-response'
+    delete-a-move-order-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Move Order deleted successfully.
+          readOnly: true
+    delete-a-move-order-document-response:
+      type: object
+      description: Returned when a document is removed from a move order.
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Your file is no longer attached to the Move Order.
+          readOnly: true
+    list-move-order-comments-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          readOnly: true
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/move-order-comment'
+    move-order-status-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Move Order status updated successfully.
+          readOnly: true
+    move-order-attachment-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          readOnly: true
+        document:
+          $ref: '#/components/schemas/move-order-document-attachment'
+    get-move-order-settings-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          readOnly: true
+        moveorder_settings:
+          $ref: '#/components/schemas/move-order-settings'
+  securitySchemes:
+    Zoho_Auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://accounts.zoho.com/oauth/v2/auth
+          scopes:
+            ZohoInventory.moveorder.CREATE: Create Moveorder
+            ZohoInventory.moveorder.READ: Read Moveorder
+            ZohoInventory.moveorder.UPDATE: Update Moveorder
+            ZohoInventory.moveorder.DELETE: Delete Moveorder
+            ZohoInventory.settings.READ: Read Settings

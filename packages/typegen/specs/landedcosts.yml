@@ -1,0 +1,663 @@
+openapi: 3.0.0
+info:
+  title: Landed Costs
+  description: A landed cost is the total cost incurred to bring an item to your warehouse, including the item price and additional charges such as shipping, customs duties, insurance, and handling. Use the Landed Costs APIs to allocate these additional charges across the line items of a bill, or to distribute a single charge across multiple bills, so that the inventory cost reflects the true cost of acquisition.
+  contact: {}
+  version: 1.0.0
+servers:
+  - url: https://www.zohoapis.com/inventory/v1
+    description: API Endpoint
+tags:
+  - name: landedcosts
+    description: LandedCosts Module
+paths:
+  /bills/{bill_id}/landedcosts:
+    x-mcp-group:
+      - Landed Costs
+    post:
+      tags:
+        - landedcosts
+      operationId: create_landed_cost_for_bill
+      summary: Creates a landed cost for a bill.
+      description: Create a landed cost for a bill. Use this to record additional charges such as shipping, customs, or handling against a bill, and allocate those charges across the line items of the bill using the chosen allocation method.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-a-landed-cost-for-bill-request'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-a-landed-cost-for-bill-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.bills.CREATE
+    parameters:
+      - name: bill_id
+        in: path
+        required: true
+        description: Unique identifier of the bill to which the landed cost is added.
+        schema:
+          type: string
+        example: '4815000000045067'
+      - $ref: '#/components/parameters/organization_id'
+  /bills/{bill_id}/landedcosts/{landed_cost_id}:
+    x-mcp-group:
+      - Landed Costs
+    get:
+      tags:
+        - landedcosts
+      operationId: get_landed_cost_for_bill
+      summary: Retrieves the details of a specific landed cost
+      description: Retrieve the details of a specific landed cost recorded against a bill, including the cost allocations across the bill line items.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-a-landed-cost-for-bill-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.bills.READ
+    put:
+      tags:
+        - landedcosts
+      operationId: update_landed_cost_for_bill
+      summary: Updates an existing landed cost on a bill.
+      description: Update an existing landed cost on a bill. The full landed cost record, including its allocations across the bill line items, is replaced with the values provided in the request body.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-a-landed-cost-for-bill-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-a-landed-cost-for-bill-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.bills.UPDATE
+    delete:
+      tags:
+        - landedcosts
+      operationId: delete_landed_cost_for_bill
+      summary: Deletes a landed cost from a bill.
+      description: Delete a landed cost from a bill. The allocated amounts are removed from the bill line items.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-a-landed-cost-for-bill-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.bills.DELETE
+    parameters:
+      - name: bill_id
+        in: path
+        required: true
+        description: Unique identifier of the bill that the landed cost belongs to.
+        schema:
+          type: string
+        example: '4815000000045067'
+      - name: landed_cost_id
+        in: path
+        required: true
+        description: Unique identifier of the landed cost.
+        schema:
+          type: string
+        example: '4815000000049011'
+      - $ref: '#/components/parameters/organization_id'
+  /bills/bulklandedcosts:
+    x-mcp-group:
+      - Landed Costs
+    post:
+      tags:
+        - landedcosts
+      operationId: create_bulk_landed_costs
+      summary: Create bulk landed costs
+      description: Create a landed cost from a single source transaction (such as a bill, bill of entry, or self-billed invoice) and allocate it across multiple bills in one call. Use this when a single charge, for example a freight invoice, needs to be distributed across more than one downstream bill.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-bulk-landed-costs-request'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-bulk-landed-costs-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.bills.CREATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /landedcosts/billdetails:
+    x-mcp-group:
+      - Landed Costs
+    get:
+      tags:
+        - landedcosts
+      operationId: get_bill_details_for_bulk_landed_cost
+      summary: Get bill details for bulk landed cost
+      description: Retrieve the bill and line item details for one or more bills. Use this before calling the bulk landed cost endpoint to fetch the bill items that the landed cost can be allocated against.
+      parameters:
+        - name: bill_ids
+          in: query
+          description: Comma-separated list of bill IDs whose details are to be fetched. A maximum of 200 bill IDs can be passed in a single call.
+          required: true
+          schema:
+            type: string
+          example: 4815000000045067,4815000000045079
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-bill-details-for-bulk-landed-cost-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.bills.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+components:
+  parameters:
+    organization_id:
+      name: organization_id
+      description: 'ID of the organization. Note: This value is a set of numeric characters.'
+      in: query
+      required: true
+      schema:
+        type: string
+      example: '10234695'
+  schemas:
+    gendoc-attributes-schema:
+      $ref: '#/components/schemas/landed-cost-for-bill-response'
+    landed-cost-for-bill-response:
+      type: object
+      properties:
+        bill_id:
+          $ref: '#/components/schemas/bill_id'
+        bill_number:
+          $ref: '#/components/schemas/bill_number'
+        landed_cost_id:
+          $ref: '#/components/schemas/landed_cost_id'
+        vendor_id:
+          $ref: '#/components/schemas/vendor_id'
+        vendor_name:
+          $ref: '#/components/schemas/vendor_name'
+        reference_entity_id:
+          $ref: '#/components/schemas/reference_entity_id'
+        reference_item_id:
+          $ref: '#/components/schemas/reference_item_id'
+        reference_entity_type:
+          description: Type of the source transaction. Allowed values <code>bill</code>, <code>bill_of_entry</code> and <code>self_billed_invoice</code>.
+          type: string
+          example: bill
+        reference_entity_number:
+          $ref: '#/components/schemas/reference_entity_number'
+        price_precision:
+          $ref: '#/components/schemas/price_precision'
+        amount:
+          $ref: '#/components/schemas/amount'
+        currency_id:
+          $ref: '#/components/schemas/currency_id'
+        currency_code:
+          $ref: '#/components/schemas/currency_code'
+        currency_symbol:
+          $ref: '#/components/schemas/currency_symbol'
+        account_id:
+          $ref: '#/components/schemas/account_id'
+        account_name:
+          $ref: '#/components/schemas/account_name'
+        description:
+          $ref: '#/components/schemas/description'
+        allocation_method:
+          $ref: '#/components/schemas/allocation_method'
+        cost_allocations:
+          $ref: '#/components/schemas/cost_allocations_for_bill'
+    landed_cost_id:
+      description: Unique identifier of the landed cost generated by the server.
+      type: string
+      example: '4815000000049011'
+    vendor_id:
+      description: Unique identifier of the vendor associated with the landed cost.
+      type: string
+      example: '4815000000044080'
+    vendor_name:
+      description: Display name of the vendor associated with the landed cost.
+      type: string
+      example: Molly
+    reference_entity_id:
+      description: Unique identifier of the source transaction (for example, the bill or self-billed invoice) from which the landed cost is recorded.
+      type: string
+      example: '4815000000045067'
+    reference_item_id:
+      description: Unique identifier of the line item in the source transaction that represents the landed cost.
+      type: string
+      example: '4815000000045071'
+    reference_entity_number:
+      description: Number of the source transaction (for example, the bill number) from which the landed cost is recorded.
+      type: string
+      example: BILL-00045
+    price_precision:
+      description: Number of decimal places used to store the landed cost amounts.
+      type: integer
+      example: 2
+    amount:
+      description: Total landed cost amount in the currency of the bill.
+      type: number
+      format: double
+      example: 250
+    currency_id:
+      description: Unique identifier of the currency in which the landed cost is recorded.
+      type: string
+      example: '4815000000044052'
+    currency_code:
+      description: ISO code of the currency in which the landed cost is recorded.
+      type: string
+      example: USD
+    currency_symbol:
+      description: Symbol of the currency in which the landed cost is recorded.
+      type: string
+      example: $
+    account_id:
+      description: Unique identifier of the expense account against which the landed cost is recorded.
+      type: string
+      example: '4815000000035003'
+    account_name:
+      description: Name of the expense account against which the landed cost is recorded.
+      type: string
+      example: Freight and Forwarding Charges
+    description:
+      description: Description of the landed cost. Max length [100].
+      type: string
+      example: Freight charges for the August shipment.
+    allocation_method:
+      description: Method used to distribute the landed cost across the bill line items. Allowed values <code>quantity</code>, <code>amount</code>, <code>dimension</code> and <code>weight</code>.
+      type: string
+      example: quantity
+    bill_id:
+      description: Unique identifier of the bill that the landed cost belongs to.
+      type: string
+      example: '4815000000045067'
+    bill_number:
+      description: Number of the bill that the landed cost belongs to.
+      type: string
+      example: BILL-00045
+    bill_item_id:
+      description: Unique identifier of the bill line item that the landed cost is allocated to.
+      type: string
+      example: '4815000000045071'
+    allocated_amount:
+      description: Amount of the landed cost allocated to the bill line item, in the currency of the bill.
+      type: number
+      format: double
+      example: 100
+    sales_rate:
+      description: Updated sales rate for the bill line item after the landed cost is applied.
+      type: number
+      format: double
+      example: 0
+    label_rate:
+      description: Updated label (MRP) rate for the bill line item after the landed cost is applied. Returned only when MRP is enabled for the organization.
+      type: number
+      format: double
+      example: 0
+    line_item_name:
+      description: Name of the bill line item.
+      type: string
+      example: Laptop-white/15inch/dell
+    line_item_description:
+      description: Description of the bill line item.
+      type: string
+      example: Just a sample description.
+    line_item_quantity:
+      description: Quantity of the bill line item.
+      type: number
+      format: double
+      example: 2
+    line_item_rate:
+      description: Unit rate of the bill line item in the currency of the bill.
+      type: number
+      format: double
+      example: 1200
+    line_item_total:
+      description: Sub-total of the bill line item in the currency of the bill.
+      type: number
+      format: double
+      example: 2400
+    package_length:
+      description: Length of the item package.
+      type: number
+      format: double
+      example: 15
+    package_width:
+      description: Width of the item package.
+      type: number
+      format: double
+      example: 10
+    package_height:
+      description: Height of the item package.
+      type: number
+      format: double
+      example: 2
+    package_weight:
+      description: Weight of the item package.
+      type: number
+      format: double
+      example: 1.5
+    weight_unit:
+      description: Unit of measure for the package weight.
+      type: string
+      example: kg
+    dimension_unit:
+      description: Unit of measure for the package dimensions.
+      type: string
+      example: cm
+    package_details:
+      description: Package dimensions and weight of the item, used when the allocation method is <code>dimension</code> or <code>weight</code>. Returned only when Zoho Inventory is enabled.
+      type: object
+      properties:
+        length:
+          $ref: '#/components/schemas/package_length'
+        width:
+          $ref: '#/components/schemas/package_width'
+        height:
+          $ref: '#/components/schemas/package_height'
+        weight:
+          $ref: '#/components/schemas/package_weight'
+        weight_unit:
+          $ref: '#/components/schemas/weight_unit'
+        dimension_unit:
+          $ref: '#/components/schemas/dimension_unit'
+    cost_allocations_for_bill:
+      description: Distribution of the landed cost across the line items of the bill. Each entry contains the bill line item identifier and the amount allocated to it.
+      type: array
+      items:
+        type: object
+        properties:
+          bill_id:
+            $ref: '#/components/schemas/bill_id'
+          bill_item_id:
+            $ref: '#/components/schemas/bill_item_id'
+          allocated_amount:
+            $ref: '#/components/schemas/allocated_amount'
+          name:
+            $ref: '#/components/schemas/line_item_name'
+          description:
+            $ref: '#/components/schemas/line_item_description'
+          quantity:
+            $ref: '#/components/schemas/line_item_quantity'
+          rate:
+            $ref: '#/components/schemas/line_item_rate'
+          item_total:
+            $ref: '#/components/schemas/line_item_total'
+          package_details:
+            $ref: '#/components/schemas/package_details'
+          sales_rate:
+            $ref: '#/components/schemas/sales_rate'
+          label_rate:
+            $ref: '#/components/schemas/label_rate'
+    cost_allocation_for_bill_request:
+      type: object
+      properties:
+        bill_item_id:
+          $ref: '#/components/schemas/bill_item_id'
+        allocated_amount:
+          $ref: '#/components/schemas/allocated_amount'
+        sales_rate:
+          $ref: '#/components/schemas/sales_rate'
+        label_rate:
+          $ref: '#/components/schemas/label_rate'
+    bill_line_item:
+      type: object
+      properties:
+        bill_id:
+          $ref: '#/components/schemas/bill_id'
+        bill_item_id:
+          $ref: '#/components/schemas/bill_item_id'
+        item_id:
+          type: string
+          description: Unique identifier of the item.
+          example: '4815000000044100'
+        name:
+          $ref: '#/components/schemas/line_item_name'
+        sku:
+          type: string
+          description: Stock keeping unit of the item. Returned only when SKU is enabled for the organization.
+          example: SKU-001
+        description:
+          $ref: '#/components/schemas/line_item_description'
+        quantity:
+          $ref: '#/components/schemas/line_item_quantity'
+        unit:
+          type: string
+          description: Unit of measure of the line item.
+          example: qty
+        item_total:
+          $ref: '#/components/schemas/line_item_total'
+        package_details:
+          $ref: '#/components/schemas/package_details'
+    bill_details:
+      type: object
+      properties:
+        bill_id:
+          $ref: '#/components/schemas/bill_id'
+        bill_number:
+          $ref: '#/components/schemas/bill_number'
+        date:
+          type: string
+          description: Date of the bill in <code>yyyy-mm-dd</code> format.
+          example: '2015-05-28'
+        vendor_id:
+          $ref: '#/components/schemas/vendor_id'
+        vendor_name:
+          $ref: '#/components/schemas/vendor_name'
+        status:
+          type: string
+          description: Current status of the bill.
+          example: open
+        total:
+          type: number
+          format: double
+          description: Total amount of the bill in the currency of the bill.
+          example: 2400
+        currency_id:
+          $ref: '#/components/schemas/currency_id'
+        currency_code:
+          $ref: '#/components/schemas/currency_code'
+        currency_symbol:
+          $ref: '#/components/schemas/currency_symbol'
+        exchange_rate:
+          type: number
+          format: double
+          description: Exchange rate of the currency of the bill against the base currency of the organization.
+          example: 1
+        price_precision:
+          $ref: '#/components/schemas/price_precision'
+        line_items:
+          type: array
+          description: Line items of the bill that the landed cost can be allocated to.
+          items:
+            $ref: '#/components/schemas/bill_line_item'
+    create-a-landed-cost-for-bill-request:
+      type: object
+      required:
+        - cost_allocations
+      properties:
+        vendor_id:
+          $ref: '#/components/schemas/vendor_id'
+        reference_entity_id:
+          $ref: '#/components/schemas/reference_entity_id'
+        reference_item_id:
+          $ref: '#/components/schemas/reference_item_id'
+        reference_entity_type:
+          description: Type of the source transaction. Allowed values <code>bill</code>, <code>bill_of_entry</code> and <code>self_billed_invoice</code>.
+          type: string
+          example: bill
+        account_id:
+          $ref: '#/components/schemas/account_id'
+        description:
+          $ref: '#/components/schemas/description'
+        allocation_method:
+          $ref: '#/components/schemas/allocation_method'
+        cost_allocations:
+          description: Distribution of the landed cost across the line items of the bill. At least one entry is required.
+          type: array
+          items:
+            $ref: '#/components/schemas/cost_allocation_for_bill_request'
+    update-a-landed-cost-for-bill-request:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/create-a-landed-cost-for-bill-request'
+    create-a-landed-cost-for-bill-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The landed cost has been added.
+          readOnly: true
+        landed_cost:
+          $ref: '#/components/schemas/landed-cost-for-bill-response'
+    get-a-landed-cost-for-bill-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        landed_cost:
+          $ref: '#/components/schemas/landed-cost-for-bill-response'
+    update-a-landed-cost-for-bill-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The landed cost has been updated.
+          readOnly: true
+        landed_cost:
+          $ref: '#/components/schemas/landed-cost-for-bill-response'
+    delete-a-landed-cost-for-bill-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The landed cost has been deleted.
+          readOnly: true
+    get-bill-details-for-bulk-landed-cost-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        bills:
+          type: array
+          description: Bill details for each requested bill, including the line items the landed cost can be allocated against.
+          items:
+            $ref: '#/components/schemas/bill_details'
+    bulk-landed-cost-bill-allocation:
+      type: object
+      properties:
+        bill_id:
+          type: string
+          description: Unique identifier of the bill that the landed cost is being allocated to.
+          example: '4815000000045067'
+        vendor_id:
+          $ref: '#/components/schemas/vendor_id'
+        cost_allocations:
+          description: Distribution of the landed cost across the line items of the bill. At least one entry is required.
+          type: array
+          items:
+            type: object
+            properties:
+              bill_item_id:
+                type: string
+                description: Unique identifier of the bill line item.
+                example: '4815000000045071'
+              allocated_amount:
+                $ref: '#/components/schemas/allocated_amount'
+    create-bulk-landed-costs-request:
+      type: object
+      properties:
+        reference_entity_id:
+          $ref: '#/components/schemas/reference_entity_id'
+        reference_item_id:
+          $ref: '#/components/schemas/reference_item_id'
+        reference_entity_type:
+          description: Type of the source transaction from which the bulk landed cost is recorded. Allowed values <code>bill</code>, <code>bill_of_entry</code> and <code>self_billed_invoice</code>.
+          type: string
+          example: bill
+        account_id:
+          $ref: '#/components/schemas/account_id'
+        description:
+          description: Description of the bulk landed cost.
+          type: string
+          example: Freight charges allocated across August shipments.
+        allocation_method:
+          $ref: '#/components/schemas/allocation_method'
+        bills:
+          description: Bills that the landed cost is allocated to. A maximum of 100 bills can be passed in a single call.
+          type: array
+          items:
+            $ref: '#/components/schemas/bulk-landed-cost-bill-allocation'
+    create-bulk-landed-costs-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The landed cost has been added.
+          readOnly: true
+  securitySchemes:
+    Zoho_Auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://accounts.zoho.com/oauth/v2/auth
+          scopes:
+            ZohoInventory.bills.CREATE: Create Bills
+            ZohoInventory.bills.READ: Read Bills
+            ZohoInventory.bills.UPDATE: Update Bills
+            ZohoInventory.bills.DELETE: Delete Bills

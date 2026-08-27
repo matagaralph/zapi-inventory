@@ -1,0 +1,1413 @@
+openapi: 3.0.0
+info:
+  title: Bin Locations
+  description: Bin locations are the smallest storage units within a warehouse. They help optimize operations with effective tracking and labeling, make items easier to locate, and support multiple storage levels for precise inventory tracking.
+  contact: {}
+  version: 1.0.0
+servers:
+  - url: https://www.zohoapis.com/inventory/v1
+    description: API Endpoint
+tags:
+  - name: storagelocations
+    description: Bin Locations Module
+paths:
+  /settings/warehouses/{warehouse_id}/storagelocations/enable:
+    x-mcp-group:
+      - Storage Locations
+      - Warehouses
+    post:
+      tags:
+        - storagelocations
+      operationId: enable_storage_locations_for_warehouse
+      summary: Enables bin locations for a specific warehouse
+      description: Enable bin locations for a specific warehouse so goods can be tracked.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/enable-storage-locations-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.CREATE
+    parameters:
+      - name: warehouse_id
+        in: path
+        required: true
+        description: Unique identifier of the warehouse.
+        schema:
+          type: string
+        example: '130426000000664020'
+      - $ref: '#/components/parameters/organization_id'
+  /settings/warehouses/{warehouse_id}/storagelocations/disable:
+    x-mcp-group:
+      - Storage Locations
+      - Warehouses
+    post:
+      tags:
+        - storagelocations
+      operationId: disable_storage_locations_for_warehouse
+      summary: Disable Bin Locations for a Warehouse
+      description: Disable bin locations for a specific warehouse.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/disable-storage-locations-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.CREATE
+    parameters:
+      - name: warehouse_id
+        in: path
+        required: true
+        description: Unique identifier of the warehouse.
+        schema:
+          type: string
+        example: '130426000000664020'
+      - $ref: '#/components/parameters/organization_id'
+  /locations/{location_id}/storagelocations/enable:
+    x-mcp-group:
+      - Storage Locations
+      - Locations
+    post:
+      tags:
+        - storagelocations
+      operationId: enable_storage_locations_for_location
+      summary: Enable Bin Locations for a Location
+      description: Enable bin locations for a specific location so goods can be tracked.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/enable-storage-locations-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.CREATE
+    parameters:
+      - name: location_id
+        in: path
+        required: true
+        description: Unique identifier of the location.
+        schema:
+          type: string
+        example: '130426000000054001'
+      - $ref: '#/components/parameters/organization_id'
+  /locations/{location_id}/storagelocations/disable:
+    x-mcp-group:
+      - Storage Locations
+      - Locations
+    post:
+      tags:
+        - storagelocations
+      operationId: disable_storage_locations_for_location
+      summary: Disable Bin Locations for a Location
+      description: Disable bin locations for a specific location.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/disable-storage-locations-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.CREATE
+    parameters:
+      - name: location_id
+        in: path
+        required: true
+        description: Unique identifier of the location.
+        schema:
+          type: string
+        example: '130426000000054001'
+      - $ref: '#/components/parameters/organization_id'
+  /storagezones:
+    x-mcp-group:
+      - Storage Zones
+    post:
+      tags:
+        - storagelocations
+      operationId: create_storage_zone
+      summary: Create a Zone
+      description: Creates a zone for a specific location or warehouse.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-a-storage-zone-request'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-a-storage-zone-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.CREATE
+    get:
+      tags:
+        - storagelocations
+      operationId: list_storage_zones
+      summary: List all Zones
+      description: List all zones configured for warehouses and locations in your Zoho Inventory organization.
+      parameters:
+        - name: warehouse_id
+          in: query
+          description: Filter zones by warehouse ID.
+          schema:
+            type: string
+          example: '130426000000664020'
+        - name: location_id
+          in: query
+          description: Filter zones by location ID.
+          schema:
+            type: string
+          example: '130426000000054001'
+        - name: page
+          in: query
+          description: Page number for pagination.
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: per_page
+          in: query
+          description: Number of records returned per page.
+          schema:
+            type: integer
+            default: 10
+          example: 10
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-all-storage-zones-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /storagezones/active:
+    x-mcp-group:
+      - Storage Zones
+    put:
+      tags:
+        - storagelocations
+      operationId: mark_storage_zones_as_active
+      summary: Mark Zones as Active
+      description: Bulk mark zones as active.
+      parameters:
+        - name: storage_zone_ids
+          in: query
+          required: true
+          description: Comma-separated list of zone IDs to mark as active.
+          schema:
+            type: string
+          example: 130426000000798001,130426000000798003
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mark-storage-zones-as-active-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.UPDATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /storagezones/inactive:
+    x-mcp-group:
+      - Storage Zones
+    put:
+      tags:
+        - storagelocations
+      operationId: mark_storage_zones_as_inactive
+      summary: Mark Zones as Inactive
+      description: Bulk mark zones as inactive.
+      parameters:
+        - name: storage_zone_ids
+          in: query
+          required: true
+          description: Comma-separated list of zone IDs to mark as inactive.
+          schema:
+            type: string
+          example: 130426000000798001,130426000000798003
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mark-storage-zones-as-inactive-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.UPDATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /storagezones/{zone_id}:
+    x-mcp-group:
+      - Storage Zones
+    get:
+      tags:
+        - storagelocations
+      operationId: get_storage_zone
+      summary: Get a Zone
+      description: Retrieve the details of a specific zone and its bin hierarchy.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-a-storage-zone-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.READ
+    put:
+      tags:
+        - storagelocations
+      operationId: update_storage_zone
+      summary: Update a Zone
+      description: Update and manage an existing zone and the hierarchy used to create bins within it.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-a-storage-zone-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-a-storage-zone-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.UPDATE
+    delete:
+      tags:
+        - storagelocations
+      operationId: delete_storage_zone
+      summary: Delete a Zone
+      description: Delete a specific zone when it is no longer needed.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-a-storage-zone-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.DELETE
+    parameters:
+      - name: zone_id
+        in: path
+        required: true
+        description: Unique identifier of the zone.
+        schema:
+          type: string
+        example: '130426000000798001'
+      - $ref: '#/components/parameters/organization_id'
+  /storagelocations:
+    x-mcp-group:
+      - Storage Locations
+    post:
+      tags:
+        - storagelocations
+      operationId: create_storage_location
+      summary: Create a Bin
+      description: Create a bin within a zone so goods can be stored and tracked to the smallest unit space.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-a-storage-location-request'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-a-storage-location-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.CREATE
+    get:
+      tags:
+        - storagelocations
+      operationId: list_storage_locations
+      summary: List all Bins
+      description: List all bin locations available in your Zoho Inventory organization.
+      parameters:
+        - name: warehouse_id
+          in: query
+          description: Filter bin locations by warehouse ID.
+          schema:
+            type: string
+          example: '130426000000664020'
+        - name: location_id
+          in: query
+          description: Filter bin locations by location ID.
+          schema:
+            type: string
+          example: '130426000000054001'
+        - name: storage_zone_id
+          in: query
+          description: Filter bin locations by zone ID.
+          schema:
+            type: string
+          example: '130426000000798001'
+        - name: item_id
+          in: query
+          description: Filter bin locations by item ID.
+          schema:
+            type: string
+          example: '130426000000056001'
+        - name: search_text
+          in: query
+          description: Search bin locations by name.
+          schema:
+            type: string
+          example: A-R1
+        - name: show_stock_only_bins
+          in: query
+          description: When set to <code>true</code>, returns only bin locations that have stock.
+          schema:
+            type: boolean
+          example: true
+        - name: show_batches
+          in: query
+          description: When set to <code>true</code>, includes batch information in the response.
+          schema:
+            type: boolean
+          example: false
+        - name: batch_id
+          in: query
+          description: Filter bin locations by batch ID.
+          schema:
+            type: string
+          example: '130426000000812001'
+        - name: exclude_zero_stock_bins
+          in: query
+          description: When set to <code>true</code>, excludes bin locations with zero stock.
+          schema:
+            type: boolean
+          example: false
+        - name: storage_ids
+          in: query
+          description: Comma-separated list of bin location IDs to filter by.
+          schema:
+            type: string
+          example: 130426000000801001,130426000000801003
+        - name: page
+          in: query
+          description: Page number for pagination.
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: per_page
+          in: query
+          description: Number of records returned per page.
+          schema:
+            type: integer
+            default: 200
+          example: 200
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-all-storage-locations-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.READ
+    delete:
+      tags:
+        - storagelocations
+      operationId: bulk_delete_storage_locations
+      summary: Bulk Delete Bins
+      description: Delete multiple bin locations in bulk.
+      parameters:
+        - name: storage_ids
+          in: query
+          required: true
+          description: Comma-separated list of bin location IDs to delete.
+          schema:
+            type: string
+          example: 130426000000801001,130426000000801003
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bulk-delete-storage-locations-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.DELETE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /storagelocations/active:
+    x-mcp-group:
+      - Storage Locations
+    post:
+      tags:
+        - storagelocations
+      operationId: mark_storage_locations_as_active
+      summary: Mark Bins as Active
+      description: Mark multiple bin locations as active.
+      parameters:
+        - name: storage_ids
+          in: query
+          required: true
+          description: Comma-separated list of bin location IDs to mark as active.
+          schema:
+            type: string
+          example: 130426000000801001,130426000000801003
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mark-storage-locations-as-active-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.CREATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /storagelocations/inactive:
+    x-mcp-group:
+      - Storage Locations
+    post:
+      tags:
+        - storagelocations
+      operationId: mark_storage_locations_as_inactive
+      summary: Mark Bins as Inactive
+      description: Mark multiple bin locations as inactive.
+      parameters:
+        - name: storage_ids
+          in: query
+          required: true
+          description: Comma-separated list of bin location IDs to mark as inactive.
+          schema:
+            type: string
+          example: 130426000000801001,130426000000801003
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mark-storage-locations-as-inactive-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.CREATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /storagelocations/{storage_id}:
+    x-mcp-group:
+      - Storage Locations
+    get:
+      tags:
+        - storagelocations
+      operationId: get_storage_location
+      summary: Get a Bin
+      description: Retrieve the details of a specific bin location.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-a-storage-location-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.READ
+    put:
+      tags:
+        - storagelocations
+      operationId: update_storage_location
+      summary: Update a Bin
+      description: Update the details of an existing bin location.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-a-storage-location-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-a-storage-location-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.UPDATE
+    delete:
+      tags:
+        - storagelocations
+      operationId: delete_storage_location
+      summary: Delete a Bin
+      description: Delete a specific bin location when it is no longer needed.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-a-storage-location-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.DELETE
+    parameters:
+      - name: storage_id
+        in: path
+        required: true
+        description: Unique identifier of the bin location.
+        schema:
+          type: string
+        example: '130426000000801001'
+      - $ref: '#/components/parameters/organization_id'
+  /items/{item_id}/storagelocationsmapping:
+    x-mcp-group:
+      - Storage Locations
+      - Items
+    get:
+      tags:
+        - storagelocations
+      operationId: get_item_storage_location_mappings
+      summary: Get Item Bin Mappings
+      description: Retrieve the bins mapped to a specific item.
+      parameters:
+        - name: warehouse_id
+          in: query
+          description: Filter mappings by warehouse ID.
+          schema:
+            type: string
+          example: '130426000000664020'
+        - name: location_id
+          in: query
+          description: Filter mappings by location ID.
+          schema:
+            type: string
+          example: '130426000000054001'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-item-storage-location-mappings-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.READ
+    put:
+      tags:
+        - storagelocations
+      operationId: update_item_storage_location_mappings
+      summary: Update Item Bin Mappings
+      description: Update the bin mappings for a specific item.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/map-storage-locations-to-item-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-item-storage-location-mappings-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.UPDATE
+    parameters:
+      - name: item_id
+        in: path
+        required: true
+        description: Unique identifier of the item.
+        schema:
+          type: string
+        example: '130426000000056001'
+      - $ref: '#/components/parameters/organization_id'
+  /items/{item_id}/defaultstoragemapping:
+    x-mcp-group:
+      - Storage Locations
+      - Items
+    get:
+      tags:
+        - storagelocations
+      operationId: get_item_default_storage_location
+      summary: Get Item Default Bin
+      description: Retrieve the default bin mapping for a specific item.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-item-default-storage-location-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.READ
+    parameters:
+      - name: item_id
+        in: path
+        required: true
+        description: Unique identifier of the item.
+        schema:
+          type: string
+        example: '130426000000056001'
+      - $ref: '#/components/parameters/organization_id'
+  /items/{item_id}/configure/defaultstorage:
+    x-mcp-group:
+      - Storage Locations
+      - Items
+    put:
+      tags:
+        - storagelocations
+      operationId: configure_item_default_storage_location
+      summary: Configure Item Default Bin
+      description: Configure the default bin per location for a specific item.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/configure-item-default-storage-location-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/configure-item-default-storage-location-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.UPDATE
+    parameters:
+      - name: item_id
+        in: path
+        required: true
+        description: Unique identifier of the item.
+        schema:
+          type: string
+        example: '130426000000056001'
+      - $ref: '#/components/parameters/organization_id'
+  /compositeitems/{item_id}/defaultstoragemapping:
+    x-mcp-group:
+      - Storage Locations
+      - Composite Items
+    get:
+      tags:
+        - storagelocations
+      operationId: get_composite_item_default_storage_location
+      summary: Get Composite Item Default Bin
+      description: Retrieve the default bin mapping for a specific composite item.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-item-default-storage-location-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.READ
+    parameters:
+      - name: item_id
+        in: path
+        required: true
+        description: Unique identifier of the composite item.
+        schema:
+          type: string
+        example: '130426000000056005'
+      - $ref: '#/components/parameters/organization_id'
+  /compositeitems/{item_id}/configure/defaultstorage:
+    x-mcp-group:
+      - Storage Locations
+      - Composite Items
+    put:
+      tags:
+        - storagelocations
+      operationId: configure_composite_item_default_storage
+      summary: Configure Composite Item Default Bin
+      description: Configure the default bin per location for a specific composite item.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/configure-item-default-storage-location-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/configure-item-default-storage-location-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.warehouses.UPDATE
+    parameters:
+      - name: item_id
+        in: path
+        required: true
+        description: Unique identifier of the composite item.
+        schema:
+          type: string
+        example: '130426000000056005'
+      - $ref: '#/components/parameters/organization_id'
+components:
+  parameters:
+    organization_id:
+      name: organization_id
+      description: ID of the organization
+      in: query
+      required: true
+      schema:
+        type: string
+      example: '10234695'
+  schemas:
+    storage_zone_id:
+      description: Unique ID generated by the server for the zone.
+      type: string
+      example: '130426000000798001'
+    zone_name:
+      description: Name of the zone.
+      type: string
+      example: Zone A
+    storage_id:
+      description: Unique ID generated by the server for the bin location.
+      type: string
+      example: '130426000000801001'
+    storage_location_name:
+      description: Name of the bin location.
+      type: string
+      maxLength: 50
+      example: A-R1-B01
+    storage_location_description:
+      description: Description of the bin location.
+      type: string
+      maxLength: 1000
+      example: Row 1, Bin 01 in Zone A
+    warehouse_id:
+      description: Unique identifier of the warehouse.
+      type: string
+      example: '130426000000664020'
+    location_id:
+      description: Unique identifier of the location.
+      type: string
+      example: '130426000000054001'
+    storage_zone_status:
+      description: 'Status of the zone. Allowed Values: <code>active</code>, <code>inactive</code>'
+      type: string
+      example: active
+    storage_location_status:
+      description: 'Status of the bin location. Allowed Values: <code>active</code>, <code>inactive</code>'
+      type: string
+      example: active
+    location_structure:
+      description: Defines a single level in the zone hierarchy used to generate bin locations.
+      type: object
+      properties:
+        location_structure_id:
+          description: Unique ID of the location structure level.
+          type: string
+          example: '130426000000798011'
+        location_name:
+          description: Name of this hierarchy level (e.g. Row, Rack, Bin).
+          type: string
+          maxLength: 50
+          example: Row
+        delimiter:
+          description: Single character used to separate levels in the bin location name.
+          type: string
+          maxLength: 1
+          example: '-'
+        alias_name:
+          description: Abbreviation used as prefix in the auto-generated location name for this level.
+          type: string
+          maxLength: 50
+          example: R
+        level:
+          description: Position of this level in the hierarchy (1 to 10).
+          type: integer
+          minimum: 1
+          maximum: 10
+          example: 1
+        count:
+          description: Number of units at this level (1 to 200000).
+          type: integer
+          minimum: 1
+          maximum: 200000
+          example: 10
+    storage_zone:
+      description: Details of a zone that contains multiple bin locations.
+      type: object
+      properties:
+        storage_zone_id:
+          $ref: '#/components/schemas/storage_zone_id'
+        zone_name:
+          $ref: '#/components/schemas/zone_name'
+        location_id:
+          $ref: '#/components/schemas/location_id'
+        status:
+          $ref: '#/components/schemas/storage_zone_status'
+        location_structures:
+          description: Ordered list of hierarchy levels that define how bin locations are generated in this zone.
+          type: array
+          items:
+            $ref: '#/components/schemas/location_structure'
+    storage_location:
+      description: Details of a bin location.
+      type: object
+      properties:
+        storage_id:
+          $ref: '#/components/schemas/storage_id'
+        name:
+          $ref: '#/components/schemas/storage_location_name'
+        description:
+          $ref: '#/components/schemas/storage_location_description'
+        status:
+          $ref: '#/components/schemas/storage_location_status'
+        zone_id:
+          $ref: '#/components/schemas/storage_zone_id'
+        zone_name:
+          $ref: '#/components/schemas/zone_name'
+        storage_zone_id:
+          $ref: '#/components/schemas/storage_zone_id'
+        location_id:
+          $ref: '#/components/schemas/location_id'
+        balance_quantity:
+          description: Current available quantity in the bin.
+          type: number
+          format: double
+          example: 120.5
+        batches:
+          description: Batch details available in this bin (returned when show_batches=true).
+          type: array
+          items:
+            $ref: '#/components/schemas/bin_batch'
+    bin_batch:
+      type: object
+      properties:
+        batch_id:
+          description: Unique identifier of the batch.
+          type: string
+          example: '130426000000812001'
+        batch_number:
+          description: Display number of the batch.
+          type: string
+          example: BATCH-001
+    enable-storage-locations-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The bin locations have been enabled.
+          readOnly: true
+    disable-storage-locations-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The bin locations have been disabled.
+          readOnly: true
+    create-a-storage-zone-request:
+      required:
+        - zone_name
+      type: object
+      properties:
+        zone_name:
+          $ref: '#/components/schemas/zone_name'
+        location_id:
+          $ref: '#/components/schemas/location_id'
+        location_structures:
+          description: Ordered list of hierarchy levels that define the naming pattern for bin locations in this zone. Maximum 50 levels.
+          type: array
+          minItems: 1
+          maxItems: 50
+          items:
+            type: object
+            required:
+              - location_name
+              - alias_name
+              - level
+              - count
+            properties:
+              location_name:
+                description: Name of this hierarchy level (e.g. Row, Rack, Bin).
+                type: string
+                maxLength: 50
+                example: Row
+              delimiter:
+                description: Single character used to separate levels in the bin location name.
+                type: string
+                maxLength: 1
+                example: '-'
+              alias_name:
+                description: Abbreviation used as prefix in the auto-generated location name for this level.
+                type: string
+                maxLength: 50
+                example: R
+              level:
+                description: Position of this level in the hierarchy (1 to 10).
+                type: integer
+                minimum: 1
+                maximum: 10
+                example: 1
+              count:
+                description: Number of units at this level (1 to 200000).
+                type: integer
+                minimum: 1
+                maximum: 200000
+                example: 10
+    create-a-storage-zone-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Bin location has been Created.
+          readOnly: true
+        storage_zone:
+          $ref: '#/components/schemas/storage_zone'
+    list-all-storage-zones-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        storage_zones:
+          type: array
+          items:
+            $ref: '#/components/schemas/storage_zone'
+    get-a-storage-zone-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        storage_zone:
+          $ref: '#/components/schemas/storage_zone'
+    update-a-storage-zone-request:
+      required:
+        - zone_name
+      type: object
+      properties:
+        zone_name:
+          $ref: '#/components/schemas/zone_name'
+        location_id:
+          $ref: '#/components/schemas/location_id'
+        location_structures:
+          description: Ordered list of hierarchy levels that define the naming pattern for bin locations in this zone. Maximum 50 levels.
+          type: array
+          minItems: 1
+          maxItems: 50
+          items:
+            type: object
+            required:
+              - location_name
+              - alias_name
+              - level
+              - count
+            properties:
+              location_structure_id:
+                description: Unique ID of the location structure level. Required when updating an existing level.
+                type: string
+                example: '130426000000798011'
+              location_name:
+                description: Name of this hierarchy level (e.g. Row, Rack, Bin).
+                type: string
+                maxLength: 50
+                example: Row
+              delimiter:
+                description: Single character used to separate levels in the bin location name.
+                type: string
+                maxLength: 1
+                example: '-'
+              alias_name:
+                description: Abbreviation used as prefix in the auto-generated location name for this level.
+                type: string
+                maxLength: 50
+                example: R
+              level:
+                description: Position of this level in the hierarchy (1 to 10).
+                type: integer
+                minimum: 1
+                maximum: 10
+                example: 1
+              count:
+                description: Number of units at this level (1 to 200000).
+                type: integer
+                minimum: 1
+                maximum: 200000
+                example: 10
+    update-a-storage-zone-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Bin location has been Updated.
+          readOnly: true
+        storage_zone:
+          $ref: '#/components/schemas/storage_zone'
+    delete-a-storage-zone-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Bin Location Structure deleted successfully.
+          readOnly: true
+    mark-storage-zones-as-active-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Storage Zones updated successfully.
+          readOnly: true
+    mark-storage-zones-as-inactive-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Storage Zones updated successfully.
+          readOnly: true
+    create-a-storage-location-request:
+      required:
+        - storage_zone_id
+        - name
+      type: object
+      properties:
+        storage_zone_id:
+          $ref: '#/components/schemas/storage_zone_id'
+        location_id:
+          $ref: '#/components/schemas/location_id'
+        name:
+          $ref: '#/components/schemas/storage_location_name'
+        description:
+          $ref: '#/components/schemas/storage_location_description'
+    create-a-storage-location-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Bin location has been Created.
+          readOnly: true
+        storage_location:
+          $ref: '#/components/schemas/storage_location'
+    list-all-storage-locations-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        storage_locations:
+          type: array
+          items:
+            $ref: '#/components/schemas/storage_location'
+        page_context:
+          type: object
+          properties:
+            page:
+              type: integer
+              example: 1
+            per_page:
+              type: integer
+              example: 200
+            has_more_page:
+              type: boolean
+              example: false
+            report_name:
+              type: string
+              example: StorageListQuery
+    get-a-storage-location-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        storage_location:
+          $ref: '#/components/schemas/storage_location'
+    update-a-storage-location-request:
+      required:
+        - storage_zone_id
+        - name
+      type: object
+      properties:
+        storage_zone_id:
+          $ref: '#/components/schemas/storage_zone_id'
+        location_id:
+          $ref: '#/components/schemas/location_id'
+        name:
+          $ref: '#/components/schemas/storage_location_name'
+        description:
+          $ref: '#/components/schemas/storage_location_description'
+    update-a-storage-location-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Bin location updated.
+          readOnly: true
+        storage_location:
+          $ref: '#/components/schemas/storage_location'
+    delete-a-storage-location-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Bin Location Structure deleted successfully.
+          readOnly: true
+    bulk-delete-storage-locations-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Bin locations deleted.
+          readOnly: true
+    mark-storage-locations-as-active-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Bin locations updated.
+          readOnly: true
+    mark-storage-locations-as-inactive-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Bin locations updated.
+          readOnly: true
+    storage_location_product_mapping:
+      description: A mapping between a product and a bin location.
+      type: object
+      properties:
+        product_id:
+          description: Unique identifier of the product (item).
+          type: string
+          example: '130426000000056001'
+        storage_id:
+          $ref: '#/components/schemas/storage_id'
+        location_id:
+          $ref: '#/components/schemas/location_id'
+    map-storage-locations-to-item-request:
+      type: object
+      properties:
+        location_id:
+          $ref: '#/components/schemas/location_id'
+        storage_locations_product_mapping:
+          description: List of bin location mappings for the item. Maximum 10000 entries.
+          type: array
+          maxItems: 10000
+          items:
+            type: object
+            required:
+              - product_id
+              - storage_id
+            properties:
+              product_id:
+                description: Unique identifier of the product (item).
+                type: string
+                example: '130426000000056001'
+              storage_id:
+                $ref: '#/components/schemas/storage_id'
+    get-item-storage-location-mappings-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        storage_locations_product_mapping:
+          type: array
+          items:
+            $ref: '#/components/schemas/storage_location_product_mapping'
+    update-item-storage-location-mappings-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Bin location mapped with item.
+          readOnly: true
+    default_storage_location_mapping:
+      description: Default bin location assignment for a product per location.
+      type: object
+      properties:
+        location_id:
+          $ref: '#/components/schemas/location_id'
+        storage_id:
+          $ref: '#/components/schemas/storage_id'
+    get-item-default-storage-location-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        default_storage_location_mapping:
+          type: array
+          items:
+            $ref: '#/components/schemas/default_storage_location_mapping'
+    configure-item-default-storage-location-request:
+      type: object
+      properties:
+        default_storage_location_mapping:
+          description: List of default bin location assignments per location for the item.
+          type: array
+          items:
+            type: object
+            required:
+              - storage_id
+            properties:
+              location_id:
+                $ref: '#/components/schemas/location_id'
+              storage_id:
+                $ref: '#/components/schemas/storage_id'
+    configure-item-default-storage-location-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Default Preferred Bin Location Mapping configured for the item.
+          readOnly: true
+  securitySchemes:
+    Zoho_Auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://accounts.zoho.com/oauth/v2/auth
+          scopes:
+            ZohoInventory.warehouses.CREATE: Create Warehouses
+            ZohoInventory.warehouses.READ: Read Warehouses
+            ZohoInventory.warehouses.UPDATE: Update Warehouses
+            ZohoInventory.warehouses.DELETE: Delete Warehouses
+            ZohoInventory.items.READ: Read Items

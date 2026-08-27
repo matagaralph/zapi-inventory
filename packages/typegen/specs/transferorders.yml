@@ -1,0 +1,1331 @@
+openapi: 3.0.0
+info:
+  title: Transfer Orders
+  description: Transfer Orders allow you transfer stock from one location to another, thereby greatly reducing the hassle of manually updating the stock levels.
+  contact: {}
+  version: 1.0.0
+servers:
+  - url: https://www.zohoapis.com/inventory/v1
+    description: API Endpoint
+tags:
+  - name: transferorders
+    description: TransferOrders Module
+paths:
+  /transferorders:
+    x-mcp-group:
+      - Transfer Orders
+    post:
+      tags:
+        - transferorders
+      operationId: create_transfer_order
+      summary: Create a transfer order
+      description: Creates a new transfer order in Zoho Inventory.
+      parameters:
+        - name: ignore_auto_number_generation
+          in: query
+          description: When auto number generation is enabled in transfer order, this node states whether the auto generated transfer order number should be used or not. The default value is false.
+          required: false
+          schema:
+            type: boolean
+          example: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-a-transfer-order-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-a-transfer-order-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.transferorders.CREATE
+    get:
+      tags:
+        - transferorders
+      operationId: list_transfer_orders
+      summary: List all the transfer orders
+      description: Lists transfer orders in the Organization. Supports pagination, sort, quick search, custom view, and filters such as status, date range, warehouse or location, item, and transfer order number.
+      parameters:
+        - name: page
+          in: query
+          description: Page number to be fetched. Default value is 1.
+          required: false
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: per_page
+          in: query
+          description: Number of records to be fetched per page. Default value is 200.
+          required: false
+          schema:
+            type: integer
+            default: 200
+          example: 200
+        - name: sort_column
+          in: query
+          description: Column used to sort the list. Allowed values are <code>date</code>, <code>created_time</code>, and <code>last_modified_time</code>.
+          required: false
+          schema:
+            type: string
+            enum:
+              - date
+              - created_time
+              - last_modified_time
+          example: created_time
+        - name: sort_order
+          in: query
+          description: Sort order. Allowed values are <code>A</code> for ascending and <code>D</code> for descending.
+          required: false
+          schema:
+            type: string
+            enum:
+              - A
+              - D
+          example: D
+        - name: filter_by
+          in: query
+          description: 'Filter using built-in views. Max-length 100. Examples: <code>TransferDate.All</code>, <code>TransferDate.ThisMonth</code>, <code>TransferStatus.InTransit</code>, <code>TransferStatus.Transferred</code>, <code>MissingAdvancedTrackingDetails</code>.'
+          required: false
+          schema:
+            type: string
+          example: TransferDate.All
+        - name: search_text
+          in: query
+          description: Search text applied across supported columns for the list.
+          required: false
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: Filter by transfer order status. Allowed values are <code>in_transit</code>, <code>transferred</code>, <code>partially_transferred</code>, <code>draft</code>, <code>pending_approval</code>, <code>approved</code>, and <code>void</code>.
+          required: false
+          schema:
+            type: string
+            enum:
+              - in_transit
+              - transferred
+              - partially_transferred
+              - draft
+              - pending_approval
+              - approved
+              - void
+        - name: item_id
+          in: query
+          description: Filter by item ID.
+          required: false
+          schema:
+            type: string
+          example: '4815000000044100'
+        - name: item_name
+          in: query
+          description: Filter by item name.
+          required: false
+          schema:
+            type: string
+        - name: project_id
+          in: query
+          description: Filter by project ID.
+          required: false
+          schema:
+            type: string
+          example: '460000000039050'
+        - name: from_warehouse_id
+          in: query
+          description: Filter by source warehouse ID.
+          required: false
+          schema:
+            type: string
+        - name: from_warehouse_name
+          in: query
+          description: Filter by source warehouse name.
+          required: false
+          schema:
+            type: string
+        - name: to_warehouse_id
+          in: query
+          description: Filter by destination warehouse ID.
+          required: false
+          schema:
+            type: string
+        - name: to_warehouse_name
+          in: query
+          description: Filter by destination warehouse name.
+          required: false
+          schema:
+            type: string
+        - name: from_location_id
+          in: query
+          description: Filter by source location ID.
+          required: false
+          schema:
+            type: string
+        - name: from_location_name
+          in: query
+          description: Filter by source location name.
+          required: false
+          schema:
+            type: string
+        - name: to_location_id
+          in: query
+          description: Filter by destination location ID.
+          required: false
+          schema:
+            type: string
+        - name: to_location_name
+          in: query
+          description: Filter by destination location name.
+          required: false
+          schema:
+            type: string
+        - name: customview_id
+          in: query
+          description: Custom view ID to apply.
+          required: false
+          schema:
+            type: string
+        - name: serial_number
+          in: query
+          description: Filter by serial number.
+          required: false
+          schema:
+            type: string
+        - name: transfer_order_number
+          in: query
+          description: Filter by transfer order number.
+          required: false
+          schema:
+            type: string
+        - name: transfer_order_number_startswith
+          in: query
+          description: Filter by transfer order numbers that start with the given value.
+          required: false
+          schema:
+            type: string
+        - name: transfer_order_number_contains
+          in: query
+          description: Filter by transfer order numbers that contain the given value.
+          required: false
+          schema:
+            type: string
+        - name: reason
+          in: query
+          description: Filter by reason text (same family of search operators as transfer order number).
+          required: false
+          schema:
+            type: string
+        - name: reference_number_contains
+          in: query
+          description: Filter by reference number contains.
+          required: false
+          schema:
+            type: string
+        - name: date
+          in: query
+          description: Filter by exact transfer date. Format <code>yyyy-mm-dd</code>.
+          required: false
+          schema:
+            type: string
+          example: '2018-03-23'
+        - name: date_start
+          in: query
+          description: Filter from this date (inclusive). Format <code>yyyy-mm-dd</code>.
+          required: false
+          schema:
+            type: string
+        - name: date_end
+          in: query
+          description: Filter up to this date (inclusive). Format <code>yyyy-mm-dd</code>.
+          required: false
+          schema:
+            type: string
+        - name: date_before
+          in: query
+          description: Filter by dates before this date. Format <code>yyyy-mm-dd</code>.
+          required: false
+          schema:
+            type: string
+        - name: date_after
+          in: query
+          description: Filter by dates after this date. Format <code>yyyy-mm-dd</code>.
+          required: false
+          schema:
+            type: string
+        - name: tracking_number
+          in: query
+          description: Filter by tracking number.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-all-the-transfer-orders-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.transferorders.READ
+    delete:
+      tags:
+        - transferorders
+      operationId: bulk_delete_transfer_orders
+      summary: Bulk delete transfer orders
+      description: Deletes up to 25 transfer orders in one request. Pass comma-separated transfer order IDs.
+      parameters:
+        - name: transfer_order_ids
+          in: query
+          required: true
+          description: Comma-separated list of transfer order IDs to delete. Minimum 1 and maximum 25 IDs.
+          schema:
+            type: string
+          example: 4815000000044895,4815000000044896
+        - $ref: '#/components/parameters/organization_id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bulk-delete-transfer-orders-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.transferorders.DELETE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /transferorders/{transfer_order_id}:
+    x-mcp-group:
+      - Transfer Orders
+    get:
+      tags:
+        - transferorders
+      operationId: get_transfer_order
+      summary: Retrieve a transfer order
+      description: Fetches the details for an existing transfer order.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/retrieve-a-transfer-order-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.transferorders.READ
+    put:
+      tags:
+        - transferorders
+      operationId: update_transfer_order
+      summary: Update a transfer order
+      description: Update an existing transfer order from Zoho Inventory.
+      parameters:
+        - name: ignore_auto_number_generation
+          in: query
+          description: When auto number generation is enabled for transfer orders, set to <code>true</code> to supply your own transfer order number. Allowed values are <code>true</code> and <code>false</code>.
+          required: false
+          schema:
+            type: boolean
+          example: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-a-transfer-order-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-a-transfer-order-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.transferorders.UPDATE
+    delete:
+      tags:
+        - transferorders
+      operationId: delete_transfer_order
+      summary: Delete a transfer order
+      description: Deletes an existing transfer order from Zoho Inventory.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-a-transfer-order-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.transferorders.DELETE
+    parameters:
+      - name: transfer_order_id
+        in: path
+        required: true
+        description: Unique identifier of the transfer order.
+        schema:
+          type: string
+        example: 4815000000044895
+      - $ref: '#/components/parameters/organization_id'
+  /transferorders/{transfer_order_id}/markastransferred:
+    x-mcp-group:
+      - Transfer Orders
+    post:
+      tags:
+        - transferorders
+      operationId: mark_transfer_order_as_received
+      summary: Mark as Received
+      description: Marks the transfer order as transferred for the Organization. You must pass the transferred date.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mark-as-received-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.transferorders.CREATE
+    parameters:
+      - name: transfer_order_id
+        in: path
+        required: true
+        description: Unique identifier of the transfer order.
+        schema:
+          type: string
+        example: 4815000000044895
+      - name: date
+        in: query
+        required: true
+        description: Date when the transfer was completed. Format <code>yyyy-mm-dd</code>.
+        schema:
+          type: string
+        example: '2018-03-23'
+      - $ref: '#/components/parameters/organization_id'
+  /transferorders/{transfer_order_id}/intransit:
+    x-mcp-group:
+      - Transfer Orders
+    post:
+      tags:
+        - transferorders
+      operationId: mark_transfer_order_in_transit
+      summary: Mark transfer order as in transit
+      description: Marks the transfer order as in transit. Optionally specify whether prices are tax inclusive.
+      parameters:
+        - name: is_tax_inclusive
+          in: query
+          description: Whether prices are inclusive of tax. Allowed values are <code>true</code> and <code>false</code>. This need to be passed only for IN edition org when marking inter GSTIN transfer order as in transit.
+          required: false
+          schema:
+            type: boolean
+          example: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mark-in-transit-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.transferorders.CREATE
+    parameters:
+      - name: transfer_order_id
+        in: path
+        required: true
+        description: Unique identifier of the transfer order.
+        schema:
+          type: string
+        example: 4815000000044895
+      - $ref: '#/components/parameters/organization_id'
+  /transferorders/{transfer_order_id}/submit:
+    x-mcp-group:
+      - Transfer Orders
+    post:
+      tags:
+        - transferorders
+      operationId: submit_transferorder
+      summary: Submit a transfer order for approval
+      description: Submit a transfer order for approval workflow.
+      parameters:
+        - name: transfer_order_id
+          in: path
+          description: Unique ID of the transfer order.
+          required: true
+          schema:
+            type: string
+          example: '4815000000044895'
+        - $ref: '#/components/parameters/organization_id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/approval-action-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.transferorders.UPDATE
+  /transferorders/{transfer_order_id}/approve:
+    x-mcp-group:
+      - Transfer Orders
+    post:
+      tags:
+        - transferorders
+      operationId: approve_transferorder
+      summary: Approve a transfer order
+      description: Approve a submitted transfer order.
+      parameters:
+        - name: transfer_order_id
+          in: path
+          description: Unique ID of the transfer order.
+          required: true
+          schema:
+            type: string
+          example: '4815000000044895'
+        - $ref: '#/components/parameters/organization_id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/approval-action-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.transferorders.UPDATE
+  /transferorders/{transfer_order_id}/approve/final:
+    x-mcp-group:
+      - Transfer Orders
+    post:
+      tags:
+        - transferorders
+      operationId: approve_transfer_order_final
+      summary: Final approval of a transfer order
+      description: Perform the final approval of a transfer order (admin only).
+      parameters:
+        - name: transfer_order_id
+          in: path
+          description: Unique ID of the transfer order.
+          required: true
+          schema:
+            type: string
+          example: '4815000000044895'
+        - $ref: '#/components/parameters/organization_id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/approval-action-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.transferorders.UPDATE
+  /transferorders/{transfer_order_id}/reject:
+    x-mcp-group:
+      - Transfer Orders
+    post:
+      tags:
+        - transferorders
+      operationId: reject_transferorder
+      summary: Reject a transfer order
+      description: Reject a submitted transfer order.
+      parameters:
+        - name: transfer_order_id
+          in: path
+          description: Unique ID of the transfer order.
+          required: true
+          schema:
+            type: string
+          example: '4815000000044895'
+        - $ref: '#/components/parameters/organization_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/reject-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/approval-action-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.transferorders.UPDATE
+components:
+  parameters:
+    organization_id:
+      name: organization_id
+      description: 'ID of the organization. Note: This value is a set of numeric characters.'
+      in: query
+      required: true
+      schema:
+        type: string
+      example: '10234695'
+  schemas:
+    gendoc-attributes-schema:
+      $ref: '#/components/schemas/transfer_order-response'
+    transfer_order-response:
+      type: object
+      properties:
+        transfer_order_id:
+          $ref: '#/components/schemas/transfer_order_id'
+        transfer_order_number:
+          $ref: '#/components/schemas/transfer_order_number'
+        date:
+          $ref: '#/components/schemas/date'
+        from_location_id:
+          $ref: '#/components/schemas/from_location_id'
+        from_location_name:
+          $ref: '#/components/schemas/from_location_name'
+        to_location_id:
+          $ref: '#/components/schemas/to_location_id'
+        to_location_name:
+          $ref: '#/components/schemas/to_location_name'
+        line_items:
+          $ref: '#/components/schemas/line_items'
+        is_intransit_order:
+          $ref: '#/components/schemas/is_intransit_order'
+        description:
+          description: Notes or internal description for the transfer order.
+          type: string
+          example: Quarterly warehouse reshuffle
+        status:
+          description: Current status of the transfer order.
+          type: string
+          example: in_transit
+        custom_fields:
+          $ref: '#/components/schemas/custom_fields'
+    page:
+      description: Current page index in the result set.
+      type: integer
+      example: 1
+    per_page:
+      description: Number of records per page.
+      type: integer
+      example: 200
+    has_more_page:
+      description: Whether another page of results exists.
+      type: boolean
+      example: false
+    applied_filter:
+      description: Active filter applied to the list.
+      type: string
+      example: TransferDate.All
+    sort_column:
+      description: Column used for sorting the list.
+      type: string
+      example: created_time
+    sort_order:
+      description: Sort direction. Allowed values are <code>A</code> and <code>D</code>.
+      type: string
+      example: D
+    report_name:
+      description: Display name for the report or list.
+      type: string
+      example: zb.transfer.order.title
+    transfer_order_id:
+      description: Unique ID generated by the server for the Transfer Order. This is used as identifier.
+      type: string
+      example: 4815000000044895
+    transfer_order_number:
+      description: The Transfer Order number. This is unique for each transfer order. This node is optional if auto number generation is enabled for transfer order.
+      type: string
+      example: TO-00001
+    date:
+      description: The date for the Transfer Order.
+      type: string
+      example: '2018-03-23'
+    from_location_id:
+      description: From Location ID
+      type: string
+      example: '460000000038080'
+    to_location_id:
+      description: To Location ID
+      type: string
+      example: '460000000039090'
+    from_location_name:
+      description: Name of the from location
+      type: string
+    to_location_name:
+      description: Name of the to location
+      type: string
+    item_id:
+      description: Unique ID generated by the server for the item. This is used as an identifier.
+      type: string
+      example: 4815000000044100
+    line_item_id:
+      description: Unique ID generated by the server for each line item. This is used as an identifier.
+      type: string
+      example: 4815000000044897
+    name:
+      description: Name of the line item.
+      type: string
+      example: Laptop-white/15inch/dell
+    description:
+      description: Description of the line item.
+      type: string
+      example: Just a sample description.
+    quantity_transfer:
+      description: Quantity of the line item to be transferred.
+      type: number
+      format: double
+      example: 2
+    unit:
+      description: Unit of line item.
+      type: string
+      example: qty
+    line_items:
+      description: A transfer can contain multiple line items. Each line item contains <code>item_id</code>,<code>name</code>,<code>description</code>,<code>quantity_transfer</code>,<code>unit</code>.
+      type: array
+      items:
+        type: object
+        properties:
+          item_id:
+            $ref: '#/components/schemas/item_id'
+          line_item_id:
+            $ref: '#/components/schemas/line_item_id'
+          name:
+            $ref: '#/components/schemas/name'
+          description:
+            $ref: '#/components/schemas/description'
+          quantity_transfer:
+            $ref: '#/components/schemas/quantity_transfer'
+          unit:
+            $ref: '#/components/schemas/unit'
+    is_intransit_order:
+      description: It states whether the transfer order is in transit or transferred.The default value is false.
+      type: boolean
+      example: false
+    ignore_auto_number_generation:
+      description: When auto number generation is enabled in transfer order, this node states whether the auto generated transfer order number should be used or not. The default value is false.
+      type: boolean
+      example: false
+    serial_numbers:
+      description: Serial numbers for the line item. Applicable only for items with serial tracking enabled.
+      type: array
+      items:
+        type: string
+        example: PKG-002
+    batches:
+      description: Batches for the line item. Reference an existing batch using <code>batch_id</code>. Applicable only for items with batch tracking enabled.
+      type: array
+      items:
+        type: object
+        required:
+          - batch_id
+          - out_quantity
+        properties:
+          batch_id:
+            description: Unique identifier of the batch.
+            type: string
+            example: '6780203000000162236'
+          out_quantity:
+            description: Outward quantity from the batch.
+            type: number
+            format: float
+            example: 2
+          from_storages:
+            description: Source bin locations from which stock was consumed for this batch.
+            type: array
+            x-node_available_in:
+              - Batch with Bin tracked items
+            items:
+              type: object
+              required:
+                - storage_id
+                - out_quantity
+              properties:
+                storage_id:
+                  description: Unique identifier of the source bin location.
+                  type: string
+                  example: '6780203000000093227'
+                out_quantity:
+                  description: Outward quantity from the bin.
+                  type: number
+                  format: float
+                  example: 2
+          to_storages:
+            description: Destination bin locations to which stock was transferred for this batch.
+            type: array
+            x-node_available_in:
+              - Batch with Bin tracked items
+            items:
+              type: object
+              required:
+                - storage_id
+                - in_quantity
+              properties:
+                storage_id:
+                  description: Unique identifier of the destination bin location.
+                  type: string
+                  example: '6780203000000206981'
+                in_quantity:
+                  description: Inward quantity into the bin.
+                  type: number
+                  format: float
+                  example: 2
+    from_storages:
+      description: Source bin locations for the line item. Applicable only for items with bin tracking enabled.
+      type: array
+      items:
+        type: object
+        required:
+          - storage_id
+          - out_quantity
+        properties:
+          storage_id:
+            description: Unique identifier of the source bin location.
+            type: string
+            example: '6780203000000093225'
+          out_quantity:
+            description: Outward quantity from the bin.
+            type: number
+            format: float
+            example: 1
+          serial_numbers:
+            description: Serial numbers transferred from this bin.
+            type: array
+            x-node_available_in:
+              - Serial with Bin tracked items
+            items:
+              type: string
+              example: PKG-002
+    to_storages:
+      description: Destination bin locations for the line item. Applicable only for items with bin tracking enabled.
+      type: array
+      items:
+        type: object
+        required:
+          - storage_id
+          - in_quantity
+        properties:
+          storage_id:
+            description: Unique identifier of the destination bin location.
+            type: string
+            example: '6780203000000206981'
+          in_quantity:
+            description: Inward quantity into the bin.
+            type: number
+            format: float
+            example: 1
+          serial_numbers:
+            description: Serial numbers transferred into this bin.
+            type: array
+            x-node_available_in:
+              - Serial with Bin tracked items
+            items:
+              type: string
+              example: PKG-002
+    batches-update:
+      description: Batches for the line item. Reference an existing batch using <code>batch_id</code>. Use <code>batch_in_number_id</code> to update an existing batch entry on the transfer order. Applicable only for items with batch tracking enabled.
+      type: array
+      items:
+        type: object
+        required:
+          - batch_id
+          - out_quantity
+        properties:
+          batch_id:
+            description: Unique identifier of the batch.
+            type: string
+            example: '6780203000000162236'
+          batch_in_number_id:
+            description: Unique identifier of the destination batch entry on the line item. Required to update an existing batch entry on the transfer order.
+            type: string
+            example: '6780203000001106137'
+          out_quantity:
+            description: Outward quantity from the batch.
+            type: number
+            format: float
+            example: 2
+          from_storages:
+            description: Source bin locations from which stock was consumed for this batch.
+            type: array
+            x-node_available_in:
+              - Batch with Bin tracked items
+            items:
+              type: object
+              required:
+                - storage_id
+                - out_quantity
+              properties:
+                storage_id:
+                  description: Unique identifier of the source bin location.
+                  type: string
+                  example: '6780203000000093227'
+                out_quantity:
+                  description: Outward quantity from the bin.
+                  type: number
+                  format: float
+                  example: 2
+                storage_out_id:
+                  description: Unique identifier of the storage record. Applicable only when updating the transfer order.
+                  type: string
+                  example: '6780203000001106131'
+          to_storages:
+            description: Destination bin locations to which stock was transferred for this batch.
+            type: array
+            x-node_available_in:
+              - Batch with Bin tracked items
+            items:
+              type: object
+              required:
+                - storage_id
+                - in_quantity
+              properties:
+                storage_id:
+                  description: Unique identifier of the destination bin location.
+                  type: string
+                  example: '6780203000000206981'
+                in_quantity:
+                  description: Inward quantity into the bin.
+                  type: number
+                  format: float
+                  example: 2
+                storage_in_id:
+                  description: Unique identifier of the storage record. Applicable only when updating the transfer order.
+                  type: string
+                  example: '6780203000001106128'
+    from_storages-update:
+      description: Source bin locations for the line item. Applicable only for items with bin tracking enabled.
+      type: array
+      items:
+        type: object
+        required:
+          - storage_id
+          - out_quantity
+        properties:
+          storage_id:
+            description: Unique identifier of the source bin location.
+            type: string
+            example: '6780203000000093225'
+          out_quantity:
+            description: Outward quantity from the bin.
+            type: number
+            format: float
+            example: 1
+          storage_out_id:
+            description: Unique identifier of the storage record. Applicable only when updating the transfer order.
+            type: string
+            example: '6780203000001106135'
+          serial_numbers:
+            description: Serial numbers transferred from this bin.
+            type: array
+            x-node_available_in:
+              - Serial with Bin tracked items
+            items:
+              type: string
+              example: PKG-002
+    to_storages-update:
+      description: Destination bin locations for the line item. Applicable only for items with bin tracking enabled.
+      type: array
+      items:
+        type: object
+        required:
+          - storage_id
+          - in_quantity
+        properties:
+          storage_id:
+            description: Unique identifier of the destination bin location.
+            type: string
+            example: '6780203000000206981'
+          in_quantity:
+            description: Inward quantity into the bin.
+            type: number
+            format: float
+            example: 1
+          storage_in_id:
+            description: Unique identifier of the storage record. Applicable only when updating the transfer order.
+            type: string
+            example: '6780203000001106133'
+          serial_numbers:
+            description: Serial numbers transferred into this bin.
+            type: array
+            x-node_available_in:
+              - Serial with Bin tracked items
+            items:
+              type: string
+              example: PKG-002
+    customfield_id:
+      type: string
+      description: Unique ID of the custom field.
+    label:
+      description: Label of the Custom Field
+      type: string
+    value:
+      description: Value of the Custom Field
+      type: string
+    custom_fields:
+      type: array
+      description: List of custom fields associated with the transfer order
+      items:
+        type: object
+        properties:
+          customfield_id:
+            $ref: '#/components/schemas/customfield_id'
+          label:
+            $ref: '#/components/schemas/label'
+          value:
+            $ref: '#/components/schemas/value'
+    create-a-transfer-order-request:
+      required:
+        - transfer_order_number
+        - date
+        - from_location_id
+        - to_location_id
+        - line_items
+      type: object
+      properties:
+        transfer_order_number:
+          $ref: '#/components/schemas/transfer_order_number'
+        date:
+          $ref: '#/components/schemas/date'
+        description:
+          description: Notes or internal description for the transfer order. Max-length 500.
+          type: string
+          example: Quarterly warehouse reshuffle
+        from_warehouse_id:
+          description: Source warehouse ID when multi-warehouse is enabled.
+          type: string
+          example: '460000000038075'
+        to_warehouse_id:
+          description: Destination warehouse ID when multi-warehouse is enabled.
+          type: string
+          example: '460000000038076'
+        from_location_id:
+          $ref: '#/components/schemas/from_location_id'
+        to_location_id:
+          $ref: '#/components/schemas/to_location_id'
+        line_items:
+          description: A transfer can contain multiple line items. Each line item contains <code>item_id</code>,<code>name</code>,<code>description</code>,<code>quantity_transfer</code>,<code>unit</code>.
+          type: array
+          items:
+            type: object
+            required:
+              - item_id
+              - name
+              - quantity_transfer
+            properties:
+              item_id:
+                $ref: '#/components/schemas/item_id'
+              name:
+                $ref: '#/components/schemas/name'
+              description:
+                $ref: '#/components/schemas/description'
+              quantity_transfer:
+                $ref: '#/components/schemas/quantity_transfer'
+              unit:
+                $ref: '#/components/schemas/unit'
+              serial_numbers:
+                $ref: '#/components/schemas/serial_numbers'
+              batches:
+                $ref: '#/components/schemas/batches'
+              from_storages:
+                $ref: '#/components/schemas/from_storages'
+              to_storages:
+                $ref: '#/components/schemas/to_storages'
+        is_intransit_order:
+          $ref: '#/components/schemas/is_intransit_order'
+        custom_fields:
+          $ref: '#/components/schemas/custom_fields'
+    create-a-transfer-order-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Transfer Order added successfully.
+          readOnly: true
+        transfer_order:
+          $ref: '#/components/schemas/transfer_order-response'
+    list-all-the-transfer-orders-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        page_context:
+          description: Pagination and sort context for the list.
+          type: object
+          properties:
+            page:
+              $ref: '#/components/schemas/page'
+            per_page:
+              $ref: '#/components/schemas/per_page'
+            has_more_page:
+              $ref: '#/components/schemas/has_more_page'
+            applied_filter:
+              $ref: '#/components/schemas/applied_filter'
+            sort_column:
+              $ref: '#/components/schemas/sort_column'
+            sort_order:
+              $ref: '#/components/schemas/sort_order'
+            report_name:
+              $ref: '#/components/schemas/report_name'
+        transfer_orders:
+          type: array
+          items:
+            type: object
+            properties:
+              transfer_order_id:
+                $ref: '#/components/schemas/transfer_order_id'
+              transfer_order_number:
+                $ref: '#/components/schemas/transfer_order_number'
+              date:
+                $ref: '#/components/schemas/date'
+              description:
+                description: Reason or description shown on the transfer order.
+                type: string
+              status:
+                description: Status of the transfer order.
+                type: string
+              from_location_id:
+                $ref: '#/components/schemas/from_location_id'
+              from_location_name:
+                $ref: '#/components/schemas/from_location_name'
+              to_location_id:
+                $ref: '#/components/schemas/to_location_id'
+              to_location_name:
+                $ref: '#/components/schemas/to_location_name'
+              is_intransit_order:
+                $ref: '#/components/schemas/is_intransit_order'
+              custom_fields:
+                $ref: '#/components/schemas/custom_fields'
+    update-a-transfer-order-request:
+      required:
+        - transfer_order_number
+        - date
+        - from_location_id
+        - to_location_id
+        - line_items
+      type: object
+      properties:
+        transfer_order_number:
+          $ref: '#/components/schemas/transfer_order_number'
+        date:
+          $ref: '#/components/schemas/date'
+        description:
+          description: Notes or internal description for the transfer order. Max-length 500.
+          type: string
+          example: Quarterly warehouse reshuffle
+        from_warehouse_id:
+          description: Source warehouse ID when multi-warehouse is enabled.
+          type: string
+          example: '460000000038075'
+        to_warehouse_id:
+          description: Destination warehouse ID when multi-warehouse is enabled.
+          type: string
+          example: '460000000038076'
+        from_location_id:
+          $ref: '#/components/schemas/from_location_id'
+        to_location_id:
+          $ref: '#/components/schemas/to_location_id'
+        line_items:
+          description: A transfer can contain multiple line items. Each line item contains <code>item_id</code>,<code>name</code>,<code>description</code>,<code>quantity_transfer</code>,<code>unit</code>.
+          type: array
+          items:
+            type: object
+            required:
+              - item_id
+              - name
+              - quantity_transfer
+            properties:
+              item_id:
+                $ref: '#/components/schemas/item_id'
+              line_item_id:
+                $ref: '#/components/schemas/line_item_id'
+              name:
+                $ref: '#/components/schemas/name'
+              description:
+                $ref: '#/components/schemas/description'
+              quantity_transfer:
+                $ref: '#/components/schemas/quantity_transfer'
+              unit:
+                $ref: '#/components/schemas/unit'
+              serial_numbers:
+                $ref: '#/components/schemas/serial_numbers'
+              batches:
+                $ref: '#/components/schemas/batches-update'
+              from_storages:
+                $ref: '#/components/schemas/from_storages-update'
+              to_storages:
+                $ref: '#/components/schemas/to_storages-update'
+        is_intransit_order:
+          $ref: '#/components/schemas/is_intransit_order'
+        custom_fields:
+          $ref: '#/components/schemas/custom_fields'
+    update-a-transfer-order-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        transfer_order:
+          type: object
+          properties:
+            transfer_order_id:
+              $ref: '#/components/schemas/transfer_order_id'
+            transfer_order_number:
+              $ref: '#/components/schemas/transfer_order_number'
+            date:
+              $ref: '#/components/schemas/date'
+            from_location_id:
+              $ref: '#/components/schemas/from_location_id'
+            from_location_name:
+              $ref: '#/components/schemas/from_location_name'
+            to_location_id:
+              $ref: '#/components/schemas/to_location_id'
+            to_location_name:
+              $ref: '#/components/schemas/to_location_name'
+            line_items:
+              $ref: '#/components/schemas/line_items'
+            is_intransit_order:
+              $ref: '#/components/schemas/is_intransit_order'
+            custom_fields:
+              $ref: '#/components/schemas/custom_fields'
+            locations:
+              type: object
+              properties: {}
+    retrieve-a-transfer-order-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+        transfer_order:
+          type: object
+          properties:
+            transfer_order_id:
+              $ref: '#/components/schemas/transfer_order_id'
+            transfer_order_number:
+              $ref: '#/components/schemas/transfer_order_number'
+            date:
+              $ref: '#/components/schemas/date'
+            from_location_id:
+              $ref: '#/components/schemas/from_location_id'
+            from_location_name:
+              $ref: '#/components/schemas/from_location_name'
+            to_location_id:
+              $ref: '#/components/schemas/to_location_id'
+            to_location_name:
+              $ref: '#/components/schemas/to_location_name'
+            line_items:
+              $ref: '#/components/schemas/line_items'
+            is_intransit_order:
+              $ref: '#/components/schemas/is_intransit_order'
+            custom_fields:
+              $ref: '#/components/schemas/custom_fields'
+        locations:
+          type: object
+          properties: {}
+    delete-a-transfer-order-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Transfer Order(s) has been deleted.
+          readOnly: true
+    mark-as-received-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: The status of the Transfer Order has been updated.
+          readOnly: true
+    approval-action-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+    mark-in-transit-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: success
+          readOnly: true
+    reject-request:
+      type: object
+      properties:
+        reason:
+          description: Reason for rejecting the transfer order. Max-length [500].
+          type: string
+          example: Insufficient stock at the source warehouse.
+    bulk-delete-transfer-orders-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          example: Transfer Order(s) has been deleted.
+          readOnly: true
+  securitySchemes:
+    Zoho_Auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://accounts.zoho.com/oauth/v2/auth
+          scopes:
+            ZohoInventory.transferorders.CREATE: Create Transferorders
+            ZohoInventory.transferorders.READ: Read Transferorders
+            ZohoInventory.transferorders.UPDATE: Update Transferorders
+            ZohoInventory.transferorders.DELETE: Delete Transferorders

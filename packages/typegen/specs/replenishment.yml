@@ -1,0 +1,1795 @@
+openapi: 3.0.0
+info:
+  title: Replenishment
+  description: Replenishment helps you configure and manage stock replenishment for items.
+  contact: {}
+  version: 1.0.0
+servers:
+  - url: https://www.zohoapis.com/inventory/v1
+    description: API Endpoint
+tags:
+  - name: replenishment
+    description: Replenishment Module
+paths:
+  /items/{item_id}/locations/replenishments:
+    x-mcp-group:
+      - Replenishment
+    get:
+      tags:
+        - replenishment
+      operationId: list_item_location_replenishments
+      summary: Retrieve replenishment configurations for associated locations
+      description: Fetches the replenishment configurations of the associated locations for an item.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/retrieve-replenishment-configurations-for-associated-locations-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.READ
+    parameters:
+      - name: item_id
+        in: path
+        required: true
+        description: Unique identifier of the item.
+        schema:
+          type: string
+        example: 4815000000044208
+      - $ref: '#/components/parameters/organization_id'
+  /items/{item_id}/warehouses/replenishments:
+    x-mcp-group:
+      - Replenishment
+    get:
+      tags:
+        - replenishment
+      operationId: list_item_warehouse_replenishments
+      summary: Retrieve replenishment configurations for associated warehouses
+      description: Fetches the replenishment configurations of the associated warehouses for an item. Applicable only when multi-warehouse is enabled for the organization.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/retrieve-replenishment-configurations-for-associated-warehouses-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.READ
+    parameters:
+      - name: item_id
+        in: path
+        required: true
+        description: Unique identifier of the item.
+        schema:
+          type: string
+        example: 4815000000044208
+      - $ref: '#/components/parameters/organization_id'
+  /replenishments/{replenishment_configuration_id}:
+    x-mcp-group:
+      - Replenishment
+    get:
+      tags:
+        - replenishment
+      operationId: get_replenishment_configuration
+      summary: Retrieve a replenishment configuration
+      description: Fetches the details of a replenishment configuration.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/retrieve-a-replenishment-configuration-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.READ
+    put:
+      tags:
+        - replenishment
+      operationId: update_replenishment_configuration
+      summary: Update a replenishment configuration
+      description: Updates an existing replenishment configuration.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-a-replenishment-configuration-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/update-a-replenishment-configuration-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.UPDATE
+    parameters:
+      - name: replenishment_configuration_id
+        in: path
+        required: true
+        description: Unique identifier of the replenishment configuration.
+        schema:
+          type: string
+        example: 4815000000045001
+      - $ref: '#/components/parameters/organization_id'
+  /replenishments:
+    x-mcp-group:
+      - Replenishment
+    post:
+      tags:
+        - replenishment
+      operationId: create_replenishment_configuration
+      summary: Create a replenishment configuration
+      description: Creates a replenishment configuration for an item.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-a-replenishment-configuration-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-a-replenishment-configuration-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.CREATE
+    put:
+      tags:
+        - replenishment
+      operationId: bulk_update_replenishments
+      summary: Bulk update replenishment configurations
+      description: Updates replenishment configurations for the specified item and location combinations.
+      parameters:
+        - name: item_ids
+          in: query
+          required: true
+          description: <code>List of item ids separated by comma</code>
+          schema:
+            type: string
+          example: 4815000000044208,4815000000044274
+        - name: location_ids
+          in: query
+          required: false
+          description: <code>List of location ids separated by comma</code>
+          schema:
+            type: string
+          example: 4815000000033001,4815000000033002
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bulk-update-replenishment-configurations-request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bulk-update-replenishment-configurations-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.UPDATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /replenishments/tasks:
+    x-mcp-group:
+      - Replenishment
+    get:
+      tags:
+        - replenishment
+      operationId: list_replenishment_tasks
+      summary: List all replenishment tasks
+      description: Lists replenishment tasks in your organization.
+      parameters:
+        - name: item_ids
+          in: query
+          required: false
+          description: <code>List of item ids separated by comma</code>
+          schema:
+            type: string
+          example: 4815000000044208,4815000000044274
+        - name: location_ids
+          in: query
+          required: false
+          description: <code>List of location ids separated by comma</code>
+          schema:
+            type: string
+          example: 4815000000033001,4815000000033002
+        - name: vendor_ids
+          in: query
+          required: false
+          description: <code>List of vendor ids separated by comma</code>
+          schema:
+            type: string
+          example: 4815000000009901,4815000000009902
+        - name: from_location_ids
+          in: query
+          required: false
+          description: <code>List of source location ids separated by comma</code>
+          schema:
+            type: string
+          example: 4815000000034001,4815000000034002
+        - name: order_type
+          in: query
+          required: false
+          description: Order type.
+          schema:
+            type: string
+          example: purchase_order
+        - name: filter_by
+          in: query
+          required: false
+          description: 'Filter tasks by status. Allowed values: <code>Status.All</code>, <code>Status.Pending</code>, <code>Status.Replenished</code>, <code>Status.Completed</code>, and <code>Status.Dismissed</code>.'
+          schema:
+            type: string
+          example: Status.Pending
+        - name: sort_column
+          in: query
+          required: false
+          description: 'Sort tasks based on the following columns: <code>item_name</code>, <code>sku</code>, <code>entry_number</code>, and <code>created_time</code>.'
+          schema:
+            type: string
+          example: created_time
+        - name: sort_order
+          in: query
+          required: false
+          description: 'Sort order of the tasks. Allowed values: <code>A</code> and <code>D</code>.'
+          schema:
+            type: string
+            default: D
+          example: D
+        - name: page
+          in: query
+          required: false
+          description: Page number to be fetched. Default value is 1.
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: per_page
+          in: query
+          required: false
+          description: Number of records to be fetched per page. Default value is 200.
+          schema:
+            type: integer
+            default: 200
+          example: 200
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-replenishment-tasks-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /replenishments/tasks/{task_id}:
+    x-mcp-group:
+      - Replenishment
+    get:
+      tags:
+        - replenishment
+      operationId: get_replenishment_task
+      summary: Retrieve a replenishment task
+      description: Fetches the details of a replenishment task.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/retrieve-a-replenishment-task-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.READ
+    parameters:
+      - name: task_id
+        in: path
+        required: true
+        description: Unique identifier of the replenishment task.
+        schema:
+          type: string
+        example: 4815000000099001
+      - $ref: '#/components/parameters/organization_id'
+  /replenishments/tasks/{task_id}/dismiss:
+    x-mcp-group:
+      - Replenishment
+    put:
+      tags:
+        - replenishment
+      operationId: dismiss_replenishment_task
+      summary: Dismiss a replenishment task
+      description: Dismisses a replenishment task.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dismiss-a-replenishment-task-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.UPDATE
+    parameters:
+      - name: task_id
+        in: path
+        required: true
+        description: Unique identifier of the replenishment task.
+        schema:
+          type: string
+        example: 4815000000099001
+      - $ref: '#/components/parameters/organization_id'
+  /replenishments/tasks/details:
+    x-mcp-group:
+      - Replenishment
+    get:
+      tags:
+        - replenishment
+      operationId: get_replenishment_task_for_item
+      summary: Retrieve replenishment task details for an item
+      description: Fetches the replenishment task details for the specified item.
+      parameters:
+        - name: item_id
+          in: query
+          required: true
+          description: Unique identifier of the item.
+          schema:
+            type: string
+          example: 4815000000044208
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/retrieve-a-replenishment-task-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /replenishments/orders:
+    x-mcp-group:
+      - Replenishment
+    get:
+      tags:
+        - replenishment
+      operationId: get_replenishment_order_details
+      summary: Retrieve replenishment order details
+      description: Fetches the order details for a replenishment configuration.
+      parameters:
+        - name: replenishment_configuration_id
+          in: query
+          required: true
+          description: Unique identifier of the replenishment configuration.
+          schema:
+            type: string
+          example: 4815000000045001
+        - name: order_type
+          in: query
+          required: true
+          description: Order type.
+          schema:
+            type: string
+          example: purchase_order
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/retrieve-replenishment-order-details-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /replenishments/{replenishment_configuration_id}/pause:
+    x-mcp-group:
+      - Replenishment
+    put:
+      tags:
+        - replenishment
+      operationId: pause_replenishment_configuration
+      summary: Pause a replenishment configuration
+      description: Pauses a replenishment configuration until the specified date.
+      parameters:
+        - name: pause_till_date
+          in: query
+          required: false
+          description: Date until which the replenishment configuration is paused.
+          schema:
+            type: string
+            format: date
+          example: '2026-05-01'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pause-a-replenishment-configuration-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.UPDATE
+    parameters:
+      - name: replenishment_configuration_id
+        in: path
+        required: true
+        description: Unique identifier of the replenishment configuration.
+        schema:
+          type: string
+        example: 4815000000045001
+      - $ref: '#/components/parameters/organization_id'
+  /replenishments/pause:
+    x-mcp-group:
+      - Replenishment
+    put:
+      tags:
+        - replenishment
+      operationId: bulk_pause_replenishments
+      summary: Bulk pause replenishment configurations
+      description: Pauses replenishment configurations for the specified item and location combinations.
+      parameters:
+        - name: item_ids
+          in: query
+          required: true
+          description: <code>List of item ids separated by comma</code>
+          schema:
+            type: string
+          example: 4815000000044208,4815000000044274
+        - name: location_ids
+          in: query
+          required: false
+          description: <code>List of location ids separated by comma</code>
+          schema:
+            type: string
+          example: 4815000000033001,4815000000033002
+        - name: pause_till_date
+          in: query
+          required: false
+          description: Date until which the replenishment configurations are paused.
+          schema:
+            type: string
+            format: date
+          example: '2026-05-01'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pause-a-replenishment-configuration-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.UPDATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /replenishments/{replenishment_configuration_id}/resume:
+    x-mcp-group:
+      - Replenishment
+    put:
+      tags:
+        - replenishment
+      operationId: resume_replenishment_configuration
+      summary: Resume a replenishment configuration
+      description: Resumes a paused replenishment configuration.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/resume-a-replenishment-configuration-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.UPDATE
+    parameters:
+      - name: replenishment_configuration_id
+        in: path
+        required: true
+        description: Unique identifier of the replenishment configuration.
+        schema:
+          type: string
+        example: 4815000000045001
+      - $ref: '#/components/parameters/organization_id'
+  /replenishments/resume:
+    x-mcp-group:
+      - Replenishment
+    put:
+      tags:
+        - replenishment
+      operationId: bulk_resume_replenishments
+      summary: Bulk resume replenishment configurations
+      description: Resumes paused replenishment configurations for the specified item and location combinations.
+      parameters:
+        - name: item_ids
+          in: query
+          required: true
+          description: <code>List of item ids separated by comma</code>
+          schema:
+            type: string
+          example: 4815000000044208,4815000000044274
+        - name: location_ids
+          in: query
+          required: false
+          description: <code>List of location ids separated by comma</code>
+          schema:
+            type: string
+          example: 4815000000033001,4815000000033002
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/resume-a-replenishment-configuration-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.UPDATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /replenishments/tasks/dismiss:
+    x-mcp-group:
+      - Replenishment
+    put:
+      tags:
+        - replenishment
+      operationId: bulk_dismiss_replenishment_tasks
+      summary: Bulk dismiss replenishment tasks
+      description: Dismisses the specified replenishment tasks.
+      parameters:
+        - name: replenishment_task_ids
+          in: query
+          required: true
+          description: <code>List of replenishment task ids separated by comma</code>
+          schema:
+            type: string
+          example: 4815000000099001,4815000000099002
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dismiss-a-replenishment-task-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.UPDATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /replenishments/{replenishment_configuration_id}/tasks/generate:
+    x-mcp-group:
+      - Replenishment
+    post:
+      tags:
+        - replenishment
+      operationId: generate_replenishment_task
+      summary: Generate a replenishment task
+      description: Generates a replenishment task for a replenishment configuration.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generate-replenishment-task-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.CREATE
+    parameters:
+      - name: replenishment_configuration_id
+        in: path
+        required: true
+        description: Unique identifier of the replenishment configuration.
+        schema:
+          type: string
+        example: 4815000000045001
+      - $ref: '#/components/parameters/organization_id'
+  /replenishments/tasks/generate:
+    x-mcp-group:
+      - Replenishment
+    post:
+      tags:
+        - replenishment
+      operationId: bulk_generate_replenishment_tasks
+      summary: Bulk generate replenishment tasks
+      description: Generates replenishment tasks for the specified items.
+      parameters:
+        - name: item_ids
+          in: query
+          required: true
+          description: <code>List of item ids separated by comma</code>
+          schema:
+            type: string
+          example: 4815000000044208,4815000000044274
+        - name: location_ids
+          in: query
+          required: false
+          description: <code>List of location ids separated by comma</code>
+          schema:
+            type: string
+          example: 4815000000033001,4815000000033002
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generate-replenishment-task-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.items.CREATE
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+  /reports/replenishments/tasks:
+    x-mcp-group:
+      - Replenishment
+    get:
+      tags:
+        - replenishment
+      operationId: get_replenishment_tasks_report
+      summary: Retrieve replenishment task details report
+      description: Fetches the replenishment task details report.
+      parameters:
+        - name: filter_by
+          in: query
+          required: false
+          description: 'Filter the report by task date. Allowed values: <code>TaskDate.ThisMonth</code>, <code>TaskDate.ThisWeek</code>, <code>TaskDate.Today</code>, <code>TaskDate.ThisQuarter</code>, <code>TaskDate.ThisYear</code>, <code>TaskDate.PreviousDay</code>, <code>TaskDate.PreviousWeek</code>, <code>TaskDate.PreviousMonth</code>, <code>TaskDate.PreviousQuarter</code>, <code>TaskDate.PreviousYear</code>, and <code>TaskDate.CustomDate</code>.'
+          schema:
+            type: string
+          example: TaskDate.ThisMonth
+        - name: sort_column
+          in: query
+          required: false
+          description: 'Sort the report based on the following columns: <code>item_name</code>, <code>sku</code>, <code>entry_number</code>, <code>warehouse</code> (applicable only when multi-warehouse is enabled for the organization), <code>location</code>, <code>created_time</code>, and <code>last_modified_time</code>.'
+          schema:
+            type: string
+          example: created_time
+        - name: sort_order
+          in: query
+          required: false
+          description: 'Sort order of the report. Allowed values: <code>A</code> and <code>D</code>.'
+          schema:
+            type: string
+            default: A
+          example: A
+        - name: page
+          in: query
+          required: false
+          description: Page number to be fetched. Default value is 1.
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: per_page
+          in: query
+          required: false
+          description: Number of records to be fetched per page. Default value is 200.
+          schema:
+            type: integer
+            default: 200
+          example: 200
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/retrieve-replenishment-task-details-report-response'
+      deprecated: false
+      security:
+        - Zoho_Auth:
+            - ZohoInventory.reports.READ
+    parameters:
+      - $ref: '#/components/parameters/organization_id'
+components:
+  parameters:
+    organization_id:
+      name: organization_id
+      description: 'ID of the organization. Note: This value is a set of numeric characters.'
+      in: query
+      required: true
+      schema:
+        type: string
+      example: '10234695'
+  schemas:
+    gendoc-attributes-schema:
+      $ref: '#/components/schemas/replenishment-configuration-response'
+    replenishment-configuration-response:
+      type: object
+      properties:
+        replenishment_configuration_id:
+          type: string
+          description: Unique ID generated by the server for the replenishment configuration. This is used as an identifier.
+          example: 4815000000045001
+        item_id:
+          type: string
+          description: Unique ID generated by the server for the item.
+          example: 4815000000044208
+        item_name:
+          type: string
+          description: Name of the item.
+          example: HDMI Cable
+        unit:
+          type: string
+          description: Unit of measurement for the item.
+          example: pcs
+        item_status:
+          type: string
+          description: Status of the item.
+          example: active
+        location_id:
+          type: string
+          description: Unique ID generated by the server for the location.
+          example: 4815000000033001
+        location_name:
+          type: string
+          description: Name of the location.
+          example: New York
+        location_status:
+          type: string
+          description: Status of the location.
+          example: active
+        status:
+          type: string
+          description: 'Status of the replenishment configuration. Allowed values: <code>active</code> and <code>paused</code>.'
+          example: active
+        pause_till_date:
+          type: string
+          format: date
+          description: Date until which the replenishment configuration is paused.
+          example: '2026-05-01'
+        type:
+          type: string
+          description: 'Mode in which replenishment tasks are generated. Allowed values: <code>auto</code> and <code>manual</code>.'
+          example: auto
+        order_type:
+          type: string
+          description: 'Type of order generated for the replenishment configuration. Allowed values: <code>purchase_order</code> and <code>transfer_order</code>.'
+          example: purchase_order
+        trigger:
+          type: string
+          description: Trigger that determines when an automatic replenishment task is generated.
+          example: daily
+        trigger_frequency:
+          type: string
+          description: Frequency at which the replenishment task is triggered, expressed in the units specified by <code>trigger_frequency_period</code>.
+          example: '1'
+        trigger_frequency_period:
+          type: string
+          description: 'Period for the trigger frequency. Allowed values: <code>day</code>, <code>week</code>, and <code>month</code>.'
+          example: day
+        reorder_level:
+          type: number
+          format: double
+          description: Stock level at which a replenishment task is generated for the item.
+          example: 10
+        max_stock_level:
+          type: number
+          format: double
+          description: Maximum stock level to be maintained for the item at the location.
+          example: 50
+        order_multiple:
+          type: number
+          format: double
+          description: Quantity multiple to which the replenishment quantity is rounded off.
+          example: 5
+        max_order_quantity:
+          type: number
+          format: double
+          description: Maximum quantity that can be ordered in a single replenishment task.
+          example: 200
+        min_order_quantity:
+          type: number
+          format: double
+          description: Minimum quantity that must be ordered in a single replenishment task.
+          example: 1
+        preferred_vendor_id:
+          type: string
+          description: Unique ID generated by the server for the preferred vendor.
+          example: 4815000000009901
+        preferred_vendor_name:
+          type: string
+          description: Name of the preferred vendor.
+          example: Zylker Supplies
+        preferred_vendor_status:
+          type: string
+          description: Status of the preferred vendor.
+          example: active
+        preferred_location_id:
+          type: string
+          description: Unique ID generated by the server for the preferred source location from which stock is replenished.
+          example: 4815000000034001
+        preferred_location_name:
+          type: string
+          description: Name of the preferred source location from which stock is replenished.
+          example: Los Angeles
+        preferred_location_status:
+          type: string
+          description: Status of the preferred source location.
+          example: active
+    replenishment-configuration-location-response:
+      type: object
+      properties:
+        location_id:
+          type: string
+          description: Unique ID generated by the server for the location.
+          example: 4815000000033001
+        location_name:
+          type: string
+          description: Name of the location.
+          example: New York
+        replenishment_configuration:
+          description: Replenishment configuration associated with the location.
+          $ref: '#/components/schemas/replenishment-configuration-response'
+    replenishment-configurations-associated-response:
+      type: object
+      properties:
+        item_id:
+          type: string
+          description: Unique ID generated by the server for the item.
+          example: 4815000000044208
+        name:
+          type: string
+          description: Name of the item.
+          example: HDMI Cable
+        sku:
+          type: string
+          description: Stock Keeping Unit (SKU) of the item.
+          example: HDMI-001
+        vendor_id:
+          type: string
+          description: Unique ID generated by the server for the preferred vendor of the item.
+          example: 4815000000009901
+        vendor_name:
+          type: string
+          description: Name of the preferred vendor of the item.
+          example: Zylker Supplies
+        locations:
+          type: array
+          description: List of associated locations and their replenishment configurations for the item.
+          items:
+            $ref: '#/components/schemas/replenishment-configuration-location-response'
+    replenishment-order-detail-response:
+      type: object
+      properties:
+        order_id:
+          type: string
+          description: Unique ID generated by the server for the order created from the replenishment configuration.
+          example: 4815000000101001
+        order_number:
+          type: string
+          description: Number of the order created from the replenishment configuration.
+          example: PO-00001
+        order_date:
+          type: string
+          format: date
+          description: Date of the order.
+          example: '2026-04-20'
+        order_status:
+          type: string
+          description: Status of the order.
+          example: draft
+        order_type:
+          type: string
+          description: 'Type of the order. Allowed values: <code>purchase_order</code> and <code>transfer_order</code>.'
+          example: purchase_order
+    replenishment-task-response:
+      type: object
+      properties:
+        replenishment_task_id:
+          type: string
+          description: Unique ID generated by the server for the replenishment task. This is used as an identifier.
+          example: 4815000000099001
+        entry_number:
+          type: string
+          description: Entry number of the replenishment task.
+          example: RT-00001
+        item_id:
+          type: string
+          description: Unique ID generated by the server for the item.
+          example: 4815000000044208
+        item_name:
+          type: string
+          description: Name of the item.
+          example: HDMI Cable
+        item_status:
+          type: string
+          description: Status of the item.
+          example: active
+        unit:
+          type: string
+          description: Unit of measurement for the item.
+          example: pcs
+        location_id:
+          type: string
+          description: Unique ID generated by the server for the location.
+          example: 4815000000033001
+        location_name:
+          type: string
+          description: Name of the location.
+          example: New York
+        location_status:
+          type: string
+          description: Status of the location.
+          example: active
+        reorder_level:
+          type: number
+          format: double
+          description: Stock level at which the replenishment task was generated for the item.
+          example: 10
+        max_stock_level:
+          type: number
+          format: double
+          description: Maximum stock level configured for the item at the location.
+          example: 50
+        stock_available_for_sale:
+          type: number
+          format: double
+          description: Stock available for sale at the location when the replenishment task was generated.
+          example: 12
+        stock_yet_to_be_received:
+          type: number
+          format: double
+          description: Stock that has been ordered but is yet to be received at the location when the replenishment task was generated.
+          example: 0
+        stock_in_transit:
+          type: number
+          format: double
+          description: Stock that is in transit to the location when the replenishment task was generated.
+          example: 0
+        total_available_stock:
+          type: number
+          format: double
+          description: Total available stock for the item at the location when the replenishment task was generated.
+          example: 12
+        quantity_to_replenish:
+          type: number
+          format: double
+          description: Quantity that needs to be replenished for the item at the location.
+          example: 38
+        task_status:
+          type: string
+          description: 'Status of the replenishment task. Allowed values: <code>pending</code>, <code>replenished</code>, <code>completed</code>, and <code>dismissed</code>.'
+          example: pending
+        sku:
+          type: string
+          description: Stock Keeping Unit (SKU) of the item.
+          example: HDMI-001
+        order_multiple:
+          type: number
+          format: double
+          description: Quantity multiple to which the replenishment quantity is rounded off.
+          example: 5
+        max_order_quantity:
+          type: number
+          format: double
+          description: Maximum quantity that can be ordered in a single replenishment task.
+          example: 200
+        min_order_quantity:
+          type: number
+          format: double
+          description: Minimum quantity that must be ordered in a single replenishment task.
+          example: 1
+        order_type:
+          type: string
+          description: 'Type of order generated for the replenishment task. Allowed values: <code>purchase_order</code> and <code>transfer_order</code>.'
+          example: purchase_order
+        preferred_vendor_id:
+          type: string
+          description: Unique ID generated by the server for the preferred vendor.
+          example: 4815000000009901
+        preferred_vendor_name:
+          type: string
+          description: Name of the preferred vendor.
+          example: Zylker Supplies
+        preferred_vendor_status:
+          type: string
+          description: Status of the preferred vendor.
+          example: active
+        source_location_id:
+          type: string
+          description: Unique ID generated by the server for the source location from which stock is replenished.
+          example: 4815000000034001
+        source_location_name:
+          type: string
+          description: Name of the source location from which stock is replenished.
+          example: Los Angeles
+        source_location_status:
+          type: string
+          description: Status of the source location.
+          example: active
+        source_warehouse_id:
+          type: string
+          description: Unique ID generated by the server for the source warehouse from which stock is replenished. Applicable only when multi-warehouse is enabled for the organization.
+          example: 4815000000038001
+        source_warehouse_name:
+          type: string
+          description: Name of the source warehouse from which stock is replenished. Applicable only when multi-warehouse is enabled for the organization.
+          example: Los Angeles Warehouse
+        source_warehouse_status:
+          type: string
+          description: Status of the source warehouse. Applicable only when multi-warehouse is enabled for the organization.
+          example: active
+        current_stock_available_for_sale:
+          type: number
+          format: double
+          description: Current stock available for sale at the location.
+          example: 12
+        current_stock_yet_to_be_received:
+          type: number
+          format: double
+          description: Current stock that has been ordered but is yet to be received at the location.
+          example: 0
+        current_stock_in_transit:
+          type: number
+          format: double
+          description: Current stock that is in transit to the location.
+          example: 0
+        stock_from_draft_replenishment_purchase_orders:
+          type: number
+          format: double
+          description: Stock from draft replenishment purchase orders for the item at the location.
+          example: 0
+        stock_from_draft_replenishment_transfer_orders:
+          type: number
+          format: double
+          description: Stock from draft replenishment transfer orders for the item at the location.
+          example: 0
+        is_stock_updated:
+          type: boolean
+          description: Indicates whether the stock figures shown for the task reflect the latest available values.
+          example: true
+    comment-response:
+      type: object
+      properties:
+        comment_id:
+          type: string
+          description: Unique ID generated by the server for the comment.
+          example: 4815000000001001
+        description:
+          type: string
+          description: Description of the comment.
+          example: Replenishment task created.
+        commented_by_id:
+          type: string
+          description: Unique ID generated by the server for the user who added the comment.
+          example: 4815000000002001
+        commented_by:
+          type: string
+          description: Name of the user who added the comment.
+          example: Patricia Boyle
+        comment_type:
+          type: string
+          description: 'Type of the comment. Allowed values: <code>system</code> and <code>user</code>.'
+          example: system
+        date:
+          type: string
+          description: Date on which the comment was added.
+          example: '2026-04-20'
+        date_with_time:
+          type: string
+          description: Date and time at which the comment was added.
+          example: '2026-04-20T10:30:00Z'
+        date_description:
+          type: string
+          description: Human-readable description of when the comment was added.
+          example: 10:30 AM
+        time:
+          type: string
+          description: Time at which the comment was added.
+          example: 10:30 AM
+        operation_type:
+          type: string
+          description: Operation that triggered the comment.
+          example: create
+    purchase-order-summary-response:
+      type: object
+      properties:
+        purchase_order_id:
+          type: string
+          description: Unique ID generated by the server for the purchase order associated with the replenishment task.
+          example: 4815000000101001
+        purchase_order_number:
+          type: string
+          description: Number of the purchase order.
+          example: PO-00001
+        date:
+          type: string
+          format: date
+          description: Date of the purchase order.
+          example: '2026-04-20'
+        vendor_name:
+          type: string
+          description: Name of the vendor on the purchase order.
+          example: Zylker Supplies
+        order_status:
+          type: string
+          description: Status of the purchase order.
+          example: draft
+    transfer-order-summary-response:
+      type: object
+      properties:
+        transfer_order_id:
+          type: string
+          description: Unique ID generated by the server for the transfer order associated with the replenishment task.
+          example: 4815000000102001
+        transfer_order_number:
+          type: string
+          description: Number of the transfer order.
+          example: TO-00001
+        date:
+          type: string
+          format: date
+          description: Date of the transfer order.
+          example: '2026-04-20'
+        to_location_name:
+          type: string
+          description: Name of the destination location to which stock is transferred.
+          example: New York
+        from_location_name:
+          type: string
+          description: Name of the source location from which stock is transferred.
+          example: Los Angeles
+        status:
+          type: string
+          description: Status of the transfer order.
+          example: draft
+    replenishment-task-detail-response:
+      type: object
+      properties:
+        replenishment_task_id:
+          type: string
+          description: Unique ID generated by the server for the replenishment task. This is used as an identifier.
+          example: 4815000000099001
+        entry_number:
+          type: string
+          description: Entry number of the replenishment task.
+          example: RT-00001
+        item_id:
+          type: string
+          description: Unique ID generated by the server for the item.
+          example: 4815000000044208
+        item_name:
+          type: string
+          description: Name of the item.
+          example: HDMI Cable
+        sku:
+          type: string
+          description: Stock Keeping Unit (SKU) of the item.
+          example: HDMI-001
+        item_status:
+          type: string
+          description: Status of the item.
+          example: active
+        unit:
+          type: string
+          description: Unit of measurement for the item.
+          example: pcs
+        location_id:
+          type: string
+          description: Unique ID generated by the server for the location.
+          example: 4815000000033001
+        location_name:
+          type: string
+          description: Name of the location.
+          example: New York
+        location_status:
+          type: string
+          description: Status of the location.
+          example: active
+        status:
+          type: string
+          description: 'Status of the replenishment task. Allowed values: <code>pending</code>, <code>replenished</code>, <code>completed</code>, and <code>dismissed</code>.'
+          example: pending
+        order_type:
+          type: string
+          description: 'Type of order generated for the replenishment task. Allowed values: <code>purchase_order</code> and <code>transfer_order</code>.'
+          example: purchase_order
+        reorder_level:
+          type: number
+          format: double
+          description: Stock level at which the replenishment task was generated for the item.
+          example: 10
+        max_stock_level:
+          type: number
+          format: double
+          description: Maximum stock level configured for the item at the location.
+          example: 50
+        order_multiple:
+          type: number
+          format: double
+          description: Quantity multiple to which the replenishment quantity is rounded off.
+          example: 5
+        max_order_quantity:
+          type: number
+          format: double
+          description: Maximum quantity that can be ordered in a single replenishment task.
+          example: 200
+        min_order_quantity:
+          type: number
+          format: double
+          description: Minimum quantity that must be ordered in a single replenishment task.
+          example: 1
+        preferred_vendor_id:
+          type: string
+          description: Unique ID generated by the server for the preferred vendor.
+          example: 4815000000009901
+        preferred_vendor_name:
+          type: string
+          description: Name of the preferred vendor.
+          example: Zylker Supplies
+        preferred_vendor_status:
+          type: string
+          description: Status of the preferred vendor.
+          example: active
+        preferred_location_id:
+          type: string
+          description: Unique ID generated by the server for the preferred source location from which stock is replenished.
+          example: 4815000000034001
+        preferred_location_name:
+          type: string
+          description: Name of the preferred source location from which stock is replenished.
+          example: Los Angeles
+        preferred_location_status:
+          type: string
+          description: Status of the preferred source location.
+          example: active
+        stock_available_for_sale:
+          type: number
+          format: double
+          description: Stock available for sale at the location when the replenishment task was generated.
+          example: 12
+        quantity_to_replenish:
+          type: number
+          format: double
+          description: Quantity that needs to be replenished for the item at the location.
+          example: 38
+        date:
+          type: string
+          format: date
+          description: Date on which the replenishment task was created.
+          example: '2026-04-20'
+        date_with_time:
+          type: string
+          description: Date and time at which the replenishment task was created.
+          example: '2026-04-20T10:30:00Z'
+        comments:
+          type: array
+          description: List of comments associated with the replenishment task.
+          items:
+            $ref: '#/components/schemas/comment-response'
+        purchase_orders:
+          type: array
+          description: List of purchase orders associated with the replenishment task.
+          items:
+            $ref: '#/components/schemas/purchase-order-summary-response'
+        transfer_orders:
+          type: array
+          description: List of transfer orders associated with the replenishment task.
+          items:
+            $ref: '#/components/schemas/transfer-order-summary-response'
+    replenishment-task-report-detail-response:
+      type: object
+      properties:
+        entry_number:
+          type: string
+          description: Entry number of the replenishment task.
+          example: RT-00001
+        item_id:
+          type: string
+          description: Unique ID generated by the server for the item.
+          example: 4815000000044208
+        item_name:
+          type: string
+          description: Name of the item.
+          example: HDMI Cable
+        sku:
+          type: string
+          description: Stock Keeping Unit (SKU) of the item.
+          example: HDMI-001
+        warehouse_id:
+          type: string
+          description: Unique ID generated by the server for the warehouse at which the replenishment task is recorded. Applicable only when multi-warehouse is enabled for the organization.
+          example: 4815000000037001
+        warehouse:
+          type: string
+          description: Name of the warehouse at which the replenishment task is recorded. Applicable only when multi-warehouse is enabled for the organization.
+          example: New York Warehouse
+        location_id:
+          type: string
+          description: Unique ID generated by the server for the location at which the replenishment task is recorded.
+          example: 4815000000033001
+        location:
+          type: string
+          description: Name of the location at which the replenishment task is recorded.
+          example: New York
+        status:
+          type: string
+          description: 'Status of the replenishment task. Allowed values: <code>pending</code>, <code>replenished</code>, <code>completed</code>, and <code>dismissed</code>.'
+          example: pending
+        order_type:
+          type: string
+          description: 'Type of order generated for the replenishment task. Allowed values: <code>purchase_order</code> and <code>transfer_order</code>.'
+          example: purchase_order
+        reorder_level:
+          type: number
+          format: double
+          description: Stock level at which the replenishment task was generated for the item.
+          example: 10
+        max_stock_level:
+          type: number
+          format: double
+          description: Maximum stock level configured for the item at the location.
+          example: 50
+        order_multiple:
+          type: number
+          format: double
+          description: Quantity multiple to which the replenishment quantity is rounded off.
+          example: 5
+        max_order_quantity:
+          type: number
+          format: double
+          description: Maximum quantity that can be ordered in a single replenishment task.
+          example: 200
+        min_order_quantity:
+          type: number
+          format: double
+          description: Minimum quantity that must be ordered in a single replenishment task.
+          example: 1
+        preferred_vendor_id:
+          type: string
+          description: Unique ID generated by the server for the preferred vendor.
+          example: 4815000000009901
+        preferred_vendor_name:
+          type: string
+          description: Name of the preferred vendor.
+          example: Zylker Supplies
+        source_warehouse_id:
+          type: string
+          description: Unique ID generated by the server for the source warehouse from which stock is replenished. Applicable only when multi-warehouse is enabled for the organization.
+          example: 4815000000038001
+        source_warehouse_name:
+          type: string
+          description: Name of the source warehouse from which stock is replenished. Applicable only when multi-warehouse is enabled for the organization.
+          example: Los Angeles Warehouse
+        source_location_id:
+          type: string
+          description: Unique ID generated by the server for the source location from which stock is replenished.
+          example: 4815000000034001
+        source_location_name:
+          type: string
+          description: Name of the source location from which stock is replenished.
+          example: Los Angeles
+        stock_available_for_sale:
+          type: number
+          format: double
+          description: Stock available for sale at the location when the replenishment task was generated.
+          example: 12
+        quantity_to_replenish:
+          type: number
+          format: double
+          description: Quantity that needs to be replenished for the item at the location.
+          example: 38
+        created_time:
+          type: string
+          format: date
+          description: Date on which the replenishment task was created.
+          example: '2026-04-20'
+        last_modified_time:
+          type: string
+          format: date
+          description: Date on which the replenishment task was last modified.
+          example: '2026-04-20'
+    create-a-replenishment-configuration-request:
+      type: object
+      properties:
+        replenishment_configuration_id:
+          type: string
+          description: Unique ID of the replenishment configuration. Provide this to update an existing replenishment configuration for the item and location combination.
+          example: 4815000000045001
+        item_id:
+          type: string
+          description: Unique ID of the item for which the replenishment configuration is being created.
+          example: 4815000000044208
+        location_id:
+          type: string
+          description: Unique ID of the location for which the replenishment configuration is being created.
+          example: 4815000000033001
+        warehouse_id:
+          type: string
+          description: Unique ID of the warehouse for which the replenishment configuration is being created. Applicable only when multi-warehouse is enabled for the organization.
+          example: 4815000000037001
+        status:
+          type: string
+          description: 'Status of the replenishment configuration. Allowed values: <code>active</code> and <code>paused</code>.'
+          example: active
+        type:
+          type: string
+          description: 'Mode in which replenishment tasks are generated. Allowed values: <code>auto</code> and <code>manual</code>.'
+          example: auto
+        order_type:
+          type: string
+          description: 'Type of order generated by the replenishment configuration. Allowed values: <code>purchase_order</code> and <code>transfer_order</code>.'
+          example: purchase_order
+        trigger:
+          type: string
+          description: Trigger that determines when an automatic replenishment task is generated.
+          example: daily
+        trigger_frequency:
+          type: string
+          description: Frequency at which the replenishment task is triggered, expressed in the units defined by the trigger.
+          example: '1'
+        reorder_level:
+          type: number
+          format: double
+          description: Stock level at which a replenishment task is generated for the item.
+          example: 10
+        max_stock_level:
+          type: number
+          format: double
+          description: Maximum stock level to be maintained for the item at the location.
+          example: 50
+        order_multiple:
+          type: number
+          format: double
+          description: Quantity multiple to which the replenishment quantity is rounded off.
+          example: 5
+        max_order_quantity:
+          type: number
+          format: double
+          description: Maximum quantity that can be ordered in a single replenishment task.
+          example: 200
+        min_order_quantity:
+          type: number
+          format: double
+          description: Minimum quantity that must be ordered in a single replenishment task.
+          example: 1
+        preferred_vendor_id:
+          type: string
+          description: Unique ID of the preferred vendor from which stock is replenished.
+          example: 4815000000009901
+        preferred_location_id:
+          type: string
+          description: Unique ID of the preferred source location from which stock is replenished.
+          example: 4815000000034001
+        preferred_warehouse_id:
+          type: string
+          description: Unique ID of the preferred source warehouse from which stock is replenished. Applicable only when multi-warehouse is enabled for the organization.
+          example: 4815000000038001
+    update-a-replenishment-configuration-request:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/create-a-replenishment-configuration-request'
+    bulk-update-replenishment-configurations-request:
+      type: object
+      properties:
+        replenishment_configurations:
+          type: array
+          description: List of replenishment configurations to update. Each entry specifies the values for an item and location (or warehouse) combination.
+          items:
+            $ref: '#/components/schemas/create-a-replenishment-configuration-request'
+    retrieve-replenishment-configurations-for-associated-locations-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Zoho Inventory error code. This will be zero for a success response and non-zero in case of an error.
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          description: Message for the invoked API.
+          example: Replenishment details fetched successfully.
+          readOnly: true
+        replenishment_configurations:
+          description: Replenishment configurations of the associated locations for the item.
+          $ref: '#/components/schemas/replenishment-configurations-associated-response'
+    retrieve-replenishment-configurations-for-associated-warehouses-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Zoho Inventory error code. This will be zero for a success response and non-zero in case of an error.
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          description: Message for the invoked API.
+          example: Replenishment details fetched successfully.
+          readOnly: true
+        replenishment_configurations:
+          description: Replenishment configurations of the associated warehouses for the item.
+          $ref: '#/components/schemas/replenishment-configurations-associated-response'
+    retrieve-a-replenishment-configuration-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Zoho Inventory error code. This will be zero for a success response and non-zero in case of an error.
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          description: Message for the invoked API.
+          example: Replenishment details fetched successfully.
+          readOnly: true
+        replenishment_configuration:
+          description: Details of the replenishment configuration.
+          $ref: '#/components/schemas/replenishment-configuration-response'
+    create-a-replenishment-configuration-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Zoho Inventory error code. This will be zero for a success response and non-zero in case of an error.
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          description: Message for the invoked API.
+          example: Replenishment configuration created.
+          readOnly: true
+        replenishment_configuration:
+          description: Details of the created replenishment configuration.
+          $ref: '#/components/schemas/replenishment-configuration-response'
+    update-a-replenishment-configuration-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Zoho Inventory error code. This will be zero for a success response and non-zero in case of an error.
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          description: Message for the invoked API.
+          example: Replenishment configuration updated.
+          readOnly: true
+        replenishment_configuration:
+          description: Details of the updated replenishment configuration.
+          $ref: '#/components/schemas/replenishment-configuration-response'
+    bulk-update-replenishment-configurations-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Zoho Inventory error code. This will be zero for a success response and non-zero in case of an error.
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          description: Message for the invoked API.
+          example: success
+          readOnly: true
+        replenishment_configurations:
+          type: array
+          description: List of updated replenishment configurations.
+          items:
+            $ref: '#/components/schemas/replenishment-configuration-response'
+    page:
+      type: integer
+      description: Current page number in the paginated response.
+      example: 1
+    per_page:
+      type: integer
+      description: Number of records returned per page.
+      example: 200
+    has_more_page:
+      type: boolean
+      description: Indicates whether more pages of records are available beyond the current page.
+      example: false
+    report_name:
+      type: string
+      description: Name of the report associated with the response.
+      example: Replenishment Tasks
+    applied_filter:
+      type: string
+      description: Filter applied while fetching the records.
+      example: Status.Pending
+    sort_column:
+      type: string
+      description: Column used to sort the records.
+      example: created_time
+    sort_order:
+      type: string
+      description: 'Order in which the records are sorted. Allowed values: <code>A</code> and <code>D</code>.'
+      example: D
+    list-replenishment-tasks-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Zoho Inventory error code. This will be zero for a success response and non-zero in case of an error.
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          description: Message for the invoked API.
+          example: success
+          readOnly: true
+        replenishment_tasks:
+          type: array
+          description: List of replenishment tasks in the organization.
+          items:
+            $ref: '#/components/schemas/replenishment-task-response'
+        page_context:
+          type: object
+          description: Pagination details for the list of replenishment tasks.
+          properties:
+            page:
+              $ref: '#/components/schemas/page'
+            per_page:
+              $ref: '#/components/schemas/per_page'
+            has_more_page:
+              $ref: '#/components/schemas/has_more_page'
+            report_name:
+              $ref: '#/components/schemas/report_name'
+            applied_filter:
+              $ref: '#/components/schemas/applied_filter'
+            sort_column:
+              $ref: '#/components/schemas/sort_column'
+            sort_order:
+              $ref: '#/components/schemas/sort_order'
+    retrieve-a-replenishment-task-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Zoho Inventory error code. This will be zero for a success response and non-zero in case of an error.
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          description: Message for the invoked API.
+          example: success
+          readOnly: true
+        task_details:
+          description: Details of the replenishment task.
+          $ref: '#/components/schemas/replenishment-task-detail-response'
+    retrieve-replenishment-order-details-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Zoho Inventory error code. This will be zero for a success response and non-zero in case of an error.
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          description: Message for the invoked API.
+          example: Replenishment order details fetched successfully.
+          readOnly: true
+        replenishment_order_details:
+          type: array
+          description: List of orders generated for the replenishment configuration.
+          items:
+            $ref: '#/components/schemas/replenishment-order-detail-response'
+    pause-a-replenishment-configuration-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Zoho Inventory error code. This will be zero for a success response and non-zero in case of an error.
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          description: Message for the invoked API.
+          example: Replenishment paused successfully.
+          readOnly: true
+    resume-a-replenishment-configuration-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Zoho Inventory error code. This will be zero for a success response and non-zero in case of an error.
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          description: Message for the invoked API.
+          example: Replenishment resumed successfully.
+          readOnly: true
+    dismiss-a-replenishment-task-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Zoho Inventory error code. This will be zero for a success response and non-zero in case of an error.
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          description: Message for the invoked API.
+          example: Replenishment tasks dismissed successfully.
+          readOnly: true
+    generate-replenishment-task-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Zoho Inventory error code. This will be zero for a success response and non-zero in case of an error.
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          description: Message for the invoked API.
+          example: Replenishment tasks generated.
+          readOnly: true
+    retrieve-replenishment-task-details-report-response:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Zoho Inventory error code. This will be zero for a success response and non-zero in case of an error.
+          example: 0
+          readOnly: true
+        message:
+          type: string
+          description: Message for the invoked API.
+          example: success
+          readOnly: true
+        replenishment_tasks:
+          type: array
+          description: List of replenishment task entries in the report.
+          items:
+            $ref: '#/components/schemas/replenishment-task-report-detail-response'
+        page_context:
+          type: object
+          description: Pagination details for the replenishment task details report.
+          properties:
+            page:
+              $ref: '#/components/schemas/page'
+            per_page:
+              $ref: '#/components/schemas/per_page'
+            has_more_page:
+              $ref: '#/components/schemas/has_more_page'
+            report_name:
+              $ref: '#/components/schemas/report_name'
+            applied_filter:
+              $ref: '#/components/schemas/applied_filter'
+            sort_column:
+              $ref: '#/components/schemas/sort_column'
+            sort_order:
+              $ref: '#/components/schemas/sort_order'
+  securitySchemes:
+    Zoho_Auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://accounts.zoho.com/oauth/v2/auth
+          scopes:
+            ZohoInventory.items.CREATE: Create Items
+            ZohoInventory.items.READ: Read Items
+            ZohoInventory.items.UPDATE: Update Items
+            ZohoInventory.reports.READ: Read Reports
