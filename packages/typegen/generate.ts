@@ -26,26 +26,27 @@ const STRUCTURAL_KINDS = new Set([
 ])
 
 const STOPWORDS = new Set(['a', 'an', 'the', 'all'])
-const VERB_ALIASES: Record<string, string> = {
-  create: 'Create',
-  creating: 'Create',
-  retrieve: 'Get',
-  retrieving: 'Get',
-  get: 'Get',
-  getting: 'Get',
-  update: 'Update',
-  updating: 'Update',
-  updated: 'Update',
-  delete: 'Delete',
-  deleting: 'Delete',
-  list: 'List',
-}
+const VERB_ALIASES = new Map([
+  ['create', 'Create'],
+  ['creating', 'Create'],
+  ['retrieve', 'Get'],
+  ['retrieving', 'Get'],
+  ['get', 'Get'],
+  ['getting', 'Get'],
+  ['update', 'Update'],
+  ['updating', 'Update'],
+  ['updated', 'Update'],
+  ['delete', 'Delete'],
+  ['deleting', 'Delete'],
+  ['list', 'List'],
+])
 
 function aliasNameFor(schemaKey: string): string {
   const tokens = schemaKey.split(/[-_]/).filter((t) => t.length > 0 && !STOPWORDS.has(t))
   return tokens
     .map((token, i) => {
-      if (i === 0 && VERB_ALIASES[token]) return VERB_ALIASES[token]
+      const verbAlias = i === 0 ? VERB_ALIASES.get(token) : undefined
+      if (verbAlias) return verbAlias
       return token[0]!.toUpperCase() + token.slice(1)
     })
     .join('')
@@ -74,6 +75,8 @@ function stripOptionalDeep<T extends ts.Node>(node: T): T {
     }
     return visited
   }
+  // SAFETY: visit() only rewrites PropertySignature nodes in place and returns every other
+  // node unchanged, so the root node's kind (and thus its shape T) is always preserved.
   return ts.visitNode(node, visit) as T
 }
 
@@ -130,6 +133,13 @@ function requireResponseFields(ast: readonly ts.Node[]): ts.Node[] {
       newMembers
     )
   })
+}
+
+// The SDK hand-writes its own request functions against `components` and `operations`;
+// `paths` (every route keyed by URL, duplicating what `operations` already types) is never
+// referenced and would otherwise ship dead weight in the published declaration files.
+function dropUnusedPathsInterface(ast: readonly ts.Node[]): ts.Node[] {
+  return ast.filter((node) => !ts.isInterfaceDeclaration(node) || node.name.text !== 'paths')
 }
 
 function extractStructuralSchemaKeys(ast: readonly ts.Node[]): string[] {
@@ -243,7 +253,9 @@ for (const file of specFiles) {
   const moduleName = basename(file, '.yml')
   const namespace = toNamespace(moduleName)
 
-  const ast = requireResponseFields(await openapiTS(Bun.pathToFileURL(specPath)))
+  const ast = dropUnusedPathsInterface(
+    requireResponseFields(await openapiTS(Bun.pathToFileURL(specPath)))
+  )
   await Bun.write(join(generatedDir, `${moduleName}.ts`), astToString(ast))
 
   const localAliasOwners = new Map<string, string>()
