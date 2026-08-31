@@ -93,8 +93,8 @@ export class Putaways {
     putawayId: string,
     documentId: string,
     params?: GetPutawayDocumentQuery
-  ): Promise<unknown> {
-    return this.http.get({
+  ): Promise<Blob> {
+    return this.http.get<Blob>({
       path: ['putaways', putawayId, 'documents', documentId],
       query: { ...params },
     })

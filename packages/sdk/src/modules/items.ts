@@ -59,6 +59,12 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+export interface ItemCustomFieldUpdate {
+  customfield_id?: string
+  label?: string
+  value?: string
+}
+
 export class Items {
   constructor(private readonly http: HTTPClient) {}
 
@@ -104,24 +110,29 @@ export class Items {
     await this.http.delete<DeleteItemResponse>({ path: ['items', itemId] })
   }
 
-  async updateCustomField(itemId: string, data: unknown): Promise<UpdateItemCustomfieldResponse> {
+  async updateCustomField(
+    itemId: string,
+    data: ItemCustomFieldUpdate[]
+  ): Promise<UpdateItemCustomfieldResponse> {
     return this.http.put<UpdateItemCustomfieldResponse>({
       path: ['item', itemId, 'customfields'],
       body: data,
     })
   }
 
-  async getImage(itemId: string, preview?: boolean): Promise<unknown> {
-    return this.http.get<unknown>({
+  async getImage(itemId: string, preview?: boolean): Promise<Blob> {
+    return this.http.get<Blob>({
       path: ['items', itemId, 'image'],
       query: { preview },
     })
   }
 
-  async uploadImage(itemId: string, data: unknown): Promise<UploadItemImageResponse> {
+  async uploadImage(itemId: string, image: Blob): Promise<UploadItemImageResponse> {
+    const body = new FormData()
+    body.append('image', image)
     return this.http.post<UploadItemImageResponse>({
       path: ['items', itemId, 'image'],
-      body: data,
+      body,
     })
   }
 
@@ -158,12 +169,14 @@ export class Items {
 
   async uploadImages(
     itemId: string,
-    data: unknown,
+    images: Blob[],
     params?: UploadItemImagesQuery
   ): Promise<UploadItemImagesResponse> {
+    const body = new FormData()
+    for (const image of images) body.append('image', image)
     return this.http.post<UploadItemImagesResponse>({
       path: ['items', itemId, 'images'],
-      body: data,
+      body,
       query: params,
     })
   }
@@ -187,12 +200,14 @@ export class Items {
 
   async uploadBackImage(
     itemId: string,
-    data: unknown,
+    backImage: Blob,
     documentId?: string
   ): Promise<UploadItemBackImageResponse> {
+    const body = new FormData()
+    body.append('back_image', backImage)
     return this.http.post<UploadItemBackImageResponse>({
       path: ['items', itemId, 'backimage'],
-      body: data,
+      body,
       query: { document_id: documentId },
     })
   }

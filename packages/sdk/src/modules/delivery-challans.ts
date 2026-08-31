@@ -128,8 +128,10 @@ export class DeliveryChallans {
     })
   }
 
-  async getAttachment(deliverychallanId: string, documentId: string): Promise<unknown> {
-    return this.http.get({ path: ['deliverychallans', deliverychallanId, 'documents', documentId] })
+  async getAttachment(deliverychallanId: string, documentId: string): Promise<Blob> {
+    return this.http.get<Blob>({
+      path: ['deliverychallans', deliverychallanId, 'documents', documentId],
+    })
   }
 
   async deleteAttachment(

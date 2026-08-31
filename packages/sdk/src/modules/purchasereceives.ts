@@ -156,8 +156,8 @@ export class PurchaseReceives {
     purchasereceiveId: string,
     documentId: string,
     params?: GetPurchaseReceiveAttachmentQuery
-  ): Promise<unknown> {
-    return this.http.get({
+  ): Promise<Blob> {
+    return this.http.get<Blob>({
       path: ['purchasereceives', purchasereceiveId, 'documents', documentId],
       query: { ...params },
     })
