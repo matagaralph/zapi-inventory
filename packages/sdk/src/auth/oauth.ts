@@ -20,12 +20,26 @@ export interface OAuthTokenOptions {
   store?: TokenStore
 }
 
-interface CachedToken {
+export interface CachedToken {
   accessToken: string
   expiresAt: number
 }
 
-function isFresh(
+export interface TokenRefreshResponse {
+  access_token: string
+  expires_in?: number
+}
+
+export function isTokenRefreshResponse(value: unknown): value is TokenRefreshResponse {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'access_token' in value &&
+    typeof value.access_token === 'string'
+  )
+}
+
+export function isFresh(
   token: Pick<StoredToken, 'accessToken' | 'expiresAt'> | null
 ): token is CachedToken {
   return (
@@ -83,11 +97,7 @@ export class OAuthToken implements TokenProvider {
 
     const data = await this.requestNewToken(accountsUrl, params)
 
-    if (typeof data.access_token !== 'string') {
-      throw new APIError('Token refresh failed', undefined, accountsUrl, data)
-    }
-
-    const expiresIn = typeof data.expires_in === 'number' ? data.expires_in : 3600
+    const expiresIn = data.expires_in ?? 3600
     const cached: CachedToken = {
       accessToken: data.access_token,
       expiresAt: Date.now() + expiresIn * 1000,
@@ -108,14 +118,20 @@ export class OAuthToken implements TokenProvider {
   private async requestNewToken(
     accountsUrl: string,
     params: URLSearchParams
-  ): Promise<Record<string, unknown>> {
+  ): Promise<TokenRefreshResponse> {
+    let data: unknown
     try {
-      const res = await xior.post<Record<string, unknown>>(accountsUrl, params, {
+      const res = await xior.post<unknown>(accountsUrl, params, {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       })
-      return res.data
+      data = res.data
     } catch (err) {
       throw isXiorError(err) ? APIError.fromXiorError(err) : err
     }
+
+    if (!isTokenRefreshResponse(data)) {
+      throw new APIError('Token refresh failed', undefined, accountsUrl, data)
+    }
+    return data
   }
 }
