@@ -1,6 +1,12 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
-  "ignorePatterns": ["**/src/generated/**", "**/dist/**", "**/specs/**", "**/.turbo/**"],
+  "ignorePatterns": [
+    "**/src/generated/**",
+    "**/dist/**",
+    "**/specs/**",
+    "**/.turbo/**",
+    "tools/oxlint/anti-slop/**"
+  ],
   "tabWidth": 2, // indent_size = 2
   "useTabs": false, // indent_style = space
   "endOfLine": "lf", // end_of_line = lf
