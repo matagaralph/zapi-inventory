@@ -192,6 +192,66 @@ function hasExtraQueryParams(operationType: ts.TypeNode): boolean {
   })
 }
 
+// types/*.ts only ever reaches into operations["id"]["parameters"]["query"]; everything else an
+// operation carries (path/header/cookie params, requestBody, responses, other operationIds
+// entirely) is dead weight that would otherwise ship in the published declaration files.
+function pruneOperations(
+  ast: readonly ts.Node[],
+  keepOperationIds: ReadonlySet<string>
+): ts.Node[] {
+  return ast.map((node) => {
+    if (!ts.isInterfaceDeclaration(node) || node.name.text !== 'operations') return node
+
+    const newMembers = node.members.flatMap((member) => {
+      if (!ts.isPropertySignature(member)) return []
+      const id = propertyNameText(member.name)
+      if (!id || !keepOperationIds.has(id) || !member.type || !ts.isTypeLiteralNode(member.type)) {
+        return []
+      }
+
+      const parametersProp = member.type.members.find(
+        (m): m is ts.PropertySignature =>
+          ts.isPropertySignature(m) && propertyNameText(m.name) === 'parameters'
+      )
+      const queryProp =
+        parametersProp?.type && ts.isTypeLiteralNode(parametersProp.type)
+          ? parametersProp.type.members.find(
+              (m): m is ts.PropertySignature =>
+                ts.isPropertySignature(m) && propertyNameText(m.name) === 'query'
+            )
+          : undefined
+      if (!queryProp) return [member]
+
+      const trimmedType = ts.factory.createTypeLiteralNode([
+        ts.factory.createPropertySignature(
+          undefined,
+          'parameters',
+          undefined,
+          ts.factory.createTypeLiteralNode([queryProp])
+        ),
+      ])
+      return [
+        ts.factory.updatePropertySignature(
+          member,
+          member.modifiers,
+          member.name,
+          member.questionToken,
+          trimmedType
+        ),
+      ]
+    })
+
+    return ts.factory.updateInterfaceDeclaration(
+      node,
+      node.modifiers,
+      node.name,
+      node.typeParameters,
+      node.heritageClauses,
+      newMembers
+    )
+  })
+}
+
 function extractQueryableOperationIds(ast: readonly ts.Node[]): string[] {
   const ids: string[] = []
 
@@ -253,9 +313,11 @@ for (const file of specFiles) {
   const moduleName = basename(file, '.yml')
   const namespace = toNamespace(moduleName)
 
-  const ast = dropUnusedPathsInterface(
+  const preprunedAst = dropUnusedPathsInterface(
     requireResponseFields(await openapiTS(Bun.pathToFileURL(specPath)))
   )
+  const keepOperationIds = new Set(extractQueryableOperationIds(preprunedAst))
+  const ast = pruneOperations(preprunedAst, keepOperationIds)
   await Bun.write(join(generatedDir, `${moduleName}.ts`), astToString(ast))
 
   const localAliasOwners = new Map<string, string>()
