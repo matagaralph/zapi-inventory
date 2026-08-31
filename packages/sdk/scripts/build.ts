@@ -3,10 +3,20 @@ import { dirname, join, relative } from 'node:path'
 import { $ } from 'bun'
 
 const root = join(import.meta.dir, '..')
+const repoRoot = join(root, '..', '..')
 const entrypoint = join(root, 'src', 'index.ts')
 const outdir = join(root, 'dist')
 const typesOutdir = join(outdir, 'types')
 const typegenRoot = join(root, '..', 'typegen')
+
+// npm looks for README/LICENSE next to package.json; it won't reach up to the repo root,
+// so a workspace package that only lives at the root publishes with neither.
+async function copyPackageMetadata(): Promise<void> {
+  await Promise.all([
+    Bun.write(join(root, 'README.md'), Bun.file(join(repoRoot, 'README.md'))),
+    Bun.write(join(root, 'LICENSE'), Bun.file(join(repoRoot, 'LICENSE'))),
+  ])
+}
 
 async function declarationFiles(dir: string): Promise<string[]> {
   const entries = await readdir(dir, { withFileTypes: true })
@@ -84,3 +94,4 @@ if (results.some((result) => !result.success)) {
 await $`bunx tsc -p ${join(typegenRoot, 'tsconfig.build.json')}`
 await $`bunx tsc -p ${join(root, 'tsconfig.build.json')}`
 await rewriteDeclarations()
+await copyPackageMetadata()

@@ -6,6 +6,10 @@ out
 dist
 *.tgz
 
+# copied from the repo root by packages/sdk/scripts/build.ts so npm publishes them
+packages/sdk/README.md
+packages/sdk/LICENSE
+
 # generated reproducible via `bun run generate` from packages/typegen/specs/*.yml
 packages/typegen/src/generated/
 packages/typegen/src/types/
