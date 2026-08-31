@@ -6,28 +6,11 @@
 
 A community-maintained, type-safe TypeScript SDK for the [Zoho Inventory API](https://www.zoho.com/inventory/api/v1/introduction/#overview). Types are generated directly from Zoho's official OpenAPI specification, with one module per API domain and OAuth token handling built in.
 
-## Table of contents
-
-- [Installation](#installation)
-- [Quick start](#quick-start)
-- [Configuration](#configuration)
-- [Modules](#modules)
-- [Response shapes](#response-shapes)
-- [Methods that return `void`](#methods-that-return-void)
-- [Error handling](#error-handling)
-- [Raw HTTP requests](#raw-http-requests)
-- [Token storage](#token-storage)
-- [Version history](#version-history)
-- [Contributing](#contributing)
-- [License](#license)
-
 ## Installation
 
 ```bash
 bun add zapi-inventory
 ```
-
-`npm install`, `yarn add` and `pnpm add` work the same way.
 
 ## Quick start
 
@@ -66,49 +49,6 @@ const item = await inventory.items.create({
 
 Every Zoho Inventory API domain is exposed as a module on the `ZohoInventory` instance, e.g. `inventory.items.list()` or `inventory.salesOrders.create(...)`.
 
-| Property               | Domain                |
-| ---------------------- | --------------------- |
-| `batches`              | Batches               |
-| `bills`                | Bills                 |
-| `compositeItems`       | Composite items       |
-| `contactPersons`       | Contact persons       |
-| `contacts`             | Contacts              |
-| `creditNotes`          | Credit notes          |
-| `currencies`           | Currencies            |
-| `customerPayments`     | Customer payments     |
-| `deliveryChallans`     | Delivery challans     |
-| `inventoryAdjustments` | Inventory adjustments |
-| `inventoryCounts`      | Inventory counting    |
-| `invoices`             | Invoices              |
-| `itemGroups`           | Item groups           |
-| `items`                | Items                 |
-| `landedCosts`          | Landed costs          |
-| `locations`            | Locations             |
-| `moveOrders`           | Move orders           |
-| `organizations`        | Organizations         |
-| `packages`             | Packages              |
-| `picklists`            | Picklists             |
-| `priceLists`           | Price lists           |
-| `purchaseOrders`       | Purchase orders       |
-| `purchaseReceives`     | Purchase receives     |
-| `putaways`             | Putaways              |
-| `replenishment`        | Replenishment         |
-| `reportingTags`        | Reporting tags        |
-| `retainerInvoices`     | Retainer invoices     |
-| `salesOrders`          | Sales orders          |
-| `salesReturns`         | Sales returns         |
-| `serialNumbers`        | Serial numbers        |
-| `shipmentOrders`       | Shipment orders       |
-| `storageLocations`     | Storage locations     |
-| `tasks`                | Tasks                 |
-| `taxes`                | Taxes                 |
-| `transferOrders`       | Transfer orders       |
-| `unitsOfMeasurement`   | Units of measurement  |
-| `users`                | Users                 |
-| `vendorCredits`        | Vendor credits        |
-
-## Response shapes
-
 Zoho nests most response bodies under a root key that matches the resource, for example `{ "item": { ... } }` for a single item or `{ "salesorders": [...] }` for a list. The SDK unwraps that root key for you, so a call resolves directly to the data you asked for:
 
 ```ts
@@ -122,17 +62,6 @@ const item = await inventory.items.create({
 const salesOrders = await inventory.salesOrders.list()
 // salesOrders is an array, not { salesorders: [...] }
 ```
-
-## Methods that return `void`
-
-Many Zoho endpoints (`delete`, `submit`, `approve`, `reject`, `markAsVoid`, `markAsActive`/`markAsInactive` and similar) respond with nothing but a fixed acknowledgement (`{ code, message }`) that carries no data a caller could act on. Those methods resolve to `Promise<void>` rather than that acknowledgement object:
-
-```ts
-await inventory.salesOrders.markAsConfirmed(salesOrderId)
-// resolves with undefined; throws an APIError if the request failed
-```
-
-If a Zoho response genuinely carries data beyond an acknowledgement, that method keeps its real return type. `inventory.salesOrders.bulkConfirm(...)`, for instance, still resolves to the response body because it includes per-order success and error details.
 
 ## Error handling
 
@@ -163,7 +92,7 @@ try {
 
 `429` and `5xx` responses are retried automatically (three times, by default) before the SDK gives up and rejects; every other error surfaces immediately.
 
-## Raw HTTP requests
+## HTTP Client
 
 The SDK exposes its HTTP client on `inventory.http` for making direct requests to the Zoho Inventory API. This is useful for beta endpoints or sub-resources the SDK doesn't wrap yet:
 
@@ -176,8 +105,6 @@ await inventory.http.post<T>({
   timeout: 5000, // request-specific timeout
 })
 ```
-
-`get`, `post`, `put`, `patch` and `delete` are all available and handle authentication and the `organization_id` query parameter for you.
 
 ## Token storage
 
@@ -205,19 +132,7 @@ Early versions (`1.0.0-dev`, `1.1.0`, `2.0.0`–`3.0.0`) were experimentation fr
 
 ## Contributing
 
-Contributions are welcome:
-
-- Open an issue to propose a feature or report a bug.
-- Open a pull request to fix a bug, fix a typo, or refactor existing code.
-- Share the project or write about your experience using it.
-
-## Contributors
-
-Thanks to [all contributors](https://github.com/matagaralph/zapi-inventory/graphs/contributors)!
-
-## Author
-
-Ralph Mataga (<https://github.com/matagaralph>)
+See [the contributing documentation](./.github/CONTRIBUTING.md).
 
 ## License
 
