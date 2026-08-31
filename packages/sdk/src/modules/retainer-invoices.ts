@@ -1,35 +1,22 @@
 import type {
   CreateRetainerInvoiceQuery,
-  ApproveRetainerInvoiceResponse,
   CreateRetainerinvoiceRequest,
   CreateRetainerinvoiceResponse,
   EmailRetainerInvoiceQuery,
   EmailRetainerInvoiceRequest,
-  EmailRetainerInvoiceResponse,
-  GetRetainerInvoiceAttachmentResponse,
   GetRetainerInvoiceEmailContentResponse,
   GetRetainerInvoiceResponse,
   AddAttachmentToRetainerInvoiceRequest,
-  AddAttachmentToRetainerInvoiceResponse,
   ListRetainerInvoiceCommentsAndHistoryResponse,
   ListRetainerInvoiceTemplatesResponse,
   ListRetainerInvoicesQuery,
   ListRetainerInvoicesResponse,
-  MarkRetainerInvoiceAsSentResponse,
   RetainerInvoicesAddCommentRequest,
-  RetainerInvoicesAddCommentResponse,
-  RetainerInvoicesDeleteAttachmentResponse,
-  RetainerInvoicesDeleteCommentResponse,
-  RetainerInvoicesMarkAsDraftResponse,
   RetainerInvoicesUpdateBillingAddressRequest,
-  RetainerInvoicesUpdateBillingAddressResponse,
   RetainerInvoicesUpdateCommentRequest,
   RetainerInvoicesUpdateCommentResponse,
-  SubmitRetainerInvoiceForApprovalResponse,
   UpdateRetainerinvoiceRequest,
   UpdateRetainerinvoiceResponse,
-  UpdateRetainerInvoiceTemplateResponse,
-  VoidRetainerInvoiceResponse,
 } from '@zapi-inventory/typegen'
 
 import type { HTTPClient } from '../http.ts'
@@ -81,43 +68,38 @@ export class RetainerInvoices {
     await this.http.delete({ path: ['retainerinvoices', retainerinvoiceId] })
   }
 
-  async markAsSent(retainerinvoiceId: string): Promise<MarkRetainerInvoiceAsSentResponse> {
-    return this.http.post<MarkRetainerInvoiceAsSentResponse>({
+  async markAsSent(retainerinvoiceId: string): Promise<void> {
+    await this.http.post({
       path: ['retainerinvoices', retainerinvoiceId, 'status', 'sent'],
     })
   }
 
-  async updateTemplate(
-    retainerinvoiceId: string,
-    templateId: string
-  ): Promise<UpdateRetainerInvoiceTemplateResponse> {
-    return this.http.put<UpdateRetainerInvoiceTemplateResponse>({
+  async updateTemplate(retainerinvoiceId: string, templateId: string): Promise<void> {
+    await this.http.put({
       path: ['retainerinvoices', retainerinvoiceId, 'templates', templateId],
     })
   }
 
-  async markAsVoid(retainerinvoiceId: string): Promise<VoidRetainerInvoiceResponse> {
-    return this.http.post<VoidRetainerInvoiceResponse>({
+  async markAsVoid(retainerinvoiceId: string): Promise<void> {
+    await this.http.post({
       path: ['retainerinvoices', retainerinvoiceId, 'status', 'void'],
     })
   }
 
-  async markAsDraft(retainerinvoiceId: string): Promise<RetainerInvoicesMarkAsDraftResponse> {
-    return this.http.post<RetainerInvoicesMarkAsDraftResponse>({
+  async markAsDraft(retainerinvoiceId: string): Promise<void> {
+    await this.http.post({
       path: ['retainerinvoices', retainerinvoiceId, 'status', 'draft'],
     })
   }
 
-  async submitForApproval(
-    retainerinvoiceId: string
-  ): Promise<SubmitRetainerInvoiceForApprovalResponse> {
-    return this.http.post<SubmitRetainerInvoiceForApprovalResponse>({
+  async submitForApproval(retainerinvoiceId: string): Promise<void> {
+    await this.http.post({
       path: ['retainerinvoices', retainerinvoiceId, 'submit'],
     })
   }
 
-  async approve(retainerinvoiceId: string): Promise<ApproveRetainerInvoiceResponse> {
-    return this.http.post<ApproveRetainerInvoiceResponse>({
+  async approve(retainerinvoiceId: string): Promise<void> {
+    await this.http.post({
       path: ['retainerinvoices', retainerinvoiceId, 'approve'],
     })
   }
@@ -134,8 +116,8 @@ export class RetainerInvoices {
     retainerinvoiceId: string,
     data?: EmailRetainerInvoiceRequest,
     query?: EmailRetainerInvoiceQuery
-  ): Promise<EmailRetainerInvoiceResponse> {
-    return this.http.post<EmailRetainerInvoiceResponse>({
+  ): Promise<void> {
+    await this.http.post({
       path: ['retainerinvoices', retainerinvoiceId, 'email'],
       body: data,
       query,
@@ -145,8 +127,8 @@ export class RetainerInvoices {
   async updateBillingAddress(
     retainerinvoiceId: string,
     data: RetainerInvoicesUpdateBillingAddressRequest
-  ): Promise<RetainerInvoicesUpdateBillingAddressResponse> {
-    return this.http.put<RetainerInvoicesUpdateBillingAddressResponse>({
+  ): Promise<void> {
+    await this.http.put({
       path: ['retainerinvoices', retainerinvoiceId, 'address', 'billing'],
       body: data,
     })
@@ -159,8 +141,8 @@ export class RetainerInvoices {
     return templates
   }
 
-  async getAttachment(retainerinvoiceId: string): Promise<GetRetainerInvoiceAttachmentResponse> {
-    return this.http.get<GetRetainerInvoiceAttachmentResponse>({
+  async getAttachment(retainerinvoiceId: string): Promise<void> {
+    await this.http.get({
       path: ['retainerinvoices', retainerinvoiceId, 'attachment'],
     })
   }
@@ -168,18 +150,15 @@ export class RetainerInvoices {
   async addAttachment(
     retainerinvoiceId: string,
     data: AddAttachmentToRetainerInvoiceRequest
-  ): Promise<AddAttachmentToRetainerInvoiceResponse> {
-    return this.http.post<AddAttachmentToRetainerInvoiceResponse>({
+  ): Promise<void> {
+    await this.http.post({
       path: ['retainerinvoices', retainerinvoiceId, 'attachment'],
       body: data,
     })
   }
 
-  async deleteAttachment(
-    retainerinvoiceId: string,
-    documentId: string
-  ): Promise<RetainerInvoicesDeleteAttachmentResponse> {
-    return this.http.delete<RetainerInvoicesDeleteAttachmentResponse>({
+  async deleteAttachment(retainerinvoiceId: string, documentId: string): Promise<void> {
+    await this.http.delete({
       path: ['retainerinvoices', retainerinvoiceId, 'documents', documentId],
     })
   }
@@ -196,8 +175,8 @@ export class RetainerInvoices {
   async addComment(
     retainerinvoiceId: string,
     data: RetainerInvoicesAddCommentRequest
-  ): Promise<RetainerInvoicesAddCommentResponse> {
-    return this.http.post<RetainerInvoicesAddCommentResponse>({
+  ): Promise<void> {
+    await this.http.post({
       path: ['retainerinvoices', retainerinvoiceId, 'comments'],
       body: data,
     })
@@ -214,11 +193,8 @@ export class RetainerInvoices {
     })
   }
 
-  async deleteComment(
-    retainerinvoiceId: string,
-    commentId: string
-  ): Promise<RetainerInvoicesDeleteCommentResponse> {
-    return this.http.delete<RetainerInvoicesDeleteCommentResponse>({
+  async deleteComment(retainerinvoiceId: string, commentId: string): Promise<void> {
+    await this.http.delete({
       path: ['retainerinvoices', retainerinvoiceId, 'comments', commentId],
     })
   }

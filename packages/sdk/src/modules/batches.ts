@@ -1,17 +1,12 @@
 import type {
   BulkDeleteBatchesQuery,
-  BulkDeleteBatchesResponse,
   CreateBatchRequest,
   CreateBatchResponse,
   GetBatchResponse,
   ListBatchesQuery,
   ListBatchesResponse,
-  MarkBatchAsActiveResponse,
-  MarkBatchAsInactiveResponse,
   MarkBatchesAsActiveQuery,
-  MarkBatchesAsActiveResponse,
   MarkBatchesAsInactiveQuery,
-  MarkBatchesAsInactiveResponse,
   UpdateBatchRequest,
   UpdateBatchResponse,
 } from '@zapi-inventory/typegen'
@@ -37,8 +32,8 @@ export class Batches {
     return batch
   }
 
-  async bulkDelete(params: BulkDeleteBatchesQuery): Promise<BulkDeleteBatchesResponse> {
-    return this.http.delete<BulkDeleteBatchesResponse>({
+  async bulkDelete(params: BulkDeleteBatchesQuery): Promise<void> {
+    await this.http.delete({
       path: ['items', 'batches'],
       query: params,
     })
@@ -63,29 +58,27 @@ export class Batches {
     await this.http.delete({ path: ['items', 'batches', batchId] })
   }
 
-  async markAsActive(batchId: string): Promise<MarkBatchAsActiveResponse> {
-    return this.http.post<MarkBatchAsActiveResponse>({
+  async markAsActive(batchId: string): Promise<void> {
+    await this.http.post({
       path: ['items', 'batches', batchId, 'active'],
     })
   }
 
-  async markAsInactive(batchId: string): Promise<MarkBatchAsInactiveResponse> {
-    return this.http.post<MarkBatchAsInactiveResponse>({
+  async markAsInactive(batchId: string): Promise<void> {
+    await this.http.post({
       path: ['items', 'batches', batchId, 'inactive'],
     })
   }
 
-  async bulkMarkAsActive(params: MarkBatchesAsActiveQuery): Promise<MarkBatchesAsActiveResponse> {
-    return this.http.post<MarkBatchesAsActiveResponse>({
+  async bulkMarkAsActive(params: MarkBatchesAsActiveQuery): Promise<void> {
+    await this.http.post({
       path: ['items', 'batches', 'active'],
       query: params,
     })
   }
 
-  async bulkMarkAsInactive(
-    params: MarkBatchesAsInactiveQuery
-  ): Promise<MarkBatchesAsInactiveResponse> {
-    return this.http.post<MarkBatchesAsInactiveResponse>({
+  async bulkMarkAsInactive(params: MarkBatchesAsInactiveQuery): Promise<void> {
+    await this.http.post({
       path: ['items', 'batches', 'inactive'],
       query: params,
     })

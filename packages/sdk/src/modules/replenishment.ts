@@ -8,8 +8,6 @@ import type {
   BulkUpdateReplenishmentsQuery,
   CreateReplenishmentConfigurationRequest,
   CreateReplenishmentConfigurationResponse,
-  DismissReplenishmentTaskResponse,
-  GenerateReplenishmentTaskResponse,
   GetReplenishmentConfigurationResponse,
   GetReplenishmentConfigurationsForAssociatedLocationsResponse,
   GetReplenishmentConfigurationsForAssociatedWarehousesResponse,
@@ -21,9 +19,7 @@ import type {
   GetReplenishmentTasksReportQuery,
   ListReplenishmentTasksResponse,
   ListReplenishmentTasksQuery,
-  PauseReplenishmentConfigurationResponse,
   PauseReplenishmentConfigurationQuery,
-  ResumeReplenishmentConfigurationResponse,
   UpdateReplenishmentConfigurationRequest,
   UpdateReplenishmentConfigurationResponse,
 } from '@zapi-inventory/typegen'
@@ -120,8 +116,8 @@ export class Replenishment {
     return task_details
   }
 
-  async dismissTask(taskId: string): Promise<DismissReplenishmentTaskResponse> {
-    return this.http.put<DismissReplenishmentTaskResponse>({
+  async dismissTask(taskId: string): Promise<void> {
+    await this.http.put({
       path: ['replenishments', 'tasks', taskId, 'dismiss'],
     })
   }
@@ -150,60 +146,48 @@ export class Replenishment {
   async pause(
     replenishmentConfigurationId: string,
     params?: PauseReplenishmentConfigurationQuery
-  ): Promise<PauseReplenishmentConfigurationResponse> {
-    return this.http.put<PauseReplenishmentConfigurationResponse>({
+  ): Promise<void> {
+    await this.http.put({
       path: ['replenishments', replenishmentConfigurationId, 'pause'],
       query: params,
     })
   }
 
-  async bulkPause(
-    params: BulkPauseReplenishmentsQuery
-  ): Promise<PauseReplenishmentConfigurationResponse> {
-    return this.http.put<PauseReplenishmentConfigurationResponse>({
+  async bulkPause(params: BulkPauseReplenishmentsQuery): Promise<void> {
+    await this.http.put({
       path: ['replenishments', 'pause'],
       query: params,
     })
   }
 
-  async resume(
-    replenishmentConfigurationId: string
-  ): Promise<ResumeReplenishmentConfigurationResponse> {
-    return this.http.put<ResumeReplenishmentConfigurationResponse>({
+  async resume(replenishmentConfigurationId: string): Promise<void> {
+    await this.http.put({
       path: ['replenishments', replenishmentConfigurationId, 'resume'],
     })
   }
 
-  async bulkResume(
-    params: BulkResumeReplenishmentsQuery
-  ): Promise<ResumeReplenishmentConfigurationResponse> {
-    return this.http.put<ResumeReplenishmentConfigurationResponse>({
+  async bulkResume(params: BulkResumeReplenishmentsQuery): Promise<void> {
+    await this.http.put({
       path: ['replenishments', 'resume'],
       query: params,
     })
   }
 
-  async bulkDismissTasks(
-    params: BulkDismissReplenishmentTasksQuery
-  ): Promise<DismissReplenishmentTaskResponse> {
-    return this.http.put<DismissReplenishmentTaskResponse>({
+  async bulkDismissTasks(params: BulkDismissReplenishmentTasksQuery): Promise<void> {
+    await this.http.put({
       path: ['replenishments', 'tasks', 'dismiss'],
       query: params,
     })
   }
 
-  async generateTask(
-    replenishmentConfigurationId: string
-  ): Promise<GenerateReplenishmentTaskResponse> {
-    return this.http.post<GenerateReplenishmentTaskResponse>({
+  async generateTask(replenishmentConfigurationId: string): Promise<void> {
+    await this.http.post({
       path: ['replenishments', replenishmentConfigurationId, 'tasks', 'generate'],
     })
   }
 
-  async bulkGenerateTasks(
-    params: BulkGenerateReplenishmentTasksQuery
-  ): Promise<GenerateReplenishmentTaskResponse> {
-    return this.http.post<GenerateReplenishmentTaskResponse>({
+  async bulkGenerateTasks(params: BulkGenerateReplenishmentTasksQuery): Promise<void> {
+    await this.http.post({
       path: ['replenishments', 'tasks', 'generate'],
       query: params,
     })

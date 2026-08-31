@@ -2,7 +2,6 @@ import type {
   CreatePutawayRequest,
   CreatePutawayQuery,
   CreatePutawayResponse,
-  DeletePutawayDocumentResponse,
   DeletePutawayDocumentQuery,
   GetPutawayDocumentQuery,
   GetPutawayQuery,
@@ -104,8 +103,8 @@ export class Putaways {
     putawayId: string,
     documentId: string,
     params?: DeletePutawayDocumentQuery
-  ): Promise<DeletePutawayDocumentResponse> {
-    return this.http.delete<DeletePutawayDocumentResponse>({
+  ): Promise<void> {
+    await this.http.delete({
       path: ['putaways', putawayId, 'documents', documentId],
       query: params,
     })

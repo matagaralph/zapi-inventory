@@ -3,8 +3,6 @@ import type {
   CreatePricebookResponse,
   ListPricebooksQuery,
   ListPricebooksResponse,
-  PricelistsMarkAsActiveResponse,
-  PricelistsMarkAsInactiveResponse,
   UpdatePricebookRequest,
   UpdatePricebookResponse,
 } from '@zapi-inventory/typegen'
@@ -45,14 +43,14 @@ export class PriceLists {
     await this.http.delete({ path: ['pricebooks', pricebookId] })
   }
 
-  async markAsActive(pricebookId: string): Promise<PricelistsMarkAsActiveResponse> {
-    return this.http.post<PricelistsMarkAsActiveResponse>({
+  async markAsActive(pricebookId: string): Promise<void> {
+    await this.http.post({
       path: ['pricebooks', pricebookId, 'active'],
     })
   }
 
-  async markAsInactive(pricebookId: string): Promise<PricelistsMarkAsInactiveResponse> {
-    return this.http.post<PricelistsMarkAsInactiveResponse>({
+  async markAsInactive(pricebookId: string): Promise<void> {
+    await this.http.post({
       path: ['pricebooks', pricebookId, 'inactive'],
     })
   }

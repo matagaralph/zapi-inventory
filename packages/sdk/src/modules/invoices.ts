@@ -1,58 +1,37 @@
 import type {
   AddAttachmentToInvoiceQuery,
   ApplyCreditsRequest,
-  ApplyCreditsResponse,
   BulkApproveInvoicesQuery,
-  BulkExportInvoicesResponse,
   BulkPrintInvoicesQuery,
-  BulkPrintInvoicesResponse,
   BulkSubmitInvoicesQuery,
-  CancelWriteOffResponse,
   CreateInvoiceQuery,
   CreateCommentRequest,
   CreateInvoiceRequest,
   CreateInvoiceResponse,
-  DisablePaymentReminderResponse,
   EmailInvoiceQuery,
   EmailInvoiceRequest,
-  EmailInvoiceResponse,
   EmailInvoicesQuery,
-  EmailInvoicesResponse,
-  EnablePaymentReminderResponse,
   GetInvoiceAttachmentQuery,
   GetInvoiceEmailContentQuery,
   GetInvoiceQuery,
-  GetInvoiceAttachmentResponse,
   GetInvoiceEmailContentResponse,
   GetInvoiceResponse,
   GetPaymentReminderMailContentResponse,
-  AddAttachmentToInvoiceResponse,
-  InvoicesAddCommentResponse,
-  InvoicesApprovalActionResponse,
   InvoicesRejectRequest,
   InvoicesUpdateBillingAddressRequest,
-  InvoicesUpdateBillingAddressResponse,
   InvoicesUpdateShippingAddressRequest,
-  InvoicesUpdateShippingAddressResponse,
   ListCreditsAppliedResponse,
   ListInvoiceCommentsAndHistoryResponse,
   ListInvoicePaymentsResponse,
   ListInvoiceTemplatesResponse,
   ListInvoicesQuery,
   ListInvoicesResponse,
-  MarkAsDraftResponse,
-  MarkInvoiceAsSentResponse,
   UpdateInvoiceAttachmentQuery,
-  UpdateAttachmentPreferenceResponse,
   UpdateCommentRequest,
   UpdateCommentResponse,
-  UpdateInvoiceCustomfieldResponse,
   UpdateInvoiceQuery,
   UpdateInvoiceRequest,
   UpdateInvoiceResponse,
-  UpdateInvoiceTemplateResponse,
-  VoidInvoiceResponse,
-  WriteOffInvoiceResponse,
 } from '@zapi-inventory/typegen'
 
 import type { HTTPClient } from '../http.ts'
@@ -108,27 +87,27 @@ export class Invoices {
   async updateCustomField(
     invoiceId: string,
     data: { customfield_id?: string; value?: unknown }[]
-  ): Promise<UpdateInvoiceCustomfieldResponse> {
-    return this.http.put<UpdateInvoiceCustomfieldResponse>({
+  ): Promise<void> {
+    await this.http.put({
       path: ['invoice', invoiceId, 'customfields'],
       body: data,
     })
   }
 
-  async markAsSent(invoiceId: string): Promise<MarkInvoiceAsSentResponse> {
-    return this.http.post<MarkInvoiceAsSentResponse>({
+  async markAsSent(invoiceId: string): Promise<void> {
+    await this.http.post({
       path: ['invoices', invoiceId, 'status', 'sent'],
     })
   }
 
-  async markAsVoid(invoiceId: string): Promise<VoidInvoiceResponse> {
-    return this.http.post<VoidInvoiceResponse>({
+  async markAsVoid(invoiceId: string): Promise<void> {
+    await this.http.post({
       path: ['invoices', invoiceId, 'status', 'void'],
     })
   }
 
-  async markAsDraft(invoiceId: string): Promise<MarkAsDraftResponse> {
-    return this.http.post<MarkAsDraftResponse>({
+  async markAsDraft(invoiceId: string): Promise<void> {
+    await this.http.post({
       path: ['invoices', invoiceId, 'status', 'draft'],
     })
   }
@@ -148,16 +127,16 @@ export class Invoices {
     invoiceId: string,
     data: EmailInvoiceRequest,
     params?: EmailInvoiceQuery
-  ): Promise<EmailInvoiceResponse> {
-    return this.http.post<EmailInvoiceResponse>({
+  ): Promise<void> {
+    await this.http.post({
       path: ['invoices', invoiceId, 'email'],
       query: { ...params },
       body: data,
     })
   }
 
-  async bulkEmail(params: EmailInvoicesQuery): Promise<EmailInvoicesResponse> {
-    return this.http.post<EmailInvoicesResponse>({
+  async bulkEmail(params: EmailInvoicesQuery): Promise<void> {
+    await this.http.post({
       path: ['invoices', 'email'],
       query: params,
     })
@@ -172,38 +151,38 @@ export class Invoices {
     return data
   }
 
-  async bulkExport(params: BulkPrintInvoicesQuery): Promise<BulkExportInvoicesResponse> {
-    return this.http.get<BulkExportInvoicesResponse>({
+  async bulkExport(params: BulkPrintInvoicesQuery): Promise<void> {
+    await this.http.get({
       path: ['invoices', 'pdf'],
       query: params,
     })
   }
 
-  async bulkPrint(params: BulkPrintInvoicesQuery): Promise<BulkPrintInvoicesResponse> {
-    return this.http.get<BulkPrintInvoicesResponse>({
+  async bulkPrint(params: BulkPrintInvoicesQuery): Promise<void> {
+    await this.http.get({
       path: ['invoices', 'print'],
       query: params,
     })
   }
 
-  async disablePaymentReminder(invoiceId: string): Promise<DisablePaymentReminderResponse> {
-    return this.http.post<DisablePaymentReminderResponse>({
+  async disablePaymentReminder(invoiceId: string): Promise<void> {
+    await this.http.post({
       path: ['invoices', invoiceId, 'paymentreminder', 'disable'],
     })
   }
 
-  async enablePaymentReminder(invoiceId: string): Promise<EnablePaymentReminderResponse> {
-    return this.http.post<EnablePaymentReminderResponse>({
+  async enablePaymentReminder(invoiceId: string): Promise<void> {
+    await this.http.post({
       path: ['invoices', invoiceId, 'paymentreminder', 'enable'],
     })
   }
 
-  async writeOff(invoiceId: string): Promise<WriteOffInvoiceResponse> {
-    return this.http.post<WriteOffInvoiceResponse>({ path: ['invoices', invoiceId, 'writeoff'] })
+  async writeOff(invoiceId: string): Promise<void> {
+    await this.http.post({ path: ['invoices', invoiceId, 'writeoff'] })
   }
 
-  async cancelWriteOff(invoiceId: string): Promise<CancelWriteOffResponse> {
-    return this.http.post<CancelWriteOffResponse>({
+  async cancelWriteOff(invoiceId: string): Promise<void> {
+    await this.http.post({
       path: ['invoices', invoiceId, 'writeoff', 'cancel'],
     })
   }
@@ -211,8 +190,8 @@ export class Invoices {
   async updateBillingAddress(
     invoiceId: string,
     data: InvoicesUpdateBillingAddressRequest
-  ): Promise<InvoicesUpdateBillingAddressResponse> {
-    return this.http.put<InvoicesUpdateBillingAddressResponse>({
+  ): Promise<void> {
+    await this.http.put({
       path: ['invoices', invoiceId, 'address', 'billing'],
       body: data,
     })
@@ -221,8 +200,8 @@ export class Invoices {
   async updateShippingAddress(
     invoiceId: string,
     data: InvoicesUpdateShippingAddressRequest
-  ): Promise<InvoicesUpdateShippingAddressResponse> {
-    return this.http.put<InvoicesUpdateShippingAddressResponse>({
+  ): Promise<void> {
+    await this.http.put({
       path: ['invoices', invoiceId, 'address', 'shipping'],
       body: data,
     })
@@ -235,11 +214,8 @@ export class Invoices {
     return templates
   }
 
-  async updateTemplate(
-    invoiceId: string,
-    templateId: string
-  ): Promise<UpdateInvoiceTemplateResponse> {
-    return this.http.put<UpdateInvoiceTemplateResponse>({
+  async updateTemplate(invoiceId: string, templateId: string): Promise<void> {
+    await this.http.put({
       path: ['invoices', invoiceId, 'templates', templateId],
     })
   }
@@ -258,8 +234,8 @@ export class Invoices {
     return credits
   }
 
-  async applyCredits(invoiceId: string, data: ApplyCreditsRequest): Promise<ApplyCreditsResponse> {
-    return this.http.post<ApplyCreditsResponse>({
+  async applyCredits(invoiceId: string, data: ApplyCreditsRequest): Promise<void> {
+    await this.http.post({
       path: ['invoices', invoiceId, 'credits'],
       body: data,
     })
@@ -275,11 +251,8 @@ export class Invoices {
     })
   }
 
-  async getAttachment(
-    invoiceId: string,
-    params?: GetInvoiceAttachmentQuery
-  ): Promise<GetInvoiceAttachmentResponse> {
-    return this.http.get<GetInvoiceAttachmentResponse>({
+  async getAttachment(invoiceId: string, params?: GetInvoiceAttachmentQuery): Promise<void> {
+    await this.http.get({
       path: ['invoices', invoiceId, 'attachment'],
       query: { ...params },
     })
@@ -288,18 +261,15 @@ export class Invoices {
   async updateAttachmentPreference(
     invoiceId: string,
     params: UpdateInvoiceAttachmentQuery
-  ): Promise<UpdateAttachmentPreferenceResponse> {
-    return this.http.put<UpdateAttachmentPreferenceResponse>({
+  ): Promise<void> {
+    await this.http.put({
       path: ['invoices', invoiceId, 'attachment'],
       query: params,
     })
   }
 
-  async addAttachment(
-    invoiceId: string,
-    params?: AddAttachmentToInvoiceQuery
-  ): Promise<AddAttachmentToInvoiceResponse> {
-    return this.http.post<AddAttachmentToInvoiceResponse>({
+  async addAttachment(invoiceId: string, params?: AddAttachmentToInvoiceQuery): Promise<void> {
+    await this.http.post({
       path: ['invoices', invoiceId, 'attachment'],
       query: { ...params },
     })
@@ -318,11 +288,8 @@ export class Invoices {
     return comments
   }
 
-  async addComment(
-    invoiceId: string,
-    data: CreateCommentRequest
-  ): Promise<InvoicesAddCommentResponse> {
-    return this.http.post<InvoicesAddCommentResponse>({
+  async addComment(invoiceId: string, data: CreateCommentRequest): Promise<void> {
+    await this.http.post({
       path: ['invoices', invoiceId, 'comments'],
       body: data,
     })
@@ -343,43 +310,40 @@ export class Invoices {
     await this.http.delete({ path: ['invoices', invoiceId, 'comments', commentId] })
   }
 
-  async submit(invoiceId: string): Promise<InvoicesApprovalActionResponse> {
-    return this.http.post<InvoicesApprovalActionResponse>({
+  async submit(invoiceId: string): Promise<void> {
+    await this.http.post({
       path: ['invoices', invoiceId, 'submit'],
     })
   }
 
-  async approve(invoiceId: string): Promise<InvoicesApprovalActionResponse> {
-    return this.http.post<InvoicesApprovalActionResponse>({
+  async approve(invoiceId: string): Promise<void> {
+    await this.http.post({
       path: ['invoices', invoiceId, 'approve'],
     })
   }
 
-  async approveFinal(invoiceId: string): Promise<InvoicesApprovalActionResponse> {
-    return this.http.post<InvoicesApprovalActionResponse>({
+  async approveFinal(invoiceId: string): Promise<void> {
+    await this.http.post({
       path: ['invoices', invoiceId, 'approve', 'final'],
     })
   }
 
-  async reject(
-    invoiceId: string,
-    data: InvoicesRejectRequest
-  ): Promise<InvoicesApprovalActionResponse> {
-    return this.http.post<InvoicesApprovalActionResponse>({
+  async reject(invoiceId: string, data: InvoicesRejectRequest): Promise<void> {
+    await this.http.post({
       path: ['invoices', invoiceId, 'reject'],
       body: data,
     })
   }
 
-  async bulkSubmit(params: BulkSubmitInvoicesQuery): Promise<InvoicesApprovalActionResponse> {
-    return this.http.post<InvoicesApprovalActionResponse>({
+  async bulkSubmit(params: BulkSubmitInvoicesQuery): Promise<void> {
+    await this.http.post({
       path: ['invoices', 'submit'],
       query: params,
     })
   }
 
-  async bulkApprove(params: BulkApproveInvoicesQuery): Promise<InvoicesApprovalActionResponse> {
-    return this.http.post<InvoicesApprovalActionResponse>({
+  async bulkApprove(params: BulkApproveInvoicesQuery): Promise<void> {
+    await this.http.post({
       path: ['invoices', 'approve'],
       query: params,
     })

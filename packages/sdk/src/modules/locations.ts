@@ -1,15 +1,11 @@
 import type {
   CreateLocationRequest,
   CreateLocationResponse,
-  EnableLocationResponse,
   GetLocationResponse,
   ListLocationsQuery,
   ListLocationResponse,
   ListUsersOfLocationQuery,
   ListUsersOfLocationResponse,
-  LocationsMarkAsActiveResponse,
-  LocationsMarkAsInactiveResponse,
-  MarkAsPrimaryResponse,
   UpdateLocationRequest,
   UpdateLocationResponse,
 } from '@zapi-inventory/typegen'
@@ -19,8 +15,8 @@ import type { HTTPClient } from '../http.ts'
 export class Locations {
   constructor(private readonly http: HTTPClient) {}
 
-  async enable(): Promise<EnableLocationResponse> {
-    return this.http.post<EnableLocationResponse>({ path: ['settings', 'locations', 'enable'] })
+  async enable(): Promise<void> {
+    await this.http.post({ path: ['settings', 'locations', 'enable'] })
   }
 
   async list(params?: ListLocationsQuery): Promise<ListLocationResponse['locations']> {
@@ -61,20 +57,20 @@ export class Locations {
     await this.http.delete({ path: ['locations', locationId] })
   }
 
-  async markAsActive(locationId: string): Promise<LocationsMarkAsActiveResponse> {
-    return this.http.post<LocationsMarkAsActiveResponse>({
+  async markAsActive(locationId: string): Promise<void> {
+    await this.http.post({
       path: ['locations', locationId, 'active'],
     })
   }
 
-  async markAsInactive(locationId: string): Promise<LocationsMarkAsInactiveResponse> {
-    return this.http.post<LocationsMarkAsInactiveResponse>({
+  async markAsInactive(locationId: string): Promise<void> {
+    await this.http.post({
       path: ['locations', locationId, 'inactive'],
     })
   }
 
-  async markAsPrimary(locationId: string): Promise<MarkAsPrimaryResponse> {
-    return this.http.post<MarkAsPrimaryResponse>({
+  async markAsPrimary(locationId: string): Promise<void> {
+    await this.http.post({
       path: ['locations', locationId, 'markasprimary'],
     })
   }

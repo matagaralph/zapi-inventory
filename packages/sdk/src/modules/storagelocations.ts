@@ -1,15 +1,9 @@
 import type {
-  BulkDeleteStorageLocationsResponse,
   ConfigureItemDefaultStorageLocationRequest,
-  ConfigureItemDefaultStorageLocationResponse,
   CreateStorageLocationRequest,
   CreateStorageLocationResponse,
   CreateStorageZoneRequest,
   CreateStorageZoneResponse,
-  DeleteStorageLocationResponse,
-  DeleteStorageZoneResponse,
-  DisableStorageLocationsResponse,
-  EnableStorageLocationsResponse,
   GetItemDefaultStorageLocationResponse,
   GetItemStorageLocationMappingsResponse,
   GetStorageLocationResponse,
@@ -20,16 +14,11 @@ import type {
   ListStorageZonesQuery,
   MapStorageLocationsToItemRequest,
   MarkStorageLocationsAsActiveQuery,
-  MarkStorageLocationsAsActiveResponse,
   MarkStorageLocationsAsInactiveQuery,
-  MarkStorageLocationsAsInactiveResponse,
   MarkStorageZonesAsActiveQuery,
-  MarkStorageZonesAsActiveResponse,
   MarkStorageZonesAsInactiveQuery,
-  MarkStorageZonesAsInactiveResponse,
   BulkDeleteStorageLocationsQuery,
   GetItemStorageLocationMappingsQuery,
-  UpdateItemStorageLocationMappingsResponse,
   UpdateStorageLocationRequest,
   UpdateStorageLocationResponse,
   UpdateStorageZoneRequest,
@@ -41,26 +30,26 @@ import type { HTTPClient } from '../http.ts'
 export class StorageLocations {
   constructor(private readonly http: HTTPClient) {}
 
-  async enableForWarehouse(warehouseId: string): Promise<EnableStorageLocationsResponse> {
-    return this.http.post<EnableStorageLocationsResponse>({
+  async enableForWarehouse(warehouseId: string): Promise<void> {
+    await this.http.post({
       path: ['settings', 'warehouses', warehouseId, 'storagelocations', 'enable'],
     })
   }
 
-  async disableForWarehouse(warehouseId: string): Promise<DisableStorageLocationsResponse> {
-    return this.http.post<DisableStorageLocationsResponse>({
+  async disableForWarehouse(warehouseId: string): Promise<void> {
+    await this.http.post({
       path: ['settings', 'warehouses', warehouseId, 'storagelocations', 'disable'],
     })
   }
 
-  async enableForLocation(locationId: string): Promise<EnableStorageLocationsResponse> {
-    return this.http.post<EnableStorageLocationsResponse>({
+  async enableForLocation(locationId: string): Promise<void> {
+    await this.http.post({
       path: ['locations', locationId, 'storagelocations', 'enable'],
     })
   }
 
-  async disableForLocation(locationId: string): Promise<DisableStorageLocationsResponse> {
-    return this.http.post<DisableStorageLocationsResponse>({
+  async disableForLocation(locationId: string): Promise<void> {
+    await this.http.post({
       path: ['locations', locationId, 'storagelocations', 'disable'],
     })
   }
@@ -85,19 +74,15 @@ export class StorageLocations {
     return storage_zone
   }
 
-  async bulkMarkZonesAsActive(
-    params: MarkStorageZonesAsActiveQuery
-  ): Promise<MarkStorageZonesAsActiveResponse> {
-    return this.http.put<MarkStorageZonesAsActiveResponse>({
+  async bulkMarkZonesAsActive(params: MarkStorageZonesAsActiveQuery): Promise<void> {
+    await this.http.put({
       path: ['storagezones', 'active'],
       query: params,
     })
   }
 
-  async bulkMarkZonesAsInactive(
-    params: MarkStorageZonesAsInactiveQuery
-  ): Promise<MarkStorageZonesAsInactiveResponse> {
-    return this.http.put<MarkStorageZonesAsInactiveResponse>({
+  async bulkMarkZonesAsInactive(params: MarkStorageZonesAsInactiveQuery): Promise<void> {
+    await this.http.put({
       path: ['storagezones', 'inactive'],
       query: params,
     })
@@ -122,7 +107,7 @@ export class StorageLocations {
   }
 
   async deleteZone(zoneId: string): Promise<void> {
-    await this.http.delete<DeleteStorageZoneResponse>({ path: ['storagezones', zoneId] })
+    await this.http.delete({ path: ['storagezones', zoneId] })
   }
 
   async list(
@@ -145,28 +130,22 @@ export class StorageLocations {
     return storage_location
   }
 
-  async bulkDelete(
-    params: BulkDeleteStorageLocationsQuery
-  ): Promise<BulkDeleteStorageLocationsResponse> {
-    return this.http.delete<BulkDeleteStorageLocationsResponse>({
+  async bulkDelete(params: BulkDeleteStorageLocationsQuery): Promise<void> {
+    await this.http.delete({
       path: ['storagelocations'],
       query: params,
     })
   }
 
-  async bulkMarkAsActive(
-    params: MarkStorageLocationsAsActiveQuery
-  ): Promise<MarkStorageLocationsAsActiveResponse> {
-    return this.http.post<MarkStorageLocationsAsActiveResponse>({
+  async bulkMarkAsActive(params: MarkStorageLocationsAsActiveQuery): Promise<void> {
+    await this.http.post({
       path: ['storagelocations', 'active'],
       query: params,
     })
   }
 
-  async bulkMarkAsInactive(
-    params: MarkStorageLocationsAsInactiveQuery
-  ): Promise<MarkStorageLocationsAsInactiveResponse> {
-    return this.http.post<MarkStorageLocationsAsInactiveResponse>({
+  async bulkMarkAsInactive(params: MarkStorageLocationsAsInactiveQuery): Promise<void> {
+    await this.http.post({
       path: ['storagelocations', 'inactive'],
       query: params,
     })
@@ -191,7 +170,7 @@ export class StorageLocations {
   }
 
   async delete(storageId: string): Promise<void> {
-    await this.http.delete<DeleteStorageLocationResponse>({ path: ['storagelocations', storageId] })
+    await this.http.delete({ path: ['storagelocations', storageId] })
   }
 
   async getItemMappings(
@@ -206,11 +185,8 @@ export class StorageLocations {
     return storage_locations_product_mapping
   }
 
-  async updateItemMappings(
-    itemId: string,
-    data: MapStorageLocationsToItemRequest
-  ): Promise<UpdateItemStorageLocationMappingsResponse> {
-    return this.http.put<UpdateItemStorageLocationMappingsResponse>({
+  async updateItemMappings(itemId: string, data: MapStorageLocationsToItemRequest): Promise<void> {
+    await this.http.put({
       path: ['items', itemId, 'storagelocationsmapping'],
       body: data,
     })
@@ -229,8 +205,8 @@ export class StorageLocations {
   async configureItemDefault(
     itemId: string,
     data: ConfigureItemDefaultStorageLocationRequest
-  ): Promise<ConfigureItemDefaultStorageLocationResponse> {
-    return this.http.put<ConfigureItemDefaultStorageLocationResponse>({
+  ): Promise<void> {
+    await this.http.put({
       path: ['items', itemId, 'configure', 'defaultstorage'],
       body: data,
     })
@@ -249,8 +225,8 @@ export class StorageLocations {
   async configureCompositeItemDefault(
     itemId: string,
     data: ConfigureItemDefaultStorageLocationRequest
-  ): Promise<ConfigureItemDefaultStorageLocationResponse> {
-    return this.http.put<ConfigureItemDefaultStorageLocationResponse>({
+  ): Promise<void> {
+    await this.http.put({
       path: ['compositeitems', itemId, 'configure', 'defaultstorage'],
       body: data,
     })

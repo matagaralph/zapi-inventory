@@ -1,10 +1,7 @@
 import type {
   CreateItemGroupRequest,
   CreateItemGroupResponse,
-  DeleteItemGroupResponse,
   GetItemGroupResponse,
-  ItemgroupsMarkAsActiveResponse,
-  ItemgroupsMarkAsInactiveResponse,
   ListItemGroupsQuery,
   ListItemGroupsResponse,
   UpdateItemGroupRequest,
@@ -40,17 +37,17 @@ export class ItemGroups {
   }
 
   async delete(itemgroupId: string): Promise<void> {
-    await this.http.delete<DeleteItemGroupResponse>({ path: ['itemgroups', itemgroupId] })
+    await this.http.delete({ path: ['itemgroups', itemgroupId] })
   }
 
-  async markAsActive(itemgroupId: string): Promise<ItemgroupsMarkAsActiveResponse> {
-    return this.http.post<ItemgroupsMarkAsActiveResponse>({
+  async markAsActive(itemgroupId: string): Promise<void> {
+    await this.http.post({
       path: ['itemgroups', itemgroupId, 'active'],
     })
   }
 
-  async markAsInactive(itemgroupId: string): Promise<ItemgroupsMarkAsInactiveResponse> {
-    return this.http.post<ItemgroupsMarkAsInactiveResponse>({
+  async markAsInactive(itemgroupId: string): Promise<void> {
+    await this.http.post({
       path: ['itemgroups', itemgroupId, 'inactive'],
     })
   }

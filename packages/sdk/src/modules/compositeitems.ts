@@ -10,8 +10,6 @@ import type {
   ListAssembliesQuery,
   ListCompositeItemsQuery,
   ListCompositeItemsResponse,
-  MarkAsActiveResponse,
-  MarkAsInactiveResponse,
   MarkAssemblyAsBuiltResponse,
   MarkAssemblyAsConfirmedResponse,
   UpdateAssemblyQuery,
@@ -19,7 +17,6 @@ import type {
   UpdateBundleResponse,
   UpdateCompositeItemRequest,
   UpdateCompositeItemResponse,
-  UploadCompositeItemImageResponse,
 } from '@zapi-inventory/typegen'
 
 import type { HTTPClient } from '../http.ts'
@@ -67,25 +64,22 @@ export class CompositeItems {
     await this.http.delete({ path: ['compositeitems', compositeItemId] })
   }
 
-  async markAsActive(compositeItemId: string): Promise<MarkAsActiveResponse> {
-    return this.http.post<MarkAsActiveResponse>({
+  async markAsActive(compositeItemId: string): Promise<void> {
+    await this.http.post({
       path: ['compositeitems', compositeItemId, 'active'],
     })
   }
 
-  async markAsInactive(compositeItemId: string): Promise<MarkAsInactiveResponse> {
-    return this.http.post<MarkAsInactiveResponse>({
+  async markAsInactive(compositeItemId: string): Promise<void> {
+    await this.http.post({
       path: ['compositeitems', compositeItemId, 'inactive'],
     })
   }
 
-  async uploadImage(
-    compositeItemId: string,
-    image: Blob
-  ): Promise<UploadCompositeItemImageResponse> {
+  async uploadImage(compositeItemId: string, image: Blob): Promise<void> {
     const body = new FormData()
     body.append('image', image)
-    return this.http.post<UploadCompositeItemImageResponse>({
+    await this.http.post({
       path: ['compositeitems', compositeItemId, 'image'],
       body,
     })

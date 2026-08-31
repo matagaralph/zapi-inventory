@@ -1,24 +1,11 @@
 import type {
-  BulkDeleteItemsResponse,
   BulkFetchItemDetailsResponse,
   BulkUpdateItemLocationPermissionsQuery,
-  BulkMarkItemsActiveResponse,
-  BulkMarkItemsInactiveResponse,
-  BulkUpdateItemLocationPermissionsResponse,
   CreateItemRequest,
   CreateItemResponse,
-  DeleteItemBackImageResponse,
-  DeleteItemImageResponse,
-  DeleteItemImagesResponse,
-  DeleteItemResponse,
-  DisableStorageLocationResponse,
-  EnableStorageLocationResponse,
   GetItemResponse,
   GetVariantOpeningStockResponse,
   GroupItemsRequest,
-  GroupItemsResponse,
-  ItemsMarkAsActiveResponse,
-  ItemsMarkAsInactiveResponse,
   ListItemDeliveryChallansResponse,
   ListItemDeliveryChallansQuery,
   ListItemInvoicesResponse,
@@ -35,25 +22,13 @@ import type {
   ListItemSalesOrdersQuery,
   ListItemSalesReceiptsResponse,
   ListItemSalesReceiptsQuery,
-  MarkImageAsBackImageResponse,
   MoveItemRequest,
-  MoveItemResponse,
   ReorderItemImagesRequest,
-  ReorderItemImagesResponse,
-  UngroupItemsResponse,
-  UpdateItemCustomfieldResponse,
-  UpdateItemLocationPermissionsResponse,
   UpdateItemRequest,
   UpdateItemResponse,
   UpdateVariantOpeningStockRequest,
-  UpdateVariantOpeningStockResponse,
-  UploadItemBackImageResponse,
-  UploadItemImageResponse,
-  UploadItemImagesResponse,
   UploadItemImagesQuery,
   ValidateAndMapSerialNumbersRequest,
-  ValidateAndMapSerialNumbersResponse,
-  ValidateSerialNumbersResponse,
   ValidateSerialNumbersQuery,
 } from '@zapi-inventory/typegen'
 
@@ -78,8 +53,8 @@ export class Items {
     return item
   }
 
-  async bulkDelete(itemIds?: string): Promise<BulkDeleteItemsResponse> {
-    return this.http.delete<BulkDeleteItemsResponse>({
+  async bulkDelete(itemIds?: string): Promise<void> {
+    await this.http.delete({
       path: ['items'],
       query: { item_ids: itemIds },
     })
@@ -107,14 +82,11 @@ export class Items {
   }
 
   async delete(itemId: string): Promise<void> {
-    await this.http.delete<DeleteItemResponse>({ path: ['items', itemId] })
+    await this.http.delete({ path: ['items', itemId] })
   }
 
-  async updateCustomField(
-    itemId: string,
-    data: ItemCustomFieldUpdate[]
-  ): Promise<UpdateItemCustomfieldResponse> {
-    return this.http.put<UpdateItemCustomfieldResponse>({
+  async updateCustomField(itemId: string, data: ItemCustomFieldUpdate[]): Promise<void> {
+    await this.http.put({
       path: ['item', itemId, 'customfields'],
       body: data,
     })
@@ -127,25 +99,25 @@ export class Items {
     })
   }
 
-  async uploadImage(itemId: string, image: Blob): Promise<UploadItemImageResponse> {
+  async uploadImage(itemId: string, image: Blob): Promise<void> {
     const body = new FormData()
     body.append('image', image)
-    return this.http.post<UploadItemImageResponse>({
+    await this.http.post({
       path: ['items', itemId, 'image'],
       body,
     })
   }
 
-  async deleteImage(itemId: string): Promise<DeleteItemImageResponse> {
-    return this.http.delete<DeleteItemImageResponse>({ path: ['items', itemId, 'image'] })
+  async deleteImage(itemId: string): Promise<void> {
+    await this.http.delete({ path: ['items', itemId, 'image'] })
   }
 
-  async markAsActive(itemId: string): Promise<ItemsMarkAsActiveResponse> {
-    return this.http.post<ItemsMarkAsActiveResponse>({ path: ['items', itemId, 'active'] })
+  async markAsActive(itemId: string): Promise<void> {
+    await this.http.post({ path: ['items', itemId, 'active'] })
   }
 
-  async markAsInactive(itemId: string): Promise<ItemsMarkAsInactiveResponse> {
-    return this.http.post<ItemsMarkAsInactiveResponse>({ path: ['items', itemId, 'inactive'] })
+  async markAsInactive(itemId: string): Promise<void> {
+    await this.http.post({ path: ['items', itemId, 'inactive'] })
   }
 
   async getVariantOpeningStock(
@@ -160,8 +132,8 @@ export class Items {
   async updateVariantOpeningStock(
     variantId: string,
     data: UpdateVariantOpeningStockRequest
-  ): Promise<UpdateVariantOpeningStockResponse> {
-    return this.http.put<UpdateVariantOpeningStockResponse>({
+  ): Promise<void> {
+    await this.http.put({
       path: ['variants', variantId, 'openingstock'],
       body: data,
     })
@@ -171,104 +143,94 @@ export class Items {
     itemId: string,
     images: Blob[],
     params?: UploadItemImagesQuery
-  ): Promise<UploadItemImagesResponse> {
+  ): Promise<void> {
     const body = new FormData()
     for (const image of images) body.append('image', image)
-    return this.http.post<UploadItemImagesResponse>({
+    await this.http.post({
       path: ['items', itemId, 'images'],
       body,
       query: params,
     })
   }
 
-  async deleteImages(itemId: string, documentIds: string): Promise<DeleteItemImagesResponse> {
-    return this.http.delete<DeleteItemImagesResponse>({
+  async deleteImages(itemId: string, documentIds: string): Promise<void> {
+    await this.http.delete({
       path: ['items', itemId, 'images'],
       query: { document_ids: documentIds },
     })
   }
 
-  async reorderImages(
-    itemId: string,
-    data: ReorderItemImagesRequest
-  ): Promise<ReorderItemImagesResponse> {
-    return this.http.post<ReorderItemImagesResponse>({
+  async reorderImages(itemId: string, data: ReorderItemImagesRequest): Promise<void> {
+    await this.http.post({
       path: ['items', itemId, 'images', 'reorder'],
       body: data,
     })
   }
 
-  async uploadBackImage(
-    itemId: string,
-    backImage: Blob,
-    documentId?: string
-  ): Promise<UploadItemBackImageResponse> {
+  async uploadBackImage(itemId: string, backImage: Blob, documentId?: string): Promise<void> {
     const body = new FormData()
     body.append('back_image', backImage)
-    return this.http.post<UploadItemBackImageResponse>({
+    await this.http.post({
       path: ['items', itemId, 'backimage'],
       body,
       query: { document_id: documentId },
     })
   }
 
-  async deleteBackImage(itemId: string, documentId?: string): Promise<DeleteItemBackImageResponse> {
-    return this.http.delete<DeleteItemBackImageResponse>({
+  async deleteBackImage(itemId: string, documentId?: string): Promise<void> {
+    await this.http.delete({
       path: ['items', itemId, 'backimage'],
       query: { document_id: documentId },
     })
   }
 
-  async markImageAsBackImage(
-    itemId: string,
-    imageId: string
-  ): Promise<MarkImageAsBackImageResponse> {
-    return this.http.put<MarkImageAsBackImageResponse>({
+  async markImageAsBackImage(itemId: string, imageId: string): Promise<void> {
+    await this.http.put({
       path: ['items', itemId, 'images', imageId, 'backimage'],
     })
   }
 
-  async bulkMarkAsActive(itemIds: string): Promise<BulkMarkItemsActiveResponse> {
-    return this.http.post<BulkMarkItemsActiveResponse>({
+  async bulkMarkAsActive(itemIds: string): Promise<void> {
+    await this.http.post({
       path: ['items', 'active'],
       query: { item_ids: itemIds },
     })
   }
 
-  async bulkMarkAsInactive(itemIds: string): Promise<BulkMarkItemsInactiveResponse> {
-    return this.http.post<BulkMarkItemsInactiveResponse>({
+  async bulkMarkAsInactive(itemIds: string): Promise<void> {
+    await this.http.post({
       path: ['items', 'inactive'],
       query: { item_ids: itemIds },
     })
   }
 
-  async ungroup(itemIds?: string, compositeItemIds?: string): Promise<UngroupItemsResponse> {
-    return this.http.post<UngroupItemsResponse>({
+  async ungroup(itemIds?: string, compositeItemIds?: string): Promise<void> {
+    await this.http.post({
       path: ['items', 'ungroup'],
       query: { item_ids: itemIds, composite_item_ids: compositeItemIds },
     })
   }
 
-  async enableStorageLocation(itemIds: string): Promise<EnableStorageLocationResponse> {
-    return this.http.post<EnableStorageLocationResponse>({
+  async enableStorageLocation(itemIds: string): Promise<void> {
+    await this.http.post({
       path: ['items', 'enablestoragelocation'],
       query: { item_ids: itemIds },
     })
   }
 
-  async disableStorageLocation(itemIds: string): Promise<DisableStorageLocationResponse> {
-    return this.http.post<DisableStorageLocationResponse>({
+  async disableStorageLocation(itemIds: string): Promise<void> {
+    await this.http.post({
       path: ['items', 'disablestoragelocation'],
       query: { item_ids: itemIds },
     })
   }
 
-  async move(itemId: string, data: MoveItemRequest): Promise<MoveItemResponse> {
-    return this.http.put<MoveItemResponse>({ path: ['items', 'move', itemId], body: data })
+  async move(itemId: string, data: MoveItemRequest): Promise<void> {
+    await this.http.put({ path: ['items', 'move', itemId], body: data })
   }
 
-  async group(groupId: string, data: GroupItemsRequest): Promise<GroupItemsResponse> {
-    return this.http.put<GroupItemsResponse>({
+  async group(groupId: string, data: GroupItemsRequest): Promise<void> {
+    await this.http.put({
       path: ['items', 'grouping', groupId],
       body: data,
     })
@@ -278,8 +240,8 @@ export class Items {
     itemId: string,
     associatedWithAllLocations: boolean,
     allowedLocationIds?: string
-  ): Promise<UpdateItemLocationPermissionsResponse> {
-    return this.http.put<UpdateItemLocationPermissionsResponse>({
+  ): Promise<void> {
+    await this.http.put({
       path: ['items', itemId, 'locations', 'permissions'],
       query: {
         associated_with_all_locations: associatedWithAllLocations,
@@ -290,8 +252,8 @@ export class Items {
 
   async bulkUpdateLocationPermissions(
     params?: BulkUpdateItemLocationPermissionsQuery
-  ): Promise<BulkUpdateItemLocationPermissionsResponse> {
-    return this.http.put<BulkUpdateItemLocationPermissionsResponse>({
+  ): Promise<void> {
+    await this.http.put({
       path: ['items', 'locations', 'permissions'],
       query: params,
     })
@@ -302,8 +264,8 @@ export class Items {
     entityType: string,
     serialNumbers: string,
     params?: Omit<ValidateSerialNumbersQuery, 'entity_type' | 'serial_numbers'>
-  ): Promise<ValidateSerialNumbersResponse> {
-    return this.http.post<ValidateSerialNumbersResponse>({
+  ): Promise<void> {
+    await this.http.post({
       path: ['items', itemId, 'serialnumber', 'validate'],
       query: { entity_type: entityType, serial_numbers: serialNumbers, ...params },
     })
@@ -312,8 +274,8 @@ export class Items {
   async validateAndMapSerialNumbers(
     itemId: string,
     data: ValidateAndMapSerialNumbersRequest
-  ): Promise<ValidateAndMapSerialNumbersResponse> {
-    return this.http.post<ValidateAndMapSerialNumbersResponse>({
+  ): Promise<void> {
+    await this.http.post({
       path: ['items', itemId, 'serialnumber', 'validateandmap'],
       body: data,
     })

@@ -2,9 +2,7 @@ import type {
   CreateMoveOrderRequest,
   CreateMoveOrderQuery,
   CreateMoveOrderResponse,
-  DeleteMoveOrderDocumentResponse,
   DeleteMoveOrderDocumentQuery,
-  DeleteMoveOrderResponse,
   GetMoveOrderDocumentQuery,
   GetMoveOrderQuery,
   GetMoveOrderResponse,
@@ -14,7 +12,6 @@ import type {
   ListMoveOrdersResponse,
   MarkMoveOrderAsCompletedQuery,
   MoveOrderAttachmentResponse,
-  MoveOrderStatusResponse,
   UpdateMoveOrderRequest,
   UpdateMoveOrderQuery,
   UpdateMoveOrderResponse,
@@ -52,8 +49,8 @@ export class MoveOrders {
     return moveorder
   }
 
-  async bulkDelete(params?: ListMoveOrdersQuery): Promise<DeleteMoveOrderResponse> {
-    return this.http.delete<DeleteMoveOrderResponse>({ path: ['moveorders'], query: { ...params } })
+  async bulkDelete(params?: ListMoveOrdersQuery): Promise<void> {
+    await this.http.delete({ path: ['moveorders'], query: { ...params } })
   }
 
   async get(
@@ -91,23 +88,20 @@ export class MoveOrders {
     return comments
   }
 
-  async markAsConfirmed(moveorderId: string): Promise<MoveOrderStatusResponse> {
-    return this.http.post<MoveOrderStatusResponse>({
+  async markAsConfirmed(moveorderId: string): Promise<void> {
+    await this.http.post({
       path: ['moveorders', moveorderId, 'markasconfirmed'],
     })
   }
 
-  async markAsInProgress(moveorderId: string): Promise<MoveOrderStatusResponse> {
-    return this.http.post<MoveOrderStatusResponse>({
+  async markAsInProgress(moveorderId: string): Promise<void> {
+    await this.http.post({
       path: ['moveorders', moveorderId, 'markasinprogress'],
     })
   }
 
-  async markAsCompleted(
-    moveorderId: string,
-    params: MarkMoveOrderAsCompletedQuery
-  ): Promise<MoveOrderStatusResponse> {
-    return this.http.post<MoveOrderStatusResponse>({
+  async markAsCompleted(moveorderId: string, params: MarkMoveOrderAsCompletedQuery): Promise<void> {
+    await this.http.post({
       path: ['moveorders', moveorderId, 'markascompleted'],
       query: params,
     })
@@ -139,8 +133,8 @@ export class MoveOrders {
     moveorderId: string,
     documentId: string,
     params?: DeleteMoveOrderDocumentQuery
-  ): Promise<DeleteMoveOrderDocumentResponse> {
-    return this.http.delete<DeleteMoveOrderDocumentResponse>({
+  ): Promise<void> {
+    await this.http.delete({
       path: ['moveorders', moveorderId, 'documents', documentId],
       query: { ...params },
     })

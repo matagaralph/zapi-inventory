@@ -6,11 +6,8 @@ import type {
   GetTransferOrderResponse,
   ListTransferOrdersQuery,
   ListTransferOrdersResponse,
-  MarkInTransitResponse,
   MarkTransferOrderAsReceivedQuery,
   MarkTransferOrderInTransitQuery,
-  TransferordersApprovalActionResponse,
-  TransferordersMarkAsReceivedResponse,
   TransferordersRejectRequest,
   UpdateTransferOrderRequest,
   UpdateTransferOrderQuery,
@@ -81,8 +78,8 @@ export class TransferOrders {
   async markAsReceived(
     transferOrderId: string,
     params: MarkTransferOrderAsReceivedQuery
-  ): Promise<TransferordersMarkAsReceivedResponse> {
-    return this.http.post<TransferordersMarkAsReceivedResponse>({
+  ): Promise<void> {
+    await this.http.post({
       path: ['transferorders', transferOrderId, 'markastransferred'],
       query: params,
     })
@@ -91,36 +88,33 @@ export class TransferOrders {
   async markInTransit(
     transferOrderId: string,
     params?: MarkTransferOrderInTransitQuery
-  ): Promise<MarkInTransitResponse> {
-    return this.http.post<MarkInTransitResponse>({
+  ): Promise<void> {
+    await this.http.post({
       path: ['transferorders', transferOrderId, 'intransit'],
       query: params,
     })
   }
 
-  async submit(transferOrderId: string): Promise<TransferordersApprovalActionResponse> {
-    return this.http.post<TransferordersApprovalActionResponse>({
+  async submit(transferOrderId: string): Promise<void> {
+    await this.http.post({
       path: ['transferorders', transferOrderId, 'submit'],
     })
   }
 
-  async approve(transferOrderId: string): Promise<TransferordersApprovalActionResponse> {
-    return this.http.post<TransferordersApprovalActionResponse>({
+  async approve(transferOrderId: string): Promise<void> {
+    await this.http.post({
       path: ['transferorders', transferOrderId, 'approve'],
     })
   }
 
-  async approveFinal(transferOrderId: string): Promise<TransferordersApprovalActionResponse> {
-    return this.http.post<TransferordersApprovalActionResponse>({
+  async approveFinal(transferOrderId: string): Promise<void> {
+    await this.http.post({
       path: ['transferorders', transferOrderId, 'approve', 'final'],
     })
   }
 
-  async reject(
-    transferOrderId: string,
-    data?: TransferordersRejectRequest
-  ): Promise<TransferordersApprovalActionResponse> {
-    return this.http.post<TransferordersApprovalActionResponse>({
+  async reject(transferOrderId: string, data?: TransferordersRejectRequest): Promise<void> {
+    await this.http.post({
       path: ['transferorders', transferOrderId, 'reject'],
       body: data,
     })

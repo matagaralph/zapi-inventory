@@ -4,7 +4,6 @@ import type {
   GetContactPersonResponse,
   ListContactPersonsQuery,
   ListContactPersonsResponse,
-  MarkAsPrimaryContactPersonResponse,
   UpdateContactPersonRequest,
   UpdateContactPersonResponse,
 } from '@zapi-inventory/typegen'
@@ -60,8 +59,8 @@ export class ContactPersons {
     await this.http.delete({ path: ['contacts', 'contactpersons', contactPersonId] })
   }
 
-  async markAsPrimary(contactPersonId: string): Promise<MarkAsPrimaryContactPersonResponse> {
-    return this.http.post<MarkAsPrimaryContactPersonResponse>({
+  async markAsPrimary(contactPersonId: string): Promise<void> {
+    await this.http.post({
       path: ['contacts', 'contactpersons', contactPersonId, 'primary'],
     })
   }

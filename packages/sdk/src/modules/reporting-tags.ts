@@ -1,5 +1,4 @@
 import type {
-  MarkDefaultOptionResponse,
   MarkDefaultOptionQuery,
   OptionsDetailPageResponse,
   OptionsResponse,
@@ -66,11 +65,8 @@ export class ReportingTags {
     return tag
   }
 
-  async markDefaultOption(
-    tagId: string,
-    params: MarkDefaultOptionQuery
-  ): Promise<MarkDefaultOptionResponse> {
-    return this.http.post<MarkDefaultOptionResponse>({
+  async markDefaultOption(tagId: string, params: MarkDefaultOptionQuery): Promise<void> {
+    await this.http.post({
       path: ['reportingtags', tagId],
       query: params,
     })

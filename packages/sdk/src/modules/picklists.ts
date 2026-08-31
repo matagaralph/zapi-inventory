@@ -8,7 +8,6 @@ import type {
   GetPicklistQuery,
   ListPicklistsQuery,
   ListPicklistsResponse,
-  MessageResponse,
   PicklistResponse,
   PicklistsAddCommentRequest,
   SearchPrLineItemsForPicklistQuery,
@@ -50,8 +49,8 @@ export class Picklists {
     return picklist
   }
 
-  async bulkDelete(params: BulkDeletePicklistsQuery): Promise<MessageResponse> {
-    return this.http.delete<MessageResponse>({
+  async bulkDelete(params: BulkDeletePicklistsQuery): Promise<void> {
+    await this.http.delete({
       path: ['picklists'],
       query: params,
     })
@@ -82,15 +81,15 @@ export class Picklists {
     await this.http.delete({ path: ['picklists', picklistId] })
   }
 
-  async setStatus(picklistId: string, params: SetPicklistStatusQuery): Promise<MessageResponse> {
-    return this.http.post<MessageResponse>({
+  async setStatus(picklistId: string, params: SetPicklistStatusQuery): Promise<void> {
+    await this.http.post({
       path: ['picklists', picklistId, 'setstatus'],
       query: params,
     })
   }
 
-  async bulkSetStatus(params: BulkSetPicklistStatusQuery): Promise<MessageResponse> {
-    return this.http.post<MessageResponse>({
+  async bulkSetStatus(params: BulkSetPicklistStatusQuery): Promise<void> {
+    await this.http.post({
       path: ['picklists', 'setstatus'],
       query: params,
     })
@@ -121,8 +120,8 @@ export class Picklists {
   async updateAdvancedTracking(
     picklistId: string,
     data: UpdateAdvancedTrackingRequest
-  ): Promise<MessageResponse> {
-    return this.http.put<MessageResponse>({
+  ): Promise<void> {
+    await this.http.put({
       path: ['picklists', picklistId, 'advancedtrackingdetails'],
       body: data,
     })

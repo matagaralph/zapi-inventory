@@ -1,7 +1,6 @@
 import type {
   BulkConfirmSalesordersResponse,
   BulkConfirmSalesOrdersQuery,
-  BulkDeleteSalesOrdersResponse,
   BulkSubmitSalesordersQuery,
   BulkApproveSalesordersQuery,
   CreateSalesOrderRequest,
@@ -10,9 +9,6 @@ import type {
   GetSalesOrderResponse,
   ListSalesOrdersQuery,
   ListSalesOrdersResponse,
-  MarkAsConfirmedResponse,
-  SalesordersApprovalActionResponse,
-  SalesordersMarkAsVoidResponse,
   SalesordersRejectRequest,
   UpdateSalesOrderRequest,
   UpdateSalesOrderQuery,
@@ -64,8 +60,8 @@ export class SalesOrders {
     return sales_order
   }
 
-  async bulkDelete(): Promise<BulkDeleteSalesOrdersResponse> {
-    return this.http.delete<BulkDeleteSalesOrdersResponse>({ path: ['salesorders'] })
+  async bulkDelete(): Promise<void> {
+    await this.http.delete({ path: ['salesorders'] })
   }
 
   async get(salesorderId: string): Promise<GetSalesOrderResponse['salesorder']> {
@@ -92,14 +88,14 @@ export class SalesOrders {
     await this.http.delete({ path: ['salesorders', salesorderId] })
   }
 
-  async markAsConfirmed(salesorderId: string): Promise<MarkAsConfirmedResponse> {
-    return this.http.post<MarkAsConfirmedResponse>({
+  async markAsConfirmed(salesorderId: string): Promise<void> {
+    await this.http.post({
       path: ['salesorders', salesorderId, 'status', 'confirmed'],
     })
   }
 
-  async markAsVoid(salesorderId: string): Promise<SalesordersMarkAsVoidResponse> {
-    return this.http.post<SalesordersMarkAsVoidResponse>({
+  async markAsVoid(salesorderId: string): Promise<void> {
+    await this.http.post({
       path: ['salesorders', salesorderId, 'status', 'void'],
     })
   }
@@ -111,45 +107,40 @@ export class SalesOrders {
     })
   }
 
-  async submit(salesorderId: string): Promise<SalesordersApprovalActionResponse> {
-    return this.http.post<SalesordersApprovalActionResponse>({
+  async submit(salesorderId: string): Promise<void> {
+    await this.http.post({
       path: ['salesorders', salesorderId, 'submit'],
     })
   }
 
-  async approve(salesorderId: string): Promise<SalesordersApprovalActionResponse> {
-    return this.http.post<SalesordersApprovalActionResponse>({
+  async approve(salesorderId: string): Promise<void> {
+    await this.http.post({
       path: ['salesorders', salesorderId, 'approve'],
     })
   }
 
-  async approveFinal(salesorderId: string): Promise<SalesordersApprovalActionResponse> {
-    return this.http.post<SalesordersApprovalActionResponse>({
+  async approveFinal(salesorderId: string): Promise<void> {
+    await this.http.post({
       path: ['salesorders', salesorderId, 'approve', 'final'],
     })
   }
 
-  async reject(
-    salesorderId: string,
-    data?: SalesordersRejectRequest
-  ): Promise<SalesordersApprovalActionResponse> {
-    return this.http.post<SalesordersApprovalActionResponse>({
+  async reject(salesorderId: string, data?: SalesordersRejectRequest): Promise<void> {
+    await this.http.post({
       path: ['salesorders', salesorderId, 'reject'],
       body: data,
     })
   }
 
-  async bulkSubmit(params: BulkSubmitSalesordersQuery): Promise<SalesordersApprovalActionResponse> {
-    return this.http.post<SalesordersApprovalActionResponse>({
+  async bulkSubmit(params: BulkSubmitSalesordersQuery): Promise<void> {
+    await this.http.post({
       path: ['salesorders', 'submit'],
       query: params,
     })
   }
 
-  async bulkApprove(
-    params: BulkApproveSalesordersQuery
-  ): Promise<SalesordersApprovalActionResponse> {
-    return this.http.post<SalesordersApprovalActionResponse>({
+  async bulkApprove(params: BulkApproveSalesordersQuery): Promise<void> {
+    await this.http.post({
       path: ['salesorders', 'approve'],
       query: params,
     })

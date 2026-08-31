@@ -1,5 +1,4 @@
 import type {
-  ApprovalActionResponse,
   BulkApproveBillsQuery,
   BulkSubmitBillsQuery,
   CreateBillRequest,
@@ -7,10 +6,7 @@ import type {
   GetBillResponse,
   ListBillsQuery,
   ListBillsResponse,
-  MarkAsOpenResponse,
-  MarkAsVoidResponse,
   RejectRequest,
-  UpdateBillCustomfieldResponse,
   UpdateBillRequest,
   UpdateBillResponse,
 } from '@zapi-inventory/typegen'
@@ -50,46 +46,46 @@ export class Bills {
   async updateCustomField(
     billId: string,
     data: { customfield_id?: string; label?: string; value?: string }[]
-  ): Promise<UpdateBillCustomfieldResponse> {
-    return this.http.put<UpdateBillCustomfieldResponse>({
+  ): Promise<void> {
+    await this.http.put({
       path: ['bill', billId, 'customfields'],
       body: data,
     })
   }
 
-  async markAsOpen(billId: string): Promise<MarkAsOpenResponse> {
-    return this.http.post<MarkAsOpenResponse>({ path: ['bills', billId, 'status', 'open'] })
+  async markAsOpen(billId: string): Promise<void> {
+    await this.http.post({ path: ['bills', billId, 'status', 'open'] })
   }
 
-  async markAsVoid(billId: string): Promise<MarkAsVoidResponse> {
-    return this.http.post<MarkAsVoidResponse>({ path: ['bills', billId, 'status', 'void'] })
+  async markAsVoid(billId: string): Promise<void> {
+    await this.http.post({ path: ['bills', billId, 'status', 'void'] })
   }
 
-  async submit(billId: string): Promise<ApprovalActionResponse> {
-    return this.http.post<ApprovalActionResponse>({ path: ['bills', billId, 'submit'] })
+  async submit(billId: string): Promise<void> {
+    await this.http.post({ path: ['bills', billId, 'submit'] })
   }
 
-  async approve(billId: string): Promise<ApprovalActionResponse> {
-    return this.http.post<ApprovalActionResponse>({ path: ['bills', billId, 'approve'] })
+  async approve(billId: string): Promise<void> {
+    await this.http.post({ path: ['bills', billId, 'approve'] })
   }
 
-  async approveFinal(billId: string): Promise<ApprovalActionResponse> {
-    return this.http.post<ApprovalActionResponse>({ path: ['bills', billId, 'approve', 'final'] })
+  async approveFinal(billId: string): Promise<void> {
+    await this.http.post({ path: ['bills', billId, 'approve', 'final'] })
   }
 
-  async reject(billId: string, data: RejectRequest): Promise<ApprovalActionResponse> {
-    return this.http.post<ApprovalActionResponse>({ path: ['bills', billId, 'reject'], body: data })
+  async reject(billId: string, data: RejectRequest): Promise<void> {
+    await this.http.post({ path: ['bills', billId, 'reject'], body: data })
   }
 
-  async bulkSubmit(params: BulkSubmitBillsQuery): Promise<ApprovalActionResponse> {
-    return this.http.post<ApprovalActionResponse>({
+  async bulkSubmit(params: BulkSubmitBillsQuery): Promise<void> {
+    await this.http.post({
       path: ['bills', 'submit'],
       query: params,
     })
   }
 
-  async bulkApprove(params: BulkApproveBillsQuery): Promise<ApprovalActionResponse> {
-    return this.http.post<ApprovalActionResponse>({
+  async bulkApprove(params: BulkApproveBillsQuery): Promise<void> {
+    await this.http.post({
       path: ['bills', 'approve'],
       query: params,
     })

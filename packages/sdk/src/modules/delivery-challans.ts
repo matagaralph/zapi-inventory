@@ -1,9 +1,7 @@
 import type {
-  ActionDeliveryChallanResponse,
   CreateDeliveryChallanRequest,
   CreateDeliveryChallanQuery,
   CreateDeliveryChallanResponse,
-  DeleteDeliveryChallanResponse,
   DeliveryChallansUpdateShippingAddressRequest,
   GetDeliveryChallanQuery,
   GetDeliveryChallanResponse,
@@ -66,32 +64,32 @@ export class DeliveryChallans {
     return deliverychallan
   }
 
-  async delete(deliverychallanId: string): Promise<DeleteDeliveryChallanResponse> {
-    return this.http.delete<DeleteDeliveryChallanResponse>({
+  async delete(deliverychallanId: string): Promise<void> {
+    await this.http.delete({
       path: ['deliverychallans', deliverychallanId],
     })
   }
 
-  async markAsOpen(deliverychallanId: string): Promise<ActionDeliveryChallanResponse> {
-    return this.http.post<ActionDeliveryChallanResponse>({
+  async markAsOpen(deliverychallanId: string): Promise<void> {
+    await this.http.post({
       path: ['deliverychallans', deliverychallanId, 'status', 'open'],
     })
   }
 
-  async markAsDelivered(deliverychallanId: string): Promise<ActionDeliveryChallanResponse> {
-    return this.http.post<ActionDeliveryChallanResponse>({
+  async markAsDelivered(deliverychallanId: string): Promise<void> {
+    await this.http.post({
       path: ['deliverychallans', deliverychallanId, 'status', 'delivered'],
     })
   }
 
-  async markAsReturned(deliverychallanId: string): Promise<ActionDeliveryChallanResponse> {
-    return this.http.post<ActionDeliveryChallanResponse>({
+  async markAsReturned(deliverychallanId: string): Promise<void> {
+    await this.http.post({
       path: ['deliverychallans', deliverychallanId, 'status', 'returned'],
     })
   }
 
-  async markAsUndelivered(deliverychallanId: string): Promise<ActionDeliveryChallanResponse> {
-    return this.http.post<ActionDeliveryChallanResponse>({
+  async markAsUndelivered(deliverychallanId: string): Promise<void> {
+    await this.http.post({
       path: ['deliverychallans', deliverychallanId, 'status', 'undelivered'],
     })
   }
@@ -99,30 +97,25 @@ export class DeliveryChallans {
   async return(
     params: ReturnDeliveryChallansQuery,
     data: ReturnDeliveryChallanRequest
-  ): Promise<ActionDeliveryChallanResponse> {
-    return this.http.put<ActionDeliveryChallanResponse>({
+  ): Promise<void> {
+    await this.http.put({
       path: ['deliverychallans', 'return'],
       query: params,
       body: data,
     })
   }
 
-  async undoReturn(
-    params: UndoReturnDeliveryChallansQuery
-  ): Promise<ActionDeliveryChallanResponse> {
-    return this.http.put<ActionDeliveryChallanResponse>({
+  async undoReturn(params: UndoReturnDeliveryChallansQuery): Promise<void> {
+    await this.http.put({
       path: ['deliverychallans', 'undo', 'return'],
       query: params,
     })
   }
 
-  async addAttachment(
-    deliverychallanId: string,
-    attachment: Blob
-  ): Promise<ActionDeliveryChallanResponse> {
+  async addAttachment(deliverychallanId: string, attachment: Blob): Promise<void> {
     const formData = new FormData()
     formData.append('attachment', attachment)
-    return this.http.post<ActionDeliveryChallanResponse>({
+    await this.http.post({
       path: ['deliverychallans', deliverychallanId, 'attachment'],
       body: formData,
     })
@@ -134,11 +127,8 @@ export class DeliveryChallans {
     })
   }
 
-  async deleteAttachment(
-    deliverychallanId: string,
-    documentId: string
-  ): Promise<ActionDeliveryChallanResponse> {
-    return this.http.delete<ActionDeliveryChallanResponse>({
+  async deleteAttachment(deliverychallanId: string, documentId: string): Promise<void> {
+    await this.http.delete({
       path: ['deliverychallans', deliverychallanId, 'documents', documentId],
     })
   }
@@ -150,11 +140,8 @@ export class DeliveryChallans {
     return templates
   }
 
-  async updateTemplate(
-    deliverychallanId: string,
-    templateId: string
-  ): Promise<ActionDeliveryChallanResponse> {
-    return this.http.put<ActionDeliveryChallanResponse>({
+  async updateTemplate(deliverychallanId: string, templateId: string): Promise<void> {
+    await this.http.put({
       path: ['deliverychallans', deliverychallanId, 'templates', templateId],
     })
   }
@@ -162,8 +149,8 @@ export class DeliveryChallans {
   async updateShippingAddress(
     deliverychallanId: string,
     data: DeliveryChallansUpdateShippingAddressRequest
-  ): Promise<ActionDeliveryChallanResponse> {
-    return this.http.put<ActionDeliveryChallanResponse>({
+  ): Promise<void> {
+    await this.http.put({
       path: ['deliverychallans', deliverychallanId, 'address', 'shipping'],
       body: data,
     })

@@ -7,9 +7,6 @@ import type {
   GetPurchaseOrderResponse,
   ListPurchaseOrdersQuery,
   ListPurchaseOrdersResponse,
-  MarkAsCancelledResponse,
-  MarkAsIssuedResponse,
-  PurchaseordersApprovalActionResponse,
   PurchaseordersRejectRequest,
   UpdatePurchaseOrderRequest,
   UpdatePurchaseOrderQuery,
@@ -70,59 +67,52 @@ export class PurchaseOrders {
     await this.http.delete({ path: ['purchaseorders', purchaseorderId] })
   }
 
-  async markAsIssued(purchaseorderId: string): Promise<MarkAsIssuedResponse> {
-    return this.http.post<MarkAsIssuedResponse>({
+  async markAsIssued(purchaseorderId: string): Promise<void> {
+    await this.http.post({
       path: ['purchaseorders', purchaseorderId, 'status', 'issued'],
     })
   }
 
-  async markAsCancelled(purchaseorderId: string): Promise<MarkAsCancelledResponse> {
-    return this.http.post<MarkAsCancelledResponse>({
+  async markAsCancelled(purchaseorderId: string): Promise<void> {
+    await this.http.post({
       path: ['purchaseorders', purchaseorderId, 'status', 'cancelled'],
     })
   }
 
-  async submit(purchaseorderId: string): Promise<PurchaseordersApprovalActionResponse> {
-    return this.http.post<PurchaseordersApprovalActionResponse>({
+  async submit(purchaseorderId: string): Promise<void> {
+    await this.http.post({
       path: ['purchaseorders', purchaseorderId, 'submit'],
     })
   }
 
-  async approve(purchaseorderId: string): Promise<PurchaseordersApprovalActionResponse> {
-    return this.http.post<PurchaseordersApprovalActionResponse>({
+  async approve(purchaseorderId: string): Promise<void> {
+    await this.http.post({
       path: ['purchaseorders', purchaseorderId, 'approve'],
     })
   }
 
-  async reject(
-    purchaseorderId: string,
-    data?: PurchaseordersRejectRequest
-  ): Promise<PurchaseordersApprovalActionResponse> {
-    return this.http.post<PurchaseordersApprovalActionResponse>({
+  async reject(purchaseorderId: string, data?: PurchaseordersRejectRequest): Promise<void> {
+    await this.http.post({
       path: ['purchaseorders', purchaseorderId, 'reject'],
       body: data,
     })
   }
 
-  async finalApprove(purchaseorderId: string): Promise<PurchaseordersApprovalActionResponse> {
-    return this.http.post<PurchaseordersApprovalActionResponse>({
+  async finalApprove(purchaseorderId: string): Promise<void> {
+    await this.http.post({
       path: ['purchaseorders', purchaseorderId, 'approve', 'final'],
     })
   }
 
-  async bulkSubmit(
-    params: BulkSubmitPurchaseordersQuery
-  ): Promise<PurchaseordersApprovalActionResponse> {
-    return this.http.post<PurchaseordersApprovalActionResponse>({
+  async bulkSubmit(params: BulkSubmitPurchaseordersQuery): Promise<void> {
+    await this.http.post({
       path: ['purchaseorders', 'submit'],
       query: params,
     })
   }
 
-  async bulkApprove(
-    params: BulkApprovePurchaseordersQuery
-  ): Promise<PurchaseordersApprovalActionResponse> {
-    return this.http.post<PurchaseordersApprovalActionResponse>({
+  async bulkApprove(params: BulkApprovePurchaseordersQuery): Promise<void> {
+    await this.http.post({
       path: ['purchaseorders', 'approve'],
       query: params,
     })

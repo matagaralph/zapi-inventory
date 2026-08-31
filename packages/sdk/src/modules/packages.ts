@@ -1,5 +1,4 @@
 import type {
-  BulkPrintPackagesResponse,
   BulkPrintPackagesQuery,
   CreatePackageRequest,
   CreatePackageQuery,
@@ -58,8 +57,8 @@ export class Packages {
     await this.http.delete({ path: ['packages', packageId] })
   }
 
-  async bulkPrint(params: BulkPrintPackagesQuery): Promise<BulkPrintPackagesResponse> {
-    return this.http.get<BulkPrintPackagesResponse>({
+  async bulkPrint(params: BulkPrintPackagesQuery): Promise<void> {
+    await this.http.get({
       path: ['packages', 'print'],
       query: params,
     })

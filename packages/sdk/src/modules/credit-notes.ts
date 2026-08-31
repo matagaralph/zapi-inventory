@@ -1,24 +1,12 @@
 import type {
   AddAttachmentToCreditNoteQuery,
-  AddAttachmentToCreditNoteResponse,
   AddCommentRequest,
-  AddCommentResponse,
   ApplyCreditsToInvoicesRequest,
-  ApplyCreditsToInvoicesResponse,
-  ApproveCreditNoteResponse,
-  ConvertCreditNoteToDraftResponse,
-  ConvertCreditNoteToOpenResponse,
   CreateCreditNoteQuery,
   CreateCreditNoteRequest,
   CreateCreditNoteResponse,
-  DeleteCommentResponse,
-  DeleteCreditNoteAttachmentResponse,
-  DeleteCreditNoteRefundResponse,
-  DeleteCreditNoteResponse,
-  DeleteCreditsAppliedToInvoiceResponse,
   EmailCreditNoteQuery,
   EmailCreditNoteRequest,
-  EmailCreditNoteResponse,
   EmailHistoryResponse,
   GetCreditNoteEmailContentQuery,
   GetCreditNoteQuery,
@@ -38,19 +26,13 @@ import type {
   RefundCreditNoteRequest,
   RefundCreditNoteResponse,
   RejectCreditNoteQuery,
-  RejectCreditNoteResponse,
-  SubmitCreditNoteForApprovalResponse,
   UpdateBillingAddressRequest,
-  UpdateBillingAddressResponse,
   UpdateCreditNoteQuery,
   UpdateCreditNoteRefundRequest,
   UpdateCreditNoteRefundResponse,
   UpdateCreditNoteRequest,
   UpdateCreditNoteResponse,
-  UpdateCreditNoteTemplateResponse,
   UpdateShippingAddressRequest,
-  UpdateShippingAddressResponse,
-  VoidCreditNoteResponse,
 } from '@zapi-inventory/typegen'
 
 import type { HTTPClient } from '../http.ts'
@@ -105,8 +87,8 @@ export class CreditNotes {
     return creditnote
   }
 
-  async delete(creditnoteId: string): Promise<DeleteCreditNoteResponse> {
-    return this.http.delete<DeleteCreditNoteResponse>({ path: ['creditnotes', creditnoteId] })
+  async delete(creditnoteId: string): Promise<void> {
+    await this.http.delete({ path: ['creditnotes', creditnoteId] })
   }
 
   async getEmailContent(
@@ -124,51 +106,45 @@ export class CreditNotes {
     creditnoteId: string,
     data: EmailCreditNoteRequest,
     params?: EmailCreditNoteQuery
-  ): Promise<EmailCreditNoteResponse> {
-    return this.http.post<EmailCreditNoteResponse>({
+  ): Promise<void> {
+    await this.http.post({
       path: ['creditnotes', creditnoteId, 'email'],
       query: { ...params },
       body: data,
     })
   }
 
-  async markAsVoid(creditnoteId: string): Promise<VoidCreditNoteResponse> {
-    return this.http.post<VoidCreditNoteResponse>({ path: ['creditnotes', creditnoteId, 'void'] })
+  async markAsVoid(creditnoteId: string): Promise<void> {
+    await this.http.post({ path: ['creditnotes', creditnoteId, 'void'] })
   }
 
-  async markAsDraft(
-    creditnoteId: string,
-    params?: MarkCreditNoteAsDraftQuery
-  ): Promise<ConvertCreditNoteToDraftResponse> {
-    return this.http.post<ConvertCreditNoteToDraftResponse>({
+  async markAsDraft(creditnoteId: string, params?: MarkCreditNoteAsDraftQuery): Promise<void> {
+    await this.http.post({
       path: ['creditnotes', creditnoteId, 'status', 'draft'],
       query: { ...params },
     })
   }
 
-  async markAsOpen(creditnoteId: string): Promise<ConvertCreditNoteToOpenResponse> {
-    return this.http.post<ConvertCreditNoteToOpenResponse>({
+  async markAsOpen(creditnoteId: string): Promise<void> {
+    await this.http.post({
       path: ['creditnotes', creditnoteId, 'converttoopen'],
     })
   }
 
-  async submit(creditnoteId: string): Promise<SubmitCreditNoteForApprovalResponse> {
-    return this.http.post<SubmitCreditNoteForApprovalResponse>({
+  async submit(creditnoteId: string): Promise<void> {
+    await this.http.post({
       path: ['creditnotes', creditnoteId, 'submit'],
     })
   }
 
-  async approve(creditnoteId: string): Promise<ApproveCreditNoteResponse> {
-    return this.http.post<ApproveCreditNoteResponse>({
+  async approve(creditnoteId: string): Promise<void> {
+    await this.http.post({
       path: ['creditnotes', creditnoteId, 'approve'],
     })
   }
 
-  async reject(
-    creditnoteId: string,
-    params?: RejectCreditNoteQuery
-  ): Promise<RejectCreditNoteResponse> {
-    return this.http.post<RejectCreditNoteResponse>({
+  async reject(creditnoteId: string, params?: RejectCreditNoteQuery): Promise<void> {
+    await this.http.post({
       path: ['creditnotes', creditnoteId, 'reject'],
       query: { ...params },
     })
@@ -184,18 +160,15 @@ export class CreditNotes {
   async addAttachment(
     creditnoteId: string,
     params?: AddAttachmentToCreditNoteQuery
-  ): Promise<AddAttachmentToCreditNoteResponse> {
-    return this.http.post<AddAttachmentToCreditNoteResponse>({
+  ): Promise<void> {
+    await this.http.post({
       path: ['creditnotes', creditnoteId, 'attachment'],
       query: { ...params },
     })
   }
 
-  async deleteAttachment(
-    creditnoteId: string,
-    documentId: string
-  ): Promise<DeleteCreditNoteAttachmentResponse> {
-    return this.http.delete<DeleteCreditNoteAttachmentResponse>({
+  async deleteAttachment(creditnoteId: string, documentId: string): Promise<void> {
+    await this.http.delete({
       path: ['creditnotes', creditnoteId, 'documents', documentId],
     })
   }
@@ -203,8 +176,8 @@ export class CreditNotes {
   async updateBillingAddress(
     creditnoteId: string,
     data: UpdateBillingAddressRequest
-  ): Promise<UpdateBillingAddressResponse> {
-    return this.http.put<UpdateBillingAddressResponse>({
+  ): Promise<void> {
+    await this.http.put({
       path: ['creditnotes', creditnoteId, 'address', 'billing'],
       body: data,
     })
@@ -213,8 +186,8 @@ export class CreditNotes {
   async updateShippingAddress(
     creditnoteId: string,
     data: UpdateShippingAddressRequest
-  ): Promise<UpdateShippingAddressResponse> {
-    return this.http.put<UpdateShippingAddressResponse>({
+  ): Promise<void> {
+    await this.http.put({
       path: ['creditnotes', creditnoteId, 'address', 'shipping'],
       body: data,
     })
@@ -227,11 +200,8 @@ export class CreditNotes {
     return templates
   }
 
-  async updateTemplate(
-    creditnoteId: string,
-    templateId: string
-  ): Promise<UpdateCreditNoteTemplateResponse> {
-    return this.http.put<UpdateCreditNoteTemplateResponse>({
+  async updateTemplate(creditnoteId: string, templateId: string): Promise<void> {
+    await this.http.put({
       path: ['creditnotes', creditnoteId, 'templates', templateId],
     })
   }
@@ -248,8 +218,8 @@ export class CreditNotes {
   async applyCreditsToInvoices(
     creditnoteId: string,
     data: ApplyCreditsToInvoicesRequest
-  ): Promise<ApplyCreditsToInvoicesResponse> {
-    return this.http.post<ApplyCreditsToInvoicesResponse>({
+  ): Promise<void> {
+    await this.http.post({
       path: ['creditnotes', creditnoteId, 'invoices'],
       body: data,
     })
@@ -258,8 +228,8 @@ export class CreditNotes {
   async deleteCreditsAppliedToInvoice(
     creditnoteId: string,
     creditnoteInvoiceId: string
-  ): Promise<DeleteCreditsAppliedToInvoiceResponse> {
-    return this.http.delete<DeleteCreditsAppliedToInvoiceResponse>({
+  ): Promise<void> {
+    await this.http.delete({
       path: ['creditnotes', creditnoteId, 'invoices', creditnoteInvoiceId],
     })
   }
@@ -273,15 +243,15 @@ export class CreditNotes {
     return comments
   }
 
-  async addComment(creditnoteId: string, data: AddCommentRequest): Promise<AddCommentResponse> {
-    return this.http.post<AddCommentResponse>({
+  async addComment(creditnoteId: string, data: AddCommentRequest): Promise<void> {
+    await this.http.post({
       path: ['creditnotes', creditnoteId, 'comments'],
       body: data,
     })
   }
 
-  async deleteComment(creditnoteId: string, commentId: string): Promise<DeleteCommentResponse> {
-    return this.http.delete<DeleteCommentResponse>({
+  async deleteComment(creditnoteId: string, commentId: string): Promise<void> {
+    await this.http.delete({
       path: ['creditnotes', creditnoteId, 'comments', commentId],
     })
   }
@@ -340,11 +310,8 @@ export class CreditNotes {
     return creditnote_refund
   }
 
-  async deleteRefund(
-    creditnoteId: string,
-    creditnoteRefundId: string
-  ): Promise<DeleteCreditNoteRefundResponse> {
-    return this.http.delete<DeleteCreditNoteRefundResponse>({
+  async deleteRefund(creditnoteId: string, creditnoteRefundId: string): Promise<void> {
+    await this.http.delete({
       path: ['creditnotes', creditnoteId, 'refunds', creditnoteRefundId],
     })
   }

@@ -1,15 +1,10 @@
 import type {
-  ContactsMarkAsActiveResponse,
-  ContactsMarkAsInactiveResponse,
   CreateContactRequest,
   CreateContactResponse,
-  DeleteContactResponse,
   EmailContactQuery,
   EmailContactRequest,
-  EmailContactResponse,
   EmailStatementQuery,
   EmailStatementRequest,
-  EmailStatementResponse,
   GetContactAddressResponse,
   GetContactResponse,
   GetStatementMailContentQuery,
@@ -60,7 +55,7 @@ export class Contacts {
   }
 
   async delete(contactId: string): Promise<void> {
-    await this.http.delete<DeleteContactResponse>({ path: ['contacts', contactId] })
+    await this.http.delete({ path: ['contacts', contactId] })
   }
 
   async getAddress(contactId: string): Promise<GetContactAddressResponse['addresses']> {
@@ -70,12 +65,12 @@ export class Contacts {
     return addresses
   }
 
-  async markAsActive(contactId: string): Promise<ContactsMarkAsActiveResponse> {
-    return this.http.post<ContactsMarkAsActiveResponse>({ path: ['contacts', contactId, 'active'] })
+  async markAsActive(contactId: string): Promise<void> {
+    await this.http.post({ path: ['contacts', contactId, 'active'] })
   }
 
-  async markAsInactive(contactId: string): Promise<ContactsMarkAsInactiveResponse> {
-    return this.http.post<ContactsMarkAsInactiveResponse>({
+  async markAsInactive(contactId: string): Promise<void> {
+    await this.http.post({
       path: ['contacts', contactId, 'inactive'],
     })
   }
@@ -94,8 +89,8 @@ export class Contacts {
     contactId: string,
     data: EmailStatementRequest,
     params?: EmailStatementQuery
-  ): Promise<EmailStatementResponse> {
-    return this.http.post<EmailStatementResponse>({
+  ): Promise<void> {
+    await this.http.post({
       path: ['contacts', contactId, 'statements', 'email'],
       query: params,
       body: data,
@@ -106,8 +101,8 @@ export class Contacts {
     contactId: string,
     data: EmailContactRequest,
     params?: EmailContactQuery
-  ): Promise<EmailContactResponse> {
-    return this.http.post<EmailContactResponse>({
+  ): Promise<void> {
+    await this.http.post({
       path: ['contacts', contactId, 'email'],
       query: params,
       body: data,

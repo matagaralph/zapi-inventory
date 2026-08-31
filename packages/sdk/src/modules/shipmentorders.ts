@@ -1,9 +1,7 @@
 import type {
   CreateShipmentOrderRequest,
   CreateShipmentOrderResponse,
-  DeleteShipmentOrderResponse,
   GetShipmentOrderResponse,
-  MarkAsDeliveredResponse,
   UpdateShipmentOrderRequest,
   UpdateShipmentOrderResponse,
 } from '@zapi-inventory/typegen'
@@ -48,13 +46,13 @@ export class ShipmentOrders {
   }
 
   async delete(shipmentorderId: string): Promise<void> {
-    await this.http.delete<DeleteShipmentOrderResponse>({
+    await this.http.delete({
       path: ['shipmentorders', shipmentorderId],
     })
   }
 
-  async markAsDelivered(shipmentorderId: string): Promise<MarkAsDeliveredResponse> {
-    return this.http.post<MarkAsDeliveredResponse>({
+  async markAsDelivered(shipmentorderId: string): Promise<void> {
+    await this.http.post({
       path: ['shipmentorders', shipmentorderId, 'status', 'delivered'],
     })
   }

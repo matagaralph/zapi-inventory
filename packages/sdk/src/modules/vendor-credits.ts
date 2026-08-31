@@ -1,8 +1,6 @@
 import type {
   ApplyCreditsToBillRequest,
   ApplyCreditsToBillResponse,
-  ApproveVendorCreditResponse,
-  ConvertToOpenResponse,
   CreateVendorCreditQuery,
   CreateVendorCreditRequest,
   CreateVendorCreditResponse,
@@ -19,14 +17,12 @@ import type {
   ListVendorCreditsResponse,
   RefundVendorCreditRequest,
   RefundVendorCreditResponse,
-  SubmitVendorCreditForApprovalResponse,
   UpdateVendorCreditRefundRequest,
   UpdateVendorCreditRefundResponse,
   UpdateVendorCreditRequest,
   UpdateVendorCreditResponse,
   VendorCreditsAddCommentRequest,
   VendorCreditsAddCommentResponse,
-  VoidVendorCreditResponse,
 } from '@zapi-inventory/typegen'
 
 import type { HTTPClient } from '../http.ts'
@@ -80,26 +76,26 @@ export class VendorCredits {
     await this.http.delete({ path: ['vendorcredits', vendorCreditId] })
   }
 
-  async markAsOpen(vendorCreditId: string): Promise<ConvertToOpenResponse> {
-    return this.http.post<ConvertToOpenResponse>({
+  async markAsOpen(vendorCreditId: string): Promise<void> {
+    await this.http.post({
       path: ['vendorcredits', vendorCreditId, 'status', 'open'],
     })
   }
 
-  async markAsVoid(vendorCreditId: string): Promise<VoidVendorCreditResponse> {
-    return this.http.post<VoidVendorCreditResponse>({
+  async markAsVoid(vendorCreditId: string): Promise<void> {
+    await this.http.post({
       path: ['vendorcredits', vendorCreditId, 'status', 'void'],
     })
   }
 
-  async submit(vendorCreditId: string): Promise<SubmitVendorCreditForApprovalResponse> {
-    return this.http.post<SubmitVendorCreditForApprovalResponse>({
+  async submit(vendorCreditId: string): Promise<void> {
+    await this.http.post({
       path: ['vendorcredits', vendorCreditId, 'submit'],
     })
   }
 
-  async approve(vendorCreditId: string): Promise<ApproveVendorCreditResponse> {
-    return this.http.post<ApproveVendorCreditResponse>({
+  async approve(vendorCreditId: string): Promise<void> {
+    await this.http.post({
       path: ['vendorcredits', vendorCreditId, 'approve'],
     })
   }

@@ -1,7 +1,6 @@
 import type {
   CreateCurrencyRequest,
   CreateCurrencyResponse,
-  DeleteCurrencyResponse,
   GetCurrencyResponse,
   ListCurrenciesQuery,
   ListCurrencyResponse,
@@ -48,8 +47,8 @@ export class Currencies {
     return currency
   }
 
-  async delete(currencyId: string): Promise<DeleteCurrencyResponse> {
-    return this.http.delete<DeleteCurrencyResponse>({
+  async delete(currencyId: string): Promise<void> {
+    await this.http.delete({
       path: ['settings', 'currencies', currencyId],
     })
   }

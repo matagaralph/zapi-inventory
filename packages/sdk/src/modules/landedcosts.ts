@@ -1,6 +1,5 @@
 import type {
   CreateBulkLandedCostsRequest,
-  CreateBulkLandedCostsResponse,
   CreateLandedCostForBillRequest,
   CreateLandedCostForBillResponse,
   GetBillDetailsForBulkLandedCostResponse,
@@ -51,8 +50,8 @@ export class LandedCosts {
     await this.http.delete({ path: ['bills', billId, 'landedcosts', landedCostId] })
   }
 
-  async createBulk(data: CreateBulkLandedCostsRequest): Promise<CreateBulkLandedCostsResponse> {
-    return this.http.post<CreateBulkLandedCostsResponse>({
+  async createBulk(data: CreateBulkLandedCostsRequest): Promise<void> {
+    await this.http.post({
       path: ['bills', 'bulklandedcosts'],
       body: data,
     })

@@ -1,11 +1,9 @@
 import type {
   CreatePaymentRequest,
   CreatePaymentResponse,
-  DeletePaymentResponse,
   GetPaymentResponse,
   ListCustomerPaymentsQuery,
   ListCustomerPaymentsResponse,
-  UpdateCustomerpaymentCustomfieldResponse,
   UpdatePaymentRequest,
   UpdatePaymentResponse,
 } from '@zapi-inventory/typegen'
@@ -41,8 +39,8 @@ export class CustomerPayments {
   async updateCustomField(
     customerPaymentId: string,
     data: UpdateCustomerPaymentCustomFieldsRequest[]
-  ): Promise<UpdateCustomerpaymentCustomfieldResponse> {
-    return this.http.put<UpdateCustomerpaymentCustomfieldResponse>({
+  ): Promise<void> {
+    await this.http.put({
       path: ['customerpayment', customerPaymentId, 'customfields'],
       body: data,
     })
@@ -66,7 +64,7 @@ export class CustomerPayments {
     return payment
   }
 
-  async delete(paymentId: string): Promise<DeletePaymentResponse> {
-    return this.http.delete<DeletePaymentResponse>({ path: ['customerpayments', paymentId] })
+  async delete(paymentId: string): Promise<void> {
+    await this.http.delete({ path: ['customerpayments', paymentId] })
   }
 }

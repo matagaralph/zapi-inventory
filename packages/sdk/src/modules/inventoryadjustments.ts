@@ -1,9 +1,7 @@
 import type {
   CreateInventoryAdjustmentRequest,
   CreateInventoryAdjustmentResponse,
-  DeleteInventoryAdjustmentResponse,
   GetInventoryAdjustmentResponse,
-  InventoryadjustmentsApprovalActionResponse,
   InventoryadjustmentsRejectRequest,
   ListInventoryAdjustmentsQuery,
   ListInventoryAdjustmentsResponse,
@@ -56,30 +54,26 @@ export class InventoryAdjustments {
     return inventory_adjustment
   }
 
-  async delete(inventoryAdjustmentId: string): Promise<DeleteInventoryAdjustmentResponse> {
-    return this.http.delete<DeleteInventoryAdjustmentResponse>({
+  async delete(inventoryAdjustmentId: string): Promise<void> {
+    await this.http.delete({
       path: ['inventoryadjustments', inventoryAdjustmentId],
     })
   }
 
-  async submit(inventoryAdjustmentId: string): Promise<InventoryadjustmentsApprovalActionResponse> {
-    return this.http.post<InventoryadjustmentsApprovalActionResponse>({
+  async submit(inventoryAdjustmentId: string): Promise<void> {
+    await this.http.post({
       path: ['inventoryadjustments', inventoryAdjustmentId, 'submit'],
     })
   }
 
-  async approve(
-    inventoryAdjustmentId: string
-  ): Promise<InventoryadjustmentsApprovalActionResponse> {
-    return this.http.post<InventoryadjustmentsApprovalActionResponse>({
+  async approve(inventoryAdjustmentId: string): Promise<void> {
+    await this.http.post({
       path: ['inventoryadjustments', inventoryAdjustmentId, 'approve'],
     })
   }
 
-  async approveFinal(
-    inventoryAdjustmentId: string
-  ): Promise<InventoryadjustmentsApprovalActionResponse> {
-    return this.http.post<InventoryadjustmentsApprovalActionResponse>({
+  async approveFinal(inventoryAdjustmentId: string): Promise<void> {
+    await this.http.post({
       path: ['inventoryadjustments', inventoryAdjustmentId, 'approve', 'final'],
     })
   }
@@ -87,8 +81,8 @@ export class InventoryAdjustments {
   async reject(
     inventoryAdjustmentId: string,
     data?: InventoryadjustmentsRejectRequest
-  ): Promise<InventoryadjustmentsApprovalActionResponse> {
-    return this.http.post<InventoryadjustmentsApprovalActionResponse>({
+  ): Promise<void> {
+    await this.http.post({
       path: ['inventoryadjustments', inventoryAdjustmentId, 'reject'],
       body: data,
     })

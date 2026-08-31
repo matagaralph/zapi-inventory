@@ -5,23 +5,16 @@ import type {
   CreatePurchaseReceiveRequest,
   CreatePurchaseReceiveQuery,
   CreatePurchaseReceiveResponse,
-  DeletePurchaseReceiveResponse,
   DeletePurchaseReceiveAttachmentQuery,
   GetPurchaseReceiveAttachmentQuery,
   GetPurchaseReceiveQuery,
   GetPurchaseReceiveResponse,
   ListPurchaseReceivesResponse,
   ListPurchaseReceivesQuery,
-  MarkAsInTransitResponse,
-  MarkAsReceivedResponse,
   MarkPurchaseReceiveAsReceivedQuery,
   PurchasereceivesAddCommentRequest,
   PurchasereceivesAddCommentResponse,
-  PurchasereceivesDeleteAttachmentResponse,
   RejectPurchaseReceiveQuery,
-  RejectPurchaseReceiveResponse,
-  SubmitPurchaseReceiveResponse,
-  ApprovePurchaseReceiveResponse,
   UpdatePurchaseReceiveRequest,
   UpdatePurchaseReceiveQuery,
   UpdatePurchaseReceiveResponse,
@@ -54,10 +47,8 @@ export class PurchaseReceives {
     return purchase_receive
   }
 
-  async bulkDelete(
-    params: BulkDeletePurchaseReceivesQuery
-  ): Promise<DeletePurchaseReceiveResponse> {
-    return this.http.delete<DeletePurchaseReceiveResponse>({
+  async bulkDelete(params: BulkDeletePurchaseReceivesQuery): Promise<void> {
+    await this.http.delete({
       path: ['purchasereceives'],
       query: params,
     })
@@ -91,23 +82,20 @@ export class PurchaseReceives {
     await this.http.delete({ path: ['purchasereceives', purchasereceiveId] })
   }
 
-  async submit(purchasereceiveId: string): Promise<SubmitPurchaseReceiveResponse> {
-    return this.http.post<SubmitPurchaseReceiveResponse>({
+  async submit(purchasereceiveId: string): Promise<void> {
+    await this.http.post({
       path: ['purchasereceives', purchasereceiveId, 'submit'],
     })
   }
 
-  async approve(purchasereceiveId: string): Promise<ApprovePurchaseReceiveResponse> {
-    return this.http.post<ApprovePurchaseReceiveResponse>({
+  async approve(purchasereceiveId: string): Promise<void> {
+    await this.http.post({
       path: ['purchasereceives', purchasereceiveId, 'approve'],
     })
   }
 
-  async reject(
-    purchasereceiveId: string,
-    params?: RejectPurchaseReceiveQuery
-  ): Promise<RejectPurchaseReceiveResponse> {
-    return this.http.post<RejectPurchaseReceiveResponse>({
+  async reject(purchasereceiveId: string, params?: RejectPurchaseReceiveQuery): Promise<void> {
+    await this.http.post({
       path: ['purchasereceives', purchasereceiveId, 'reject'],
       query: params,
     })
@@ -116,28 +104,28 @@ export class PurchaseReceives {
   async markAsReceived(
     purchasereceiveId: string,
     params?: MarkPurchaseReceiveAsReceivedQuery
-  ): Promise<MarkAsReceivedResponse> {
-    return this.http.post<MarkAsReceivedResponse>({
+  ): Promise<void> {
+    await this.http.post({
       path: ['purchasereceives', purchasereceiveId, 'setstatusasreceived'],
       query: params,
     })
   }
 
-  async markAsInTransit(purchasereceiveId: string): Promise<MarkAsInTransitResponse> {
-    return this.http.post<MarkAsInTransitResponse>({
+  async markAsInTransit(purchasereceiveId: string): Promise<void> {
+    await this.http.post({
       path: ['purchasereceives', purchasereceiveId, 'setstatusasintransit'],
     })
   }
 
-  async bulkMarkAsReceived(data: BulkStatusUpdateRequest): Promise<MarkAsReceivedResponse> {
-    return this.http.post<MarkAsReceivedResponse>({
+  async bulkMarkAsReceived(data: BulkStatusUpdateRequest): Promise<void> {
+    await this.http.post({
       path: ['purchasereceives', 'setstatusasreceived'],
       body: data,
     })
   }
 
-  async bulkMarkAsInTransit(data: BulkStatusUpdateRequest): Promise<MarkAsInTransitResponse> {
-    return this.http.post<MarkAsInTransitResponse>({
+  async bulkMarkAsInTransit(data: BulkStatusUpdateRequest): Promise<void> {
+    await this.http.post({
       path: ['purchasereceives', 'setstatusasintransit'],
       body: data,
     })
@@ -167,8 +155,8 @@ export class PurchaseReceives {
     purchasereceiveId: string,
     documentId: string,
     params?: DeletePurchaseReceiveAttachmentQuery
-  ): Promise<PurchasereceivesDeleteAttachmentResponse> {
-    return this.http.delete<PurchasereceivesDeleteAttachmentResponse>({
+  ): Promise<void> {
+    await this.http.delete({
       path: ['purchasereceives', purchasereceiveId, 'documents', documentId],
       query: params,
     })
