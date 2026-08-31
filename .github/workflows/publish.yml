@@ -25,6 +25,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/ci-setup
       - run: bun run build
+      # npm trusted publishing (OIDC) needs npm >= 11.5.1; the runner's
+      # preinstalled npm predates that, so it silently falls back to
+      # classic auth and fails with ENEEDAUTH.
+      - run: npm install -g npm@latest
       - name: Create Release Pull Request or Publish to npm
         uses: changesets/action@v1
         with:
