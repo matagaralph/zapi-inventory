@@ -54,7 +54,7 @@ export class HTTPClient {
       errorRetryPlugin({
         retryTimes: config.retryTimes ?? 3,
         retryInterval: 1000,
-        onRetry: (_config, error) => isRetryableStatus(error.response?.status),
+        enableRetry: (_config, error) => isRetryableStatus(error.response?.status),
       })
     )
 
