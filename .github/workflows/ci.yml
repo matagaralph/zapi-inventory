@@ -27,6 +27,13 @@ jobs:
       - run: bun run generate
       - run: bunx tsc --noEmit -p tsconfig.json
 
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/ci-setup
+      - run: bun run test
+
   build:
     runs-on: ubuntu-latest
     steps:

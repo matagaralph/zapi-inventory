@@ -8,6 +8,7 @@
   "scripts": {
     "generate": "turbo run generate",
     "build": "turbo run build",
+    "test": "turbo run test",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "format": "oxfmt --write",

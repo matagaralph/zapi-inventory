@@ -7,6 +7,9 @@
     "build": {
       "dependsOn": ["^build", "generate"],
       "outputs": ["dist/**"]
+    },
+    "test": {
+      "dependsOn": ["generate"]
     }
   }
 }

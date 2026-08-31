@@ -32,7 +32,8 @@
     "access": "public"
   },
   "scripts": {
-    "build": "bun run scripts/build.ts"
+    "build": "bun run scripts/build.ts",
+    "test": "bun test"
   },
   "dependencies": {
     "xior": "^0.8.4"
