@@ -9,12 +9,18 @@ const outdir = join(root, 'dist')
 const typesOutdir = join(outdir, 'types')
 const typegenRoot = join(root, '..', 'typegen')
 
-// npm looks for README/LICENSE next to package.json; it won't reach up to the repo root,
-// so a workspace package that only lives at the root publishes with neither.
+// npm looks for README/LICENSE next to package.json (for the npm page) and won't reach up to
+// the repo root, so a workspace package that only lives at the root publishes with neither. A
+// copy also goes into dist/ so the built output is self-contained on its own.
 async function copyPackageMetadata(): Promise<void> {
+  const readme = Bun.file(join(repoRoot, 'README.md'))
+  const license = Bun.file(join(repoRoot, 'LICENSE'))
+
   await Promise.all([
-    Bun.write(join(root, 'README.md'), Bun.file(join(repoRoot, 'README.md'))),
-    Bun.write(join(root, 'LICENSE'), Bun.file(join(repoRoot, 'LICENSE'))),
+    Bun.write(join(root, 'README.md'), readme),
+    Bun.write(join(root, 'LICENSE'), license),
+    Bun.write(join(outdir, 'README.md'), readme),
+    Bun.write(join(outdir, 'LICENSE'), license),
   ])
 }
 

@@ -6,7 +6,7 @@
     },
     "build": {
       "dependsOn": ["^build", "generate"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**", "README.md", "LICENSE"]
     },
     "test": {
       "dependsOn": ["generate"]
