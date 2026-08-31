@@ -22,10 +22,27 @@ import type {
 import type { HTTPClient } from '../http.ts'
 import type { PartialBy } from '../utils.ts'
 
+export type ListSalesOrdersParams = ListSalesOrdersQuery & {
+  sort_column?: string
+  sort_order?: 'A' | 'D'
+  salesorder_number_contains?: string
+  reference_number_contains?: string
+  customer_id?: string
+  created_date_start?: string
+  created_date_end?: string
+  shipment_date_start?: string
+  shipment_date_end?: string
+  status?: string
+  location_ids?: string
+  shipping_attention_contains?: string
+  line_item_location_id?: string
+  item_id?: string
+}
+
 export class SalesOrders {
   constructor(private readonly http: HTTPClient) {}
 
-  async list(params?: ListSalesOrdersQuery): Promise<ListSalesOrdersResponse['salesorders']> {
+  async list(params?: ListSalesOrdersParams): Promise<ListSalesOrdersResponse['salesorders']> {
     const { salesorders } = await this.http.get<ListSalesOrdersResponse>({
       path: ['salesorders'],
       query: params,
