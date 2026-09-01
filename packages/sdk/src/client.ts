@@ -40,6 +40,17 @@ import { UnitsOfMeasurement } from './modules/unit_of_measurement.ts'
 import { Users } from './modules/users.ts'
 import { VendorCredits } from './modules/vendor-credits.ts'
 
+export interface ReportMetadata {
+  page: number
+  per_page: number
+  total: string
+  total_pages: number
+  report_name: string
+  applied_filter: string
+  sort_column: string
+  sort_order: string
+}
+
 export type ZohoDataCenter = 'com' | 'eu' | 'in' | 'com.au' | 'jp' | 'ca' | 'com.cn' | 'sa'
 
 export interface ZohoInventoryOptions {
@@ -161,5 +172,29 @@ export class ZohoInventory {
     this.unitsOfMeasurement = new UnitsOfMeasurement(this.http)
     this.users = new Users(this.http)
     this.vendorCredits = new VendorCredits(this.http)
+  }
+
+  /**
+   * Retrieves report-level metadata for a paginated resource, including
+   * pagination details and report context (name, filter, sort order).
+   *
+   * @experimental
+   * @param path - The API path segments for the target resource.
+   * @param params - Optional query parameters to include in the request.
+   * @returns The report metadata extracted from the response's `page_context`.
+   */
+  async getReportMetadata(
+    path: string[],
+    params?: Record<string, string | number | boolean | undefined>
+  ): Promise<ReportMetadata> {
+    const response = await this.http.get<{ page_context: ReportMetadata }>({
+      path,
+      query: {
+        ...params,
+        response_option: 2,
+      },
+    })
+
+    return response.page_context
   }
 }
