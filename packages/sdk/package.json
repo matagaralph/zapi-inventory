@@ -1,6 +1,6 @@
 {
   "name": "zapi-inventory",
-  "version": "1.0.0-rc.2",
+  "version": "1.0.0-rc.3",
   "private": false,
   "description": "TypeScript SDK for Zoho Inventory Rest API.",
   "homepage": "https://github.com/matagaralph/zapi-inventory#readme",
