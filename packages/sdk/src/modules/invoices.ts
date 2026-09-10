@@ -254,8 +254,8 @@ export class Invoices {
     })
   }
 
-  async getAttachment(invoiceId: string, params?: GetInvoiceAttachmentQuery): Promise<void> {
-    await this.http.get({
+  async getAttachment(invoiceId: string, params?: GetInvoiceAttachmentQuery): Promise<Blob> {
+    return this.http.get<Blob>({
       path: ['invoices', invoiceId, 'attachment'],
       query: { ...params },
     })
@@ -271,10 +271,19 @@ export class Invoices {
     })
   }
 
-  async addAttachment(invoiceId: string, params?: AddAttachmentToInvoiceQuery): Promise<void> {
+  async addAttachment(
+    invoiceId: string,
+    attachment: Blob,
+    params?: Omit<AddAttachmentToInvoiceQuery, 'attachment'>
+  ): Promise<void> {
+    const body = new FormData()
+    body.append('attachment', attachment)
+    if (params?.can_send_in_mail !== undefined) {
+      body.append('can_send_in_mail', String(params.can_send_in_mail))
+    }
     await this.http.post({
       path: ['invoices', invoiceId, 'attachment'],
-      query: { ...params },
+      body,
     })
   }
 

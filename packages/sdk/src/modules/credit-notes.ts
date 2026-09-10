@@ -1,5 +1,4 @@
 import type {
-  AddAttachmentToCreditNoteQuery,
   AddCommentRequest,
   ApplyCreditsToInvoicesRequest,
   CreateCreditNoteQuery,
@@ -160,13 +159,13 @@ export class CreditNotes {
     return email_history
   }
 
-  async addAttachment(
-    creditnoteId: string,
-    params?: AddAttachmentToCreditNoteQuery
-  ): Promise<void> {
+  async addAttachment(creditnoteId: string, attachment: Blob, documentIds?: string): Promise<void> {
+    const body = new FormData()
+    body.append('attachment', attachment)
+    if (documentIds !== undefined) body.append('document_ids', documentIds)
     await this.http.post({
       path: ['creditnotes', creditnoteId, 'attachment'],
-      query: { ...params },
+      body,
     })
   }
 

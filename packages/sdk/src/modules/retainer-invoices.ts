@@ -6,7 +6,6 @@ import type {
   EmailRetainerInvoiceRequest,
   GetRetainerInvoiceEmailContentResponse,
   GetRetainerInvoiceResponse,
-  AddAttachmentToRetainerInvoiceRequest,
   ListRetainerInvoiceCommentsAndHistoryResponse,
   ListRetainerInvoiceTemplatesResponse,
   ListRetainerInvoicesQuery,
@@ -144,19 +143,23 @@ export class RetainerInvoices {
     return templates
   }
 
-  async getAttachment(retainerinvoiceId: string): Promise<void> {
-    await this.http.get({
+  async getAttachment(retainerinvoiceId: string): Promise<Blob> {
+    return this.http.get<Blob>({
       path: ['retainerinvoices', retainerinvoiceId, 'attachment'],
     })
   }
 
   async addAttachment(
     retainerinvoiceId: string,
-    data: AddAttachmentToRetainerInvoiceRequest
+    attachment: Blob,
+    canSendInMail?: boolean
   ): Promise<void> {
+    const body = new FormData()
+    body.append('attachment', attachment)
+    if (canSendInMail !== undefined) body.append('can_send_in_mail', String(canSendInMail))
     await this.http.post({
       path: ['retainerinvoices', retainerinvoiceId, 'attachment'],
-      body: data,
+      body,
     })
   }
 

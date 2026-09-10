@@ -1,13 +1,11 @@
 import type {
   AddTaskAttachmentResponse,
-  AddTaskAttachmentQuery,
   AddTaskCommentRequest,
   AddTaskCommentResponse,
   AddTaskRequest,
   AddTaskResponse,
   DeleteTaskDocumentQuery,
   DeleteTasksQuery,
-  GetTaskDocumentResponse,
   GetTaskDocumentQuery,
   GetTaskResponse,
   ListTaskCommentsResponse,
@@ -119,11 +117,13 @@ export class Tasks {
 
   async addAttachment(
     taskId: string,
-    params?: AddTaskAttachmentQuery
+    attachment: Blob
   ): Promise<AddTaskAttachmentResponse['documents']> {
+    const body = new FormData()
+    body.append('attachment', attachment)
     const { documents } = await this.http.post<AddTaskAttachmentResponse>({
       path: ['tasks', taskId, 'attachment'],
-      query: params,
+      body,
     })
     return documents
   }
@@ -132,12 +132,11 @@ export class Tasks {
     taskId: string,
     documentId: string,
     params?: GetTaskDocumentQuery
-  ): Promise<GetTaskDocumentResponse['documents']> {
-    const { documents } = await this.http.get<GetTaskDocumentResponse>({
+  ): Promise<Blob> {
+    return this.http.get<Blob>({
       path: ['tasks', taskId, 'documents', documentId],
       query: params,
     })
-    return documents
   }
 
   async deleteDocument(

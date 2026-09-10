@@ -19,13 +19,6 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
-export interface AddMoveOrderAttachmentRequest {
-  attachment?: string
-  doc?: string
-  totalFiles?: number
-  document_ids?: string
-}
-
 /**
  * Move orders track stock movement between storage locations within a warehouse. Use these APIs to create, update, list, delete, and change the status of move orders in Zoho Inventory.
  */
@@ -112,11 +105,15 @@ export class MoveOrders {
 
   async addAttachment(
     moveorderId: string,
-    data: AddMoveOrderAttachmentRequest
+    attachment: Blob,
+    documentIds?: string
   ): Promise<MoveOrderAttachmentResponse['document']> {
+    const body = new FormData()
+    body.append('attachment', attachment)
+    if (documentIds !== undefined) body.append('document_ids', documentIds)
     const { document } = await this.http.post<MoveOrderAttachmentResponse>({
       path: ['moveorders', moveorderId, 'attachment'],
-      body: data,
+      body,
     })
     return document
   }
@@ -125,8 +122,8 @@ export class MoveOrders {
     moveorderId: string,
     documentId: string,
     params?: GetMoveOrderDocumentQuery
-  ): Promise<string> {
-    return this.http.get<string>({
+  ): Promise<Blob> {
+    return this.http.get<Blob>({
       path: ['moveorders', moveorderId, 'documents', documentId],
       query: { ...params },
     })
