@@ -26,6 +26,9 @@ export interface AddMoveOrderAttachmentRequest {
   document_ids?: string
 }
 
+/**
+ * Move orders track stock movement between storage locations within a warehouse. Use these APIs to create, update, list, delete, and change the status of move orders in Zoho Inventory.
+ */
 export class MoveOrders {
   constructor(private readonly http: HTTPClient) {}
 

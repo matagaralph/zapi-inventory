@@ -17,6 +17,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * A Return Material Authorization (RMA) or Sales Return is the process of a seller accepting a purchased item back from the consumer. In turn, the customer receives credit, cash refund or a replacement.
+ */
 export class SalesReturns {
   constructor(private readonly http: HTTPClient) {}
 

@@ -15,6 +15,9 @@ export interface UpdateCustomerPaymentCustomFieldsRequest {
   value?: string
 }
 
+/**
+ * A payment object describes details regarding a particular customer payment. There can be multiple payments for a single invoice. Multiple invoices can be paid in a single payment as well.
+ */
 export class CustomerPayments {
   constructor(private readonly http: HTTPClient) {}
 

@@ -40,6 +40,9 @@ export interface ItemCustomFieldUpdate {
   value?: string
 }
 
+/**
+ * An item is the product that is offered for sale. Nature of the product could be physical or digital. Based on the type of your business, you can offer one or more goods/services. Your product can be either fixed priced or a subscription service. Each of this may fall under a separate pricing category or have add ons associated to them.
+ */
 export class Items {
   constructor(private readonly http: HTTPClient) {}
 

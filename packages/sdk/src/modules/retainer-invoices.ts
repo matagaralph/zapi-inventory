@@ -21,6 +21,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * A lot of businesses collect an advance payment (or retainer) for products sold or services rendered by them. This amount collected will not be an income but a liability to the company. The revenue is earned only when the product is delivered or the service is completed, if not delivered or completed the advance payment made will be returned to the customer.
+ */
 export class RetainerInvoices {
   constructor(private readonly http: HTTPClient) {}
 

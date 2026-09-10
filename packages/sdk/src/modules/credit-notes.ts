@@ -38,6 +38,9 @@ import type {
 import type { HTTPClient } from '../http.ts'
 import type { PartialBy } from '../utils.ts'
 
+/**
+ * Credit notes are created when a refund is to be made to a customer. A credit note object allows you to keep track of all credit note related information. <code>Note</code> While creating credit notes from Sales Order Invoice or Sales Return, it is recommended to use the same values which are used in the Invoice for corresponding nodes in the credit note.
+ */
 export class CreditNotes {
   constructor(private readonly http: HTTPClient) {}
 

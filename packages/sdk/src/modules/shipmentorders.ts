@@ -8,6 +8,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * A document used by an organization to specify what items or packages are to be transferred from a storage location or warehouse to what person and to what new location is called a shipment order. It is typically sent along with a shipment of goods so that the person receiving them(your customer) can verify that the document correctly reflects the items that they actually received.
+ */
 export class ShipmentOrders {
   constructor(private readonly http: HTTPClient) {}
 

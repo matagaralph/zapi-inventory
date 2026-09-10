@@ -10,6 +10,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * A landed cost is the total cost incurred to bring an item to your warehouse, including the item price and additional charges such as shipping, customs duties, insurance, and handling. Use the Landed Costs APIs to allocate these additional charges across the line items of a bill, or to distribute a single charge across multiple bills, so that the inventory cost reflects the true cost of acquisition.
+ */
 export class LandedCosts {
   constructor(private readonly http: HTTPClient) {}
 

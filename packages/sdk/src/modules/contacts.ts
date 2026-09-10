@@ -19,6 +19,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * A contact is either a customer or vendor. A contact can be an individual or a business in general.
+ */
 export class Contacts {
   constructor(private readonly http: HTTPClient) {}
 

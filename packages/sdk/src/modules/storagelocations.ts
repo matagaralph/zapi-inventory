@@ -27,6 +27,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * Bin locations are the smallest storage units within a warehouse. They help optimize operations with effective tracking and labeling, make items easier to locate, and support multiple storage levels for precise inventory tracking.
+ */
 export class StorageLocations {
   constructor(private readonly http: HTTPClient) {}
 

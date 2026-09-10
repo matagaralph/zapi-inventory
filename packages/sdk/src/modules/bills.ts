@@ -13,6 +13,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * When your vendor supplies goods/services to you on credit, you're sent an invoice that details the amount of money you owe him. You can record this as a bill in Zoho Inventory and track it until it's paid.
+ */
 export class Bills {
   constructor(private readonly http: HTTPClient) {}
 

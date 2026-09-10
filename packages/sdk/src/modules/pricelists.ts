@@ -9,6 +9,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * Price lists used to increase or decrease a product selling or purchase price by a percentage or amount
+ */
 export class PriceLists {
   constructor(private readonly http: HTTPClient) {}
 

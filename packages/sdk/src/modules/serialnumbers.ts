@@ -6,6 +6,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * Serial numbers help you track individual units of inventory items by assigning a unique identifier to each unit.
+ */
 export class SerialNumbers {
   constructor(private readonly http: HTTPClient) {}
 

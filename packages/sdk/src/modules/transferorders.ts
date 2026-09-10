@@ -17,6 +17,9 @@ import type {
 import type { HTTPClient } from '../http.ts'
 import type { PartialBy } from '../utils.ts'
 
+/**
+ * Transfer Orders allow you transfer stock from one location to another, thereby greatly reducing the hassle of manually updating the stock levels.
+ */
 export class TransferOrders {
   constructor(private readonly http: HTTPClient) {}
 

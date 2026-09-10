@@ -16,6 +16,9 @@ import type {
 import type { HTTPClient } from '../http.ts'
 import type { PartialBy } from '../utils.ts'
 
+/**
+ * A purchase order is an official document that you issue to your vendors, indicating relevant information about what you want to buy, the quantity, the price agreed for that particular product or service.
+ */
 export class PurchaseOrders {
   constructor(private readonly http: HTTPClient) {}
 

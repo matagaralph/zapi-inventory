@@ -12,6 +12,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * Zoho Inventory brings to you, the feature "Packages" with which you can create and assign package slip numbers to the line items in your sales orders and keep track of your packages when they are shipped.
+ */
 export class Packages {
   constructor(private readonly http: HTTPClient) {}
 

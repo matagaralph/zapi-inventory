@@ -66,6 +66,9 @@ interface InventoryCountItemTrackingDetailsResponse {
   page_context?: InventorycountingPageContext
 }
 
+/**
+ * Stock Counts enable you to physically verify the actual quantity of items available in your inventory and compare them with the quantities recorded in the system. By identifying and reconciling any differences, you can maintain accurate stock levels, improve inventory control, and prevent issues such as stock discrepancies, shrinkage, or mismanagement. Regular stock counts ensure your inventory data stays reliable and up to date.
+ */
 export class InventoryCounts {
   constructor(private readonly http: HTTPClient) {}
 

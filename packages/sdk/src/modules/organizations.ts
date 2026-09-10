@@ -9,6 +9,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * An Organisation represents a company or an institution running a business.
+ */
 export class Organizations {
   constructor(private readonly http: HTTPClient) {}
 

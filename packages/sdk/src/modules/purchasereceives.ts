@@ -22,6 +22,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * A new purchase receive can be created. To create a purchase receive, the URL parameter <code>purchaseorder_id</code> is needed.
+ */
 export class PurchaseReceives {
   constructor(private readonly http: HTTPClient) {}
 

@@ -36,6 +36,9 @@ interface ReorderTagsResponse {
   tags?: ReportingTagSummary[]
 }
 
+/**
+ * Reporting tags are custom financial labels you add to financial transactions to categorize them  by department, cost center, business unit, or any other way based on business needs for reporting. In this document,  you'll learn how to create and manage reporting tags for the specific requirements that your organization needs.
+ */
 export class ReportingTags {
   constructor(private readonly http: HTTPClient) {}
 

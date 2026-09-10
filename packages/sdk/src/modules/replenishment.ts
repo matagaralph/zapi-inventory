@@ -26,6 +26,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * Replenishment helps you configure and manage stock replenishment for items.
+ */
 export class Replenishment {
   constructor(private readonly http: HTTPClient) {}
 

@@ -27,6 +27,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * Taxes are collected by the government to manage state expenses. A company and an individual must pay multiple taxes and disclose the income details.
+ */
 export class Taxes {
   constructor(private readonly http: HTTPClient) {}
 

@@ -35,6 +35,9 @@ export type ListSalesOrdersParams = ListSalesOrdersQuery & {
   item_id?: string
 }
 
+/**
+ * A sales order is a financial document that confirms an impending sale. It details the exact quantity, price and delivery details of the products or services being sold. Perform the simple operations mentioned below to create and manage your Sales Orders.
+ */
 export class SalesOrders {
   constructor(private readonly http: HTTPClient) {}
 

@@ -26,6 +26,9 @@ import type { HTTPClient } from '../http.ts'
 
 export type PicklistStatus = 'yettostart' | 'inprogress' | 'onhold' | 'completed'
 
+/**
+ * Picklists help teams track and manage the picking of items for sales orders and purchase returns. You can create picklists, assign them to staff, track picking progress by status, and add comments for collaboration.
+ */
 export class Picklists {
   constructor(private readonly http: HTTPClient) {}
 

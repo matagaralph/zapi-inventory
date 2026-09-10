@@ -10,6 +10,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * A currency is a generally accepted form of money issued by the government. Each country had its own different currency.
+ */
 export class Currencies {
   constructor(private readonly http: HTTPClient) {}
 

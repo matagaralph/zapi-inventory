@@ -36,6 +36,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * An invoice is a statement of items sold by a seller. It includes all the details of sale including units of goods, price of goods sold, shipping details, etc.
+ */
 export class Invoices {
   constructor(private readonly http: HTTPClient) {}
 

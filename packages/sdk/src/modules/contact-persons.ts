@@ -10,6 +10,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * A contact person is an individual who acts as a representative of an organisation for communication purpose. For example, a Manager can be a contact person for an organisation.
+ */
 export class ContactPersons {
   constructor(private readonly http: HTTPClient) {}
 

@@ -8,6 +8,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * Users are various individuals/entities that are a part of an organisation. Each user will have a different role to play, like admin, staff etc., .
+ */
 export class Users {
   constructor(private readonly http: HTTPClient) {}
 

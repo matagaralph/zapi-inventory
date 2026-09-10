@@ -13,6 +13,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * Batches help you track inventory items by batch numbers, manufacturing dates, and expiration dates.
+ */
 export class Batches {
   constructor(private readonly http: HTTPClient) {}
 

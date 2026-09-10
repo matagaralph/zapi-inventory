@@ -27,6 +27,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * Vendor credits are credits that you receive from your vendor, and is treated as an equivalent of physical cash that the vendor owes you. This helps you track the money you're owed until it is either paid by said vendor at a later date i.e refunded, or subtracted from any future bill amount due to that vendor.
+ */
 export class VendorCredits {
   constructor(private readonly http: HTTPClient) {}
 

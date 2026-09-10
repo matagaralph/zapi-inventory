@@ -18,6 +18,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * Putaways let you record stock moved into storage locations after inbound operations. Use these APIs to create, update, list, and delete putaway transactions in Zoho Inventory.
+ */
 export class Putaways {
   constructor(private readonly http: HTTPClient) {}
 

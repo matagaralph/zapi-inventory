@@ -10,6 +10,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * Item Group are the products that you sell or services that you render to various clients and can be purchased from various vendors in a business. Create and manage the item groups your business deals with and also create price lists for specific item and clients.
+ */
 export class ItemGroups {
   constructor(private readonly http: HTTPClient) {}
 

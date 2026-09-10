@@ -21,6 +21,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * Units of Measurement lets you create units (e.g., kg, g, lb) and organize them into unit groups with defined conversions. Units are the base entities that represent individual measurement types, while unit groups group related units and their conversion rates. You can associate these units with items to track quantities in multiple units of measurement.
+ */
 export class UnitsOfMeasurement {
   constructor(private readonly http: HTTPClient) {}
 

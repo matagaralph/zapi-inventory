@@ -17,6 +17,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * <p>A delivery challan is a document used to record the dispatch of goods to a customer without generating an invoice. It is typically used for goods sent on approval, job work, or for other non-sale purposes. Currently this module is available for <code class="url"><b>Global</b></code> and <code class="url"><b>India</b></code> Editions alone.</p> <h2>Supported Edition:</h2> <ul> <li>GLOBAL</li> <li>INDIA</li> </ul>
+ */
 export class DeliveryChallans {
   constructor(private readonly http: HTTPClient) {}
 

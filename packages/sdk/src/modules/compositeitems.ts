@@ -22,6 +22,9 @@ import type {
 import type { HTTPClient } from '../http.ts'
 import type { PartialBy } from '../utils.ts'
 
+/**
+ * A form or version of an composite item that differs in some respect from other forms of the same or from a standard. You can create your composite items by associating multiple items and their respective quantities.
+ */
 export class CompositeItems {
   constructor(private readonly http: HTTPClient) {}
 

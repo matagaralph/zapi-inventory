@@ -12,6 +12,10 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * Create locations for each branch and warehouse in your organisation and manage them all in one place.
+ * In this document, you can learn how to create and manage locations in Zoho Inventory.
+ */
 export class Locations {
   constructor(private readonly http: HTTPClient) {}
 

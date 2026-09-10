@@ -23,6 +23,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * Tasks are the to-dos that you and your users have to complete. You can set reminders for tasks that need your attention. Reminders help you stay organized by alerting you about due or upcoming tasks.
+ */
 export class Tasks {
   constructor(private readonly http: HTTPClient) {}
 

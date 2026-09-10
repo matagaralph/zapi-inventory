@@ -11,6 +11,9 @@ import type {
 
 import type { HTTPClient } from '../http.ts'
 
+/**
+ * Inventory Adjustments are used to synchronize the inventory/stock to account for things that occur outside the normal business like theft, damaged goods, data entry error etc.
+ */
 export class InventoryAdjustments {
   constructor(private readonly http: HTTPClient) {}
 
