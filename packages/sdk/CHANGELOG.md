@@ -1,5 +1,11 @@
 # zapi-inventory
 
+## 1.0.1
+
+### Patch Changes
+
+- 611ebfa: Republished as 1.0.1. The 1.0.0 publish to npm hit a registry conflict and never became installable, so this version carries the same changes v1.0.0 was meant to ship.
+
 ## 1.0.0
 
 ### Patch Changes
