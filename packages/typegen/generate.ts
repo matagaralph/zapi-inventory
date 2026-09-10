@@ -52,6 +52,45 @@ function aliasNameFor(schemaKey: string): string {
     .join('')
 }
 
+// Zoho's specs attach an `example` value to nearly every schema property, and openapi-typescript
+// emits each one as its own @example JSDoc line. They only ever illustrate a value, never
+// document what a field means, and they are most of the published package's declaration weight.
+// This strips just those lines (and the whole comment block, if @example was all it carried)
+// while leaving every @description and other JSDoc line untouched.
+function stripExampleComments(source: string): string {
+  const lines = source.split('\n')
+  const result: string[] = []
+  let block: string[] | undefined
+
+  for (const line of lines) {
+    const trimmed = line.trim()
+
+    if (block) {
+      if (!trimmed.startsWith('* @example')) block.push(line)
+      if (trimmed.startsWith('*/')) {
+        if (block.length > 2) result.push(...block)
+        block = undefined
+      }
+      continue
+    }
+
+    const singleLineMatch = trimmed.match(/^\/\*\*\s*(.*?)\s*\*\/$/)
+    if (singleLineMatch) {
+      if (!singleLineMatch[1]!.startsWith('@example')) result.push(line)
+      continue
+    }
+
+    if (trimmed === '/**') {
+      block = [line]
+      continue
+    }
+
+    result.push(line)
+  }
+
+  return result.join('\n')
+}
+
 function propertyNameText(name: ts.PropertyName): string | undefined {
   if (ts.isIdentifier(name) || ts.isStringLiteral(name) || ts.isNumericLiteral(name)) {
     return name.text
@@ -140,6 +179,13 @@ function requireResponseFields(ast: readonly ts.Node[]): ts.Node[] {
 // referenced and would otherwise ship dead weight in the published declaration files.
 function dropUnusedPathsInterface(ast: readonly ts.Node[]): ts.Node[] {
   return ast.filter((node) => !ts.isInterfaceDeclaration(node) || node.name.text !== 'paths')
+}
+
+// openapi-typescript always emits a `webhooks` type alias, even when (as in every Zoho spec)
+// the source document never declares a `webhooks:` section, in which case it's just an empty
+// `Record<string, never>`. Nothing in the SDK reads it, so it's dead weight in every generated file.
+function dropUnusedWebhooksType(ast: readonly ts.Node[]): ts.Node[] {
+  return ast.filter((node) => !ts.isTypeAliasDeclaration(node) || node.name.text !== 'webhooks')
 }
 
 function extractStructuralSchemaKeys(ast: readonly ts.Node[]): string[] {
@@ -313,12 +359,12 @@ for (const file of specFiles) {
   const moduleName = basename(file, '.yml')
   const namespace = toNamespace(moduleName)
 
-  const preprunedAst = dropUnusedPathsInterface(
-    requireResponseFields(await openapiTS(Bun.pathToFileURL(specPath)))
+  const preprunedAst = dropUnusedWebhooksType(
+    dropUnusedPathsInterface(requireResponseFields(await openapiTS(Bun.pathToFileURL(specPath))))
   )
   const keepOperationIds = new Set(extractQueryableOperationIds(preprunedAst))
   const ast = pruneOperations(preprunedAst, keepOperationIds)
-  await Bun.write(join(generatedDir, `${moduleName}.ts`), astToString(ast))
+  await Bun.write(join(generatedDir, `${moduleName}.ts`), stripExampleComments(astToString(ast)))
 
   const localAliasOwners = new Map<string, string>()
   const collisionCounts = new Map<string, number>()

@@ -69,6 +69,7 @@ const commonConfig = {
   entrypoints: [entrypoint],
   packages: 'external',
   target: 'node',
+  minify: true,
 } satisfies Omit<Bun.BuildConfig, 'format' | 'outdir'>
 
 const builds = [
