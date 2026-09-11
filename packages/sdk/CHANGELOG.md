@@ -1,5 +1,11 @@
 # zapi-inventory
 
+## 1.1.0
+
+### Minor Changes
+
+- 8175d16: Added an internal module for undocumented Zoho endpoints, exposed as client.internal. getReportMetadata moved here from the SDK root, and getCountries was added alongside it. Everything on this module is experimental and can change or break without notice.
+
 ## 1.0.1
 
 ### Patch Changes
