@@ -12,6 +12,7 @@ import { CustomerPayments } from './modules/customer-payments.ts'
 import { DeliveryChallans } from './modules/delivery-challans.ts'
 import { InventoryAdjustments } from './modules/inventoryadjustments.ts'
 import { InventoryCounts } from './modules/inventorycounting.ts'
+import { Internal } from './modules/internal.ts'
 import { Invoices } from './modules/invoices.ts'
 import { ItemGroups } from './modules/itemgroups.ts'
 import { Items } from './modules/items.ts'
@@ -39,17 +40,6 @@ import { TransferOrders } from './modules/transferorders.ts'
 import { UnitsOfMeasurement } from './modules/unit_of_measurement.ts'
 import { Users } from './modules/users.ts'
 import { VendorCredits } from './modules/vendor-credits.ts'
-
-export interface ReportMetadata {
-  page: number
-  per_page: number
-  total: string
-  total_pages: number
-  report_name: string
-  applied_filter: string
-  sort_column: string
-  sort_order: string
-}
 
 export type ZohoDataCenter = 'com' | 'eu' | 'in' | 'com.au' | 'jp' | 'ca' | 'com.cn' | 'sa'
 
@@ -85,6 +75,7 @@ export class ZohoInventory {
   readonly deliveryChallans: DeliveryChallans
   readonly inventoryAdjustments: InventoryAdjustments
   readonly inventoryCounts: InventoryCounts
+  readonly internal: Internal
   readonly invoices: Invoices
   readonly itemGroups: ItemGroups
   readonly items: Items
@@ -145,6 +136,7 @@ export class ZohoInventory {
     this.deliveryChallans = new DeliveryChallans(this.http)
     this.inventoryAdjustments = new InventoryAdjustments(this.http)
     this.inventoryCounts = new InventoryCounts(this.http)
+    this.internal = new Internal(this.http)
     this.invoices = new Invoices(this.http)
     this.itemGroups = new ItemGroups(this.http)
     this.items = new Items(this.http)
@@ -172,29 +164,5 @@ export class ZohoInventory {
     this.unitsOfMeasurement = new UnitsOfMeasurement(this.http)
     this.users = new Users(this.http)
     this.vendorCredits = new VendorCredits(this.http)
-  }
-
-  /**
-   * Retrieves report-level metadata for a paginated resource, including
-   * pagination details and report context (name, filter, sort order).
-   *
-   * @experimental
-   * @param path - The API path segments for the target resource.
-   * @param params - Optional query parameters to include in the request.
-   * @returns The report metadata extracted from the response's `page_context`.
-   */
-  async getReportMetadata(
-    path: string[],
-    params?: Record<string, string | number | boolean | undefined>
-  ): Promise<ReportMetadata> {
-    const response = await this.http.get<{ page_context: ReportMetadata }>({
-      path,
-      query: {
-        ...params,
-        response_option: 2,
-      },
-    })
-
-    return response.page_context
   }
 }
