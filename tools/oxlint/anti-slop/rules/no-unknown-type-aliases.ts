@@ -18,11 +18,11 @@ export const noUnknownTypeAliasesRule = defineRule({
 		type: "problem",
 		docs: {
 			description:
-				"Disallow type aliases whose resolved type is unknown; unknown must remain visible at an allowed boundary.",
+				"Disallow type aliases whose resolved type is unknown. Unknown must remain visible at an allowed boundary.",
 		},
 		messages: {
 			unknownAlias:
-				"Type alias `{{alias}}` hides `unknown`. Keep `unknown` explicit at the parsing boundary or on an allowed `cause` field; otherwise use the parsed owner type.",
+				"Type alias `{{alias}}` hides `unknown`. Keep `unknown` explicit at the parsing boundary or on an allowed `cause` field. Otherwise use the parsed owner type.",
 		},
 	},
 	createOnce(context) {

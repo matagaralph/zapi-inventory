@@ -20,68 +20,70 @@ import type { HTTPClient } from '../http.ts'
 /**
  * A Return Material Authorization (RMA) or Sales Return is the process of a seller accepting a purchased item back from the consumer. In turn, the customer receives credit, cash refund or a replacement.
  */
-export class SalesReturns {
-  constructor(private readonly http: HTTPClient) {}
+export function createSalesReturns(http: HTTPClient) {
+  return {
+    async list(params?: ListSalesReturnsQuery): Promise<ListSalesReturnsResponse['salesreturns']> {
+      const { salesreturns } = await http.get<ListSalesReturnsResponse>({
+        path: ['salesreturns'],
+        query: params,
+      })
+      return salesreturns
+    },
 
-  async list(params?: ListSalesReturnsQuery): Promise<ListSalesReturnsResponse['salesreturns']> {
-    const { salesreturns } = await this.http.get<ListSalesReturnsResponse>({
-      path: ['salesreturns'],
-      query: params,
-    })
-    return salesreturns
-  }
+    async create(
+      data: CreateSalesReturnRequest,
+      params?: CreateSalesReturnQuery
+    ): Promise<CreateSalesReturnResponse['salesreturn']> {
+      const { salesreturn } = await http.post<CreateSalesReturnResponse>({
+        path: ['salesreturns'],
+        query: params,
+        body: data,
+      })
+      return salesreturn
+    },
 
-  async create(
-    data: CreateSalesReturnRequest,
-    params?: CreateSalesReturnQuery
-  ): Promise<CreateSalesReturnResponse['salesreturn']> {
-    const { salesreturn } = await this.http.post<CreateSalesReturnResponse>({
-      path: ['salesreturns'],
-      query: params,
-      body: data,
-    })
-    return salesreturn
-  }
+    async get(salesreturnId: string): Promise<GetSalesReturnResponse['salesreturn']> {
+      const { salesreturn } = await http.get<GetSalesReturnResponse>({
+        path: ['salesreturns', salesreturnId],
+      })
+      return salesreturn
+    },
 
-  async get(salesreturnId: string): Promise<GetSalesReturnResponse['salesreturn']> {
-    const { salesreturn } = await this.http.get<GetSalesReturnResponse>({
-      path: ['salesreturns', salesreturnId],
-    })
-    return salesreturn
-  }
+    async update(
+      salesreturnId: string,
+      data: UpdateSalesReturnRequest,
+      params?: UpdateSalesReturnQuery
+    ): Promise<UpdateSalesReturnResponse['salesreturn']> {
+      const { salesreturn } = await http.put<UpdateSalesReturnResponse>({
+        path: ['salesreturns', salesreturnId],
+        query: params,
+        body: data,
+      })
+      return salesreturn
+    },
 
-  async update(
-    salesreturnId: string,
-    data: UpdateSalesReturnRequest,
-    params?: UpdateSalesReturnQuery
-  ): Promise<UpdateSalesReturnResponse['salesreturn']> {
-    const { salesreturn } = await this.http.put<UpdateSalesReturnResponse>({
-      path: ['salesreturns', salesreturnId],
-      query: params,
-      body: data,
-    })
-    return salesreturn
-  }
+    async delete(salesreturnId: string): Promise<void> {
+      await http.delete<DeleteSalesReturnResponse>({ path: ['salesreturns', salesreturnId] })
+    },
 
-  async delete(salesreturnId: string): Promise<void> {
-    await this.http.delete<DeleteSalesReturnResponse>({ path: ['salesreturns', salesreturnId] })
-  }
+    async createReceive(
+      data: CreateSalesReturnReceiveRequest,
+      params?: CreateSalesReturnReceiveQuery
+    ): Promise<CreateSalesReturnReceiveResponse['salesreturn']> {
+      const { salesreturn } = await http.post<CreateSalesReturnReceiveResponse>({
+        path: ['salesreturnreceives'],
+        query: params,
+        body: data,
+      })
+      return salesreturn
+    },
 
-  async createReceive(
-    data: CreateSalesReturnReceiveRequest,
-    params?: CreateSalesReturnReceiveQuery
-  ): Promise<CreateSalesReturnReceiveResponse['salesreturn']> {
-    const { salesreturn } = await this.http.post<CreateSalesReturnReceiveResponse>({
-      path: ['salesreturnreceives'],
-      query: params,
-      body: data,
-    })
-    return salesreturn
-  }
-
-  async deleteReceive(salesreturnreceiveId: string): Promise<void> {
-    await this.http.delete<DeleteSalesReturnReceiveResponse>({
-      path: ['salesreturnreceives', salesreturnreceiveId],
-    })
+    async deleteReceive(salesreturnreceiveId: string): Promise<void> {
+      await http.delete<DeleteSalesReturnReceiveResponse>({
+        path: ['salesreturnreceives', salesreturnreceiveId],
+      })
+    },
   }
 }
+
+export type SalesReturns = ReturnType<typeof createSalesReturns>

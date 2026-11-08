@@ -45,17 +45,17 @@ export const noUnknownParametersRule = defineRule({
     type: "problem",
     docs: {
       description:
-        "Disallow explicitly unknown function parameters except `cause`; decode unknown input at its I/O boundary instead.",
+        "Disallow explicitly unknown function parameters except `cause`. Decode unknown input at its I/O boundary instead.",
     },
     messages: {
       unknownParameter:
-        "Parameter `{{parameter}}` leaves input unparsed. Accept a named domain type; run the expected schema or parser at the I/O boundary before calling this function.",
+        "Parameter `{{parameter}}` leaves input unparsed. Accept a named domain type. Run the expected schema or parser at the I/O boundary before calling this function.",
     },
   },
   createOnce(context) {
     const checkParameters = (node: ParameterOwner) => {
-      // A `value is T` return type IS the parse-at-boundary step this rule wants;
-      // its subject is legitimately unknown until the predicate narrows it.
+      // A `value is T` return type IS the parse-at-boundary step this rule wants.
+      // Its subject is legitimately unknown until the predicate narrows it.
       if (node.returnType?.typeAnnotation.type === "TSTypePredicate") return;
       for (const parameter of node.params) {
         const annotation = parameterAnnotation(parameter);

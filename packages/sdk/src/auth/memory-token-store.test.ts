@@ -1,5 +1,5 @@
-import { describe, expect, test } from 'bun:test'
-import { InMemoryTokenStore } from './memory-token-store.ts'
+import { describe, expect, test } from 'vitest'
+import { createMemoryTokenStore } from './memory-token-store.ts'
 import type { StoredToken } from './token-store.ts'
 
 function token(overrides: Partial<StoredToken> = {}): StoredToken {
@@ -13,14 +13,14 @@ function token(overrides: Partial<StoredToken> = {}): StoredToken {
   }
 }
 
-describe('InMemoryTokenStore', () => {
+describe('createMemoryTokenStore', () => {
   test('returns null when no token has been saved for the identity', async () => {
-    const store = new InMemoryTokenStore()
+    const store = createMemoryTokenStore()
     expect(await store.findToken('client-id', 'org-id')).toBeNull()
   })
 
   test('round-trips a saved token', async () => {
-    const store = new InMemoryTokenStore()
+    const store = createMemoryTokenStore()
     const saved = token()
 
     await store.saveToken(saved)
@@ -29,7 +29,7 @@ describe('InMemoryTokenStore', () => {
   })
 
   test('scopes tokens by the clientId/orgId pair, not by either alone', async () => {
-    const store = new InMemoryTokenStore()
+    const store = createMemoryTokenStore()
     const forOrgA = token({ clientId: 'client-id', orgId: 'org-a', accessToken: 'token-a' })
     const forOrgB = token({ clientId: 'client-id', orgId: 'org-b', accessToken: 'token-b' })
     const forOtherClient = token({
@@ -48,7 +48,7 @@ describe('InMemoryTokenStore', () => {
   })
 
   test('deleteToken only removes the matching identity', async () => {
-    const store = new InMemoryTokenStore()
+    const store = createMemoryTokenStore()
     await store.saveToken(token({ clientId: 'client-id', orgId: 'org-a' }))
     await store.saveToken(token({ clientId: 'client-id', orgId: 'org-b' }))
 
@@ -59,7 +59,16 @@ describe('InMemoryTokenStore', () => {
   })
 
   test('deleteToken is a no-op for an identity that was never saved', async () => {
-    const store = new InMemoryTokenStore()
+    const store = createMemoryTokenStore()
     await expect(store.deleteToken('missing-client', 'missing-org')).resolves.toBeUndefined()
+  })
+
+  test('keeps each store independent', async () => {
+    const first = createMemoryTokenStore()
+    const second = createMemoryTokenStore()
+
+    await first.saveToken(token())
+
+    expect(await second.findToken('client-id', 'org-id')).toBeNull()
   })
 })

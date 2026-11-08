@@ -39,11 +39,11 @@ export const noObjectParametersRule = defineRule({
 		type: "problem",
 		docs: {
 			description:
-				"Disallow object function parameters; inputs must use an owner-provided type and be parsed at their boundary.",
+				"Disallow object function parameters. Inputs must use an owner-provided type and be parsed at their boundary.",
 		},
 		messages: {
 			objectParameter:
-				"Parameter `{{parameter}}` uses the broad `object` type. Accept a named owner type; parse external input at its boundary before calling this function.",
+				"Parameter `{{parameter}}` uses the broad `object` type. Accept a named owner type. Parse external input at its boundary before calling this function.",
 		},
 	},
 	createOnce(context) {

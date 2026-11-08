@@ -24,103 +24,109 @@ import type { HTTPClient } from '../http.ts'
 /**
  * Units of Measurement lets you create units (e.g., kg, g, lb) and organize them into unit groups with defined conversions. Units are the base entities that represent individual measurement types, while unit groups group related units and their conversion rates. You can associate these units with items to track quantities in multiple units of measurement.
  */
-export class UnitsOfMeasurement {
-  constructor(private readonly http: HTTPClient) {}
+export function createUnitsOfMeasurement(http: HTTPClient) {
+  return {
+    async listGroups(params?: ListUnitGroupsQuery): Promise<ListUnitGroupsResponse['unit_groups']> {
+      const { unit_groups } = await http.get<ListUnitGroupsResponse>({
+        path: ['unitgroups'],
+        query: params,
+      })
+      return unit_groups
+    },
 
-  async listGroups(params?: ListUnitGroupsQuery): Promise<ListUnitGroupsResponse['unit_groups']> {
-    const { unit_groups } = await this.http.get<ListUnitGroupsResponse>({
-      path: ['unitgroups'],
-      query: params,
-    })
-    return unit_groups
-  }
+    async createGroup(
+      data: CreateUnitGroupRequest
+    ): Promise<CreateUnitGroupResponse['unit_group']> {
+      const { unit_group } = await http.post<CreateUnitGroupResponse>({
+        path: ['unitgroups'],
+        body: data,
+      })
+      return unit_group
+    },
 
-  async createGroup(data: CreateUnitGroupRequest): Promise<CreateUnitGroupResponse['unit_group']> {
-    const { unit_group } = await this.http.post<CreateUnitGroupResponse>({
-      path: ['unitgroups'],
-      body: data,
-    })
-    return unit_group
-  }
+    async getGroup(unitGroupId: string): Promise<GetUnitGroupResponse['unit_group']> {
+      const { unit_group } = await http.get<GetUnitGroupResponse>({
+        path: ['unitgroups', unitGroupId],
+      })
+      return unit_group
+    },
 
-  async getGroup(unitGroupId: string): Promise<GetUnitGroupResponse['unit_group']> {
-    const { unit_group } = await this.http.get<GetUnitGroupResponse>({
-      path: ['unitgroups', unitGroupId],
-    })
-    return unit_group
-  }
+    async updateGroup(
+      unitGroupId: string,
+      data: UpdateUnitGroupRequest
+    ): Promise<UpdateUnitGroupResponse['unit_group']> {
+      const { unit_group } = await http.put<UpdateUnitGroupResponse>({
+        path: ['unitgroups', unitGroupId],
+        body: data,
+      })
+      return unit_group
+    },
 
-  async updateGroup(
-    unitGroupId: string,
-    data: UpdateUnitGroupRequest
-  ): Promise<UpdateUnitGroupResponse['unit_group']> {
-    const { unit_group } = await this.http.put<UpdateUnitGroupResponse>({
-      path: ['unitgroups', unitGroupId],
-      body: data,
-    })
-    return unit_group
-  }
+    async deleteGroup(unitGroupId: string): Promise<void> {
+      await http.delete({ path: ['unitgroups', unitGroupId] })
+    },
 
-  async deleteGroup(unitGroupId: string): Promise<void> {
-    await this.http.delete({ path: ['unitgroups', unitGroupId] })
-  }
+    async listUnits(params?: ListUnitsQuery): Promise<ListUnitsResponse['units']> {
+      const { units } = await http.get<ListUnitsResponse>({
+        path: ['units'],
+        query: params,
+      })
+      return units
+    },
 
-  async listUnits(params?: ListUnitsQuery): Promise<ListUnitsResponse['units']> {
-    const { units } = await this.http.get<ListUnitsResponse>({
-      path: ['units'],
-      query: params,
-    })
-    return units
-  }
+    async createUnit(data: CreateUnitRequest): Promise<CreateUnitResponse['unit']> {
+      const { unit } = await http.post<CreateUnitResponse>({ path: ['units'], body: data })
+      return unit
+    },
 
-  async createUnit(data: CreateUnitRequest): Promise<CreateUnitResponse['unit']> {
-    const { unit } = await this.http.post<CreateUnitResponse>({ path: ['units'], body: data })
-    return unit
-  }
+    async updateUnit(unitId: string, data: UpdateUnitRequest): Promise<UpdateUnitResponse['unit']> {
+      const { unit } = await http.put<UpdateUnitResponse>({
+        path: ['units', unitId],
+        body: data,
+      })
+      return unit
+    },
 
-  async updateUnit(unitId: string, data: UpdateUnitRequest): Promise<UpdateUnitResponse['unit']> {
-    const { unit } = await this.http.put<UpdateUnitResponse>({
-      path: ['units', unitId],
-      body: data,
-    })
-    return unit
-  }
+    async deleteUnit(unitId: string): Promise<void> {
+      await http.delete({ path: ['units', unitId] })
+    },
 
-  async deleteUnit(unitId: string): Promise<void> {
-    await this.http.delete({ path: ['units', unitId] })
-  }
+    async listConversions(
+      unitId: string
+    ): Promise<ListUnitConversionsResponse['unit_conversions']> {
+      const { unit_conversions } = await http.get<ListUnitConversionsResponse>({
+        path: ['units', unitId, 'unitconversions'],
+      })
+      return unit_conversions
+    },
 
-  async listConversions(unitId: string): Promise<ListUnitConversionsResponse['unit_conversions']> {
-    const { unit_conversions } = await this.http.get<ListUnitConversionsResponse>({
-      path: ['units', unitId, 'unitconversions'],
-    })
-    return unit_conversions
-  }
+    async createConversion(
+      unitId: string,
+      data: CreateUnitConversionRequest
+    ): Promise<CreateUnitConversionResponse['unit_conversion']> {
+      const { unit_conversion } = await http.post<CreateUnitConversionResponse>({
+        path: ['units', unitId, 'unitconversions'],
+        body: data,
+      })
+      return unit_conversion
+    },
 
-  async createConversion(
-    unitId: string,
-    data: CreateUnitConversionRequest
-  ): Promise<CreateUnitConversionResponse['unit_conversion']> {
-    const { unit_conversion } = await this.http.post<CreateUnitConversionResponse>({
-      path: ['units', unitId, 'unitconversions'],
-      body: data,
-    })
-    return unit_conversion
-  }
+    async updateConversion(
+      unitId: string,
+      unitConversionId: string,
+      data: UpdateUnitConversionRequest
+    ): Promise<UpdateUnitConversionResponse['unit_conversion']> {
+      const { unit_conversion } = await http.put<UpdateUnitConversionResponse>({
+        path: ['units', unitId, 'unitconversions', unitConversionId],
+        body: data,
+      })
+      return unit_conversion
+    },
 
-  async updateConversion(
-    unitId: string,
-    unitConversionId: string,
-    data: UpdateUnitConversionRequest
-  ): Promise<UpdateUnitConversionResponse['unit_conversion']> {
-    const { unit_conversion } = await this.http.put<UpdateUnitConversionResponse>({
-      path: ['units', unitId, 'unitconversions', unitConversionId],
-      body: data,
-    })
-    return unit_conversion
-  }
-
-  async deleteConversion(unitId: string, unitConversionId: string): Promise<void> {
-    await this.http.delete({ path: ['units', unitId, 'unitconversions', unitConversionId] })
+    async deleteConversion(unitId: string, unitConversionId: string): Promise<void> {
+      await http.delete({ path: ['units', unitId, 'unitconversions', unitConversionId] })
+    },
   }
 }
+
+export type UnitsOfMeasurement = ReturnType<typeof createUnitsOfMeasurement>

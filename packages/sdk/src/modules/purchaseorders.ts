@@ -19,105 +19,107 @@ import type { PartialBy } from '../utils.ts'
 /**
  * A purchase order is an official document that you issue to your vendors, indicating relevant information about what you want to buy, the quantity, the price agreed for that particular product or service.
  */
-export class PurchaseOrders {
-  constructor(private readonly http: HTTPClient) {}
+export function createPurchaseOrders(http: HTTPClient) {
+  return {
+    async list(
+      params?: ListPurchaseOrdersQuery
+    ): Promise<ListPurchaseOrdersResponse['purchaseorders']> {
+      const { purchaseorders } = await http.get<ListPurchaseOrdersResponse>({
+        path: ['purchaseorders'],
+        query: { ...params },
+      })
+      return purchaseorders
+    },
 
-  async list(
-    params?: ListPurchaseOrdersQuery
-  ): Promise<ListPurchaseOrdersResponse['purchaseorders']> {
-    const { purchaseorders } = await this.http.get<ListPurchaseOrdersResponse>({
-      path: ['purchaseorders'],
-      query: { ...params },
-    })
-    return purchaseorders
-  }
+    // purchaseorder_number is only mandatory when params.ignore_auto_number_generation is true.
+    // Otherwise Zoho auto-generates it. Zoho's spec always marks it required, so it's relaxed here.
+    async create(
+      data: PartialBy<CreatePurchaseOrderRequest, 'purchaseorder_number'>,
+      params?: CreatePurchaseOrderQuery
+    ): Promise<CreatePurchaseOrderResponse['purchaseorder']> {
+      const { purchaseorder } = await http.post<CreatePurchaseOrderResponse>({
+        path: ['purchaseorders'],
+        query: params,
+        body: data,
+      })
+      return purchaseorder
+    },
 
-  // purchaseorder_number is only mandatory when params.ignore_auto_number_generation is true;
-  // otherwise Zoho auto-generates it. Zoho's spec always marks it required, so it's relaxed here.
-  async create(
-    data: PartialBy<CreatePurchaseOrderRequest, 'purchaseorder_number'>,
-    params?: CreatePurchaseOrderQuery
-  ): Promise<CreatePurchaseOrderResponse['purchase_order']> {
-    const { purchase_order } = await this.http.post<CreatePurchaseOrderResponse>({
-      path: ['purchaseorders'],
-      query: params,
-      body: data,
-    })
-    return purchase_order
-  }
+    async get(purchaseorderId: string): Promise<GetPurchaseOrderResponse['purchaseorder']> {
+      const { purchaseorder } = await http.get<GetPurchaseOrderResponse>({
+        path: ['purchaseorders', purchaseorderId],
+      })
+      return purchaseorder
+    },
 
-  async get(purchaseorderId: string): Promise<GetPurchaseOrderResponse['purchase_order']> {
-    const { purchase_order } = await this.http.get<GetPurchaseOrderResponse>({
-      path: ['purchaseorders', purchaseorderId],
-    })
-    return purchase_order
-  }
+    async update(
+      purchaseorderId: string,
+      data: PartialBy<UpdatePurchaseOrderRequest, 'purchaseorder_number'>,
+      params?: UpdatePurchaseOrderQuery
+    ): Promise<UpdatePurchaseOrderResponse['purchaseorder']> {
+      const { purchaseorder } = await http.put<UpdatePurchaseOrderResponse>({
+        path: ['purchaseorders', purchaseorderId],
+        query: params,
+        body: data,
+      })
+      return purchaseorder
+    },
 
-  async update(
-    purchaseorderId: string,
-    data: PartialBy<UpdatePurchaseOrderRequest, 'purchaseorder_number'>,
-    params?: UpdatePurchaseOrderQuery
-  ): Promise<UpdatePurchaseOrderResponse['purchase_order']> {
-    const { purchase_order } = await this.http.put<UpdatePurchaseOrderResponse>({
-      path: ['purchaseorders', purchaseorderId],
-      query: params,
-      body: data,
-    })
-    return purchase_order
-  }
+    async delete(purchaseorderId: string): Promise<void> {
+      await http.delete({ path: ['purchaseorders', purchaseorderId] })
+    },
 
-  async delete(purchaseorderId: string): Promise<void> {
-    await this.http.delete({ path: ['purchaseorders', purchaseorderId] })
-  }
+    async markAsIssued(purchaseorderId: string): Promise<void> {
+      await http.post({
+        path: ['purchaseorders', purchaseorderId, 'status', 'issued'],
+      })
+    },
 
-  async markAsIssued(purchaseorderId: string): Promise<void> {
-    await this.http.post({
-      path: ['purchaseorders', purchaseorderId, 'status', 'issued'],
-    })
-  }
+    async markAsCancelled(purchaseorderId: string): Promise<void> {
+      await http.post({
+        path: ['purchaseorders', purchaseorderId, 'status', 'cancelled'],
+      })
+    },
 
-  async markAsCancelled(purchaseorderId: string): Promise<void> {
-    await this.http.post({
-      path: ['purchaseorders', purchaseorderId, 'status', 'cancelled'],
-    })
-  }
+    async submit(purchaseorderId: string): Promise<void> {
+      await http.post({
+        path: ['purchaseorders', purchaseorderId, 'submit'],
+      })
+    },
 
-  async submit(purchaseorderId: string): Promise<void> {
-    await this.http.post({
-      path: ['purchaseorders', purchaseorderId, 'submit'],
-    })
-  }
+    async approve(purchaseorderId: string): Promise<void> {
+      await http.post({
+        path: ['purchaseorders', purchaseorderId, 'approve'],
+      })
+    },
 
-  async approve(purchaseorderId: string): Promise<void> {
-    await this.http.post({
-      path: ['purchaseorders', purchaseorderId, 'approve'],
-    })
-  }
+    async reject(purchaseorderId: string, data?: PurchaseordersRejectRequest): Promise<void> {
+      await http.post({
+        path: ['purchaseorders', purchaseorderId, 'reject'],
+        body: data,
+      })
+    },
 
-  async reject(purchaseorderId: string, data?: PurchaseordersRejectRequest): Promise<void> {
-    await this.http.post({
-      path: ['purchaseorders', purchaseorderId, 'reject'],
-      body: data,
-    })
-  }
+    async finalApprove(purchaseorderId: string): Promise<void> {
+      await http.post({
+        path: ['purchaseorders', purchaseorderId, 'approve', 'final'],
+      })
+    },
 
-  async finalApprove(purchaseorderId: string): Promise<void> {
-    await this.http.post({
-      path: ['purchaseorders', purchaseorderId, 'approve', 'final'],
-    })
-  }
+    async bulkSubmit(params: BulkSubmitPurchaseordersQuery): Promise<void> {
+      await http.post({
+        path: ['purchaseorders', 'submit'],
+        query: params,
+      })
+    },
 
-  async bulkSubmit(params: BulkSubmitPurchaseordersQuery): Promise<void> {
-    await this.http.post({
-      path: ['purchaseorders', 'submit'],
-      query: params,
-    })
-  }
-
-  async bulkApprove(params: BulkApprovePurchaseordersQuery): Promise<void> {
-    await this.http.post({
-      path: ['purchaseorders', 'approve'],
-      query: params,
-    })
+    async bulkApprove(params: BulkApprovePurchaseordersQuery): Promise<void> {
+      await http.post({
+        path: ['purchaseorders', 'approve'],
+        query: params,
+      })
+    },
   }
 }
+
+export type PurchaseOrders = ReturnType<typeof createPurchaseOrders>

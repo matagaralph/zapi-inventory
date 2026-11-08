@@ -22,128 +22,133 @@ import type { HTTPClient } from '../http.ts'
 /**
  * Move orders track stock movement between storage locations within a warehouse. Use these APIs to create, update, list, delete, and change the status of move orders in Zoho Inventory.
  */
-export class MoveOrders {
-  constructor(private readonly http: HTTPClient) {}
+export function createMoveOrders(http: HTTPClient) {
+  return {
+    async list(params?: ListMoveOrdersQuery): Promise<ListMoveOrdersResponse['moveorders']> {
+      const { moveorders } = await http.get<ListMoveOrdersResponse>({
+        path: ['moveorders'],
+        query: { ...params },
+      })
+      return moveorders
+    },
 
-  async list(params?: ListMoveOrdersQuery): Promise<ListMoveOrdersResponse['moveorders']> {
-    const { moveorders } = await this.http.get<ListMoveOrdersResponse>({
-      path: ['moveorders'],
-      query: { ...params },
-    })
-    return moveorders
-  }
+    async create(
+      data: CreateMoveOrderRequest,
+      params?: CreateMoveOrderQuery
+    ): Promise<CreateMoveOrderResponse['moveorder']> {
+      const { moveorder } = await http.post<CreateMoveOrderResponse>({
+        path: ['moveorders'],
+        body: data,
+        query: { ...params },
+      })
+      return moveorder
+    },
 
-  async create(
-    data: CreateMoveOrderRequest,
-    params?: CreateMoveOrderQuery
-  ): Promise<CreateMoveOrderResponse['moveorder']> {
-    const { moveorder } = await this.http.post<CreateMoveOrderResponse>({
-      path: ['moveorders'],
-      body: data,
-      query: { ...params },
-    })
-    return moveorder
-  }
+    async bulkDelete(params?: ListMoveOrdersQuery): Promise<void> {
+      await http.delete({ path: ['moveorders'], query: { ...params } })
+    },
 
-  async bulkDelete(params?: ListMoveOrdersQuery): Promise<void> {
-    await this.http.delete({ path: ['moveorders'], query: { ...params } })
-  }
+    async get(
+      moveorderId: string,
+      params?: GetMoveOrderQuery
+    ): Promise<GetMoveOrderResponse['moveorder']> {
+      const { moveorder } = await http.get<GetMoveOrderResponse>({
+        path: ['moveorders', moveorderId],
+        query: { ...params },
+      })
+      return moveorder
+    },
 
-  async get(
-    moveorderId: string,
-    params?: GetMoveOrderQuery
-  ): Promise<GetMoveOrderResponse['moveorder']> {
-    const { moveorder } = await this.http.get<GetMoveOrderResponse>({
-      path: ['moveorders', moveorderId],
-      query: { ...params },
-    })
-    return moveorder
-  }
+    async update(
+      moveorderId: string,
+      data: UpdateMoveOrderRequest,
+      params?: UpdateMoveOrderQuery
+    ): Promise<UpdateMoveOrderResponse['moveorder']> {
+      const { moveorder } = await http.put<UpdateMoveOrderResponse>({
+        path: ['moveorders', moveorderId],
+        body: data,
+        query: { ...params },
+      })
+      return moveorder
+    },
 
-  async update(
-    moveorderId: string,
-    data: UpdateMoveOrderRequest,
-    params?: UpdateMoveOrderQuery
-  ): Promise<UpdateMoveOrderResponse['moveorder']> {
-    const { moveorder } = await this.http.put<UpdateMoveOrderResponse>({
-      path: ['moveorders', moveorderId],
-      body: data,
-      query: { ...params },
-    })
-    return moveorder
-  }
+    async delete(moveorderId: string): Promise<void> {
+      await http.delete({ path: ['moveorders', moveorderId] })
+    },
 
-  async delete(moveorderId: string): Promise<void> {
-    await this.http.delete({ path: ['moveorders', moveorderId] })
-  }
+    async listComments(moveorderId: string): Promise<ListMoveOrderCommentsResponse['comments']> {
+      const { comments } = await http.get<ListMoveOrderCommentsResponse>({
+        path: ['moveorders', moveorderId, 'comments'],
+      })
+      return comments
+    },
 
-  async listComments(moveorderId: string): Promise<ListMoveOrderCommentsResponse['comments']> {
-    const { comments } = await this.http.get<ListMoveOrderCommentsResponse>({
-      path: ['moveorders', moveorderId, 'comments'],
-    })
-    return comments
-  }
+    async markAsConfirmed(moveorderId: string): Promise<void> {
+      await http.post({
+        path: ['moveorders', moveorderId, 'markasconfirmed'],
+      })
+    },
 
-  async markAsConfirmed(moveorderId: string): Promise<void> {
-    await this.http.post({
-      path: ['moveorders', moveorderId, 'markasconfirmed'],
-    })
-  }
+    async markAsInProgress(moveorderId: string): Promise<void> {
+      await http.post({
+        path: ['moveorders', moveorderId, 'markasinprogress'],
+      })
+    },
 
-  async markAsInProgress(moveorderId: string): Promise<void> {
-    await this.http.post({
-      path: ['moveorders', moveorderId, 'markasinprogress'],
-    })
-  }
+    async markAsCompleted(
+      moveorderId: string,
+      params: MarkMoveOrderAsCompletedQuery
+    ): Promise<void> {
+      await http.post({
+        path: ['moveorders', moveorderId, 'markascompleted'],
+        query: params,
+      })
+    },
 
-  async markAsCompleted(moveorderId: string, params: MarkMoveOrderAsCompletedQuery): Promise<void> {
-    await this.http.post({
-      path: ['moveorders', moveorderId, 'markascompleted'],
-      query: params,
-    })
-  }
+    async addAttachment(
+      moveorderId: string,
+      attachment: Blob,
+      documentIds?: string
+    ): Promise<MoveOrderAttachmentResponse['document']> {
+      const body = new FormData()
+      body.append('attachment', attachment)
+      if (documentIds !== undefined) body.append('document_ids', documentIds)
+      const { document } = await http.post<MoveOrderAttachmentResponse>({
+        path: ['moveorders', moveorderId, 'attachment'],
+        body,
+      })
+      return document
+    },
 
-  async addAttachment(
-    moveorderId: string,
-    attachment: Blob,
-    documentIds?: string
-  ): Promise<MoveOrderAttachmentResponse['document']> {
-    const body = new FormData()
-    body.append('attachment', attachment)
-    if (documentIds !== undefined) body.append('document_ids', documentIds)
-    const { document } = await this.http.post<MoveOrderAttachmentResponse>({
-      path: ['moveorders', moveorderId, 'attachment'],
-      body,
-    })
-    return document
-  }
+    async getDocument(
+      moveorderId: string,
+      documentId: string,
+      params?: GetMoveOrderDocumentQuery
+    ): Promise<Blob> {
+      return http.get<Blob>({
+        path: ['moveorders', moveorderId, 'documents', documentId],
+        query: { ...params },
+      })
+    },
 
-  async getDocument(
-    moveorderId: string,
-    documentId: string,
-    params?: GetMoveOrderDocumentQuery
-  ): Promise<Blob> {
-    return this.http.get<Blob>({
-      path: ['moveorders', moveorderId, 'documents', documentId],
-      query: { ...params },
-    })
-  }
+    async deleteDocument(
+      moveorderId: string,
+      documentId: string,
+      params?: DeleteMoveOrderDocumentQuery
+    ): Promise<void> {
+      await http.delete({
+        path: ['moveorders', moveorderId, 'documents', documentId],
+        query: { ...params },
+      })
+    },
 
-  async deleteDocument(
-    moveorderId: string,
-    documentId: string,
-    params?: DeleteMoveOrderDocumentQuery
-  ): Promise<void> {
-    await this.http.delete({
-      path: ['moveorders', moveorderId, 'documents', documentId],
-      query: { ...params },
-    })
-  }
-
-  async getSettings(): Promise<GetMoveOrderSettingsResponse['moveorder_settings']> {
-    const { moveorder_settings } = await this.http.get<GetMoveOrderSettingsResponse>({
-      path: ['settings', 'moveorders'],
-    })
-    return moveorder_settings
+    async getSettings(): Promise<GetMoveOrderSettingsResponse['moveorder_settings']> {
+      const { moveorder_settings } = await http.get<GetMoveOrderSettingsResponse>({
+        path: ['settings', 'moveorders'],
+      })
+      return moveorder_settings
+    },
   }
 }
+
+export type MoveOrders = ReturnType<typeof createMoveOrders>

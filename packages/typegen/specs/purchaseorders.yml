@@ -1480,7 +1480,7 @@ components:
           type: string
           example: success
           readOnly: true
-        purchase_order:
+        purchaseorder:
           $ref: '#/components/schemas/purchase_order-response'
     list-all-purchase-orders-response:
       type: object
@@ -1553,7 +1553,7 @@ components:
           type: string
           example: success
           readOnly: true
-        purchase_order:
+        purchaseorder:
           type: object
           properties:
             purchaseorder_id:
@@ -1780,7 +1780,7 @@ components:
           type: string
           example: success
           readOnly: true
-        purchase_order:
+        purchaseorder:
           type: object
           properties:
             purchaseorder_id:

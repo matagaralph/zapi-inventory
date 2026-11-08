@@ -1,12 +1,15 @@
 name: Setup CI
-description: 'Setup Bun for CI'
+description: 'Setup Node.js and pnpm for CI'
 runs:
   using: composite
   steps:
-    - name: Setup Bun
-      uses: oven-sh/setup-bun@v2
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
       with:
-        bun-version: '1.4.0'
+        node-version: '24'
+        cache: pnpm
     - name: Install dependencies
       shell: bash
-      run: bun install --frozen-lockfile
+      run: pnpm install --frozen-lockfile

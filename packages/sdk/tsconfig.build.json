@@ -1,6 +1,10 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    // The shipped SDK targets Node.js, Bun, Deno and Cloudflare Workers, so it may only rely on
+    // web-standard globals, never Node.js-specific types.
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "types": [],
     "declaration": true,
     "declarationMap": false,
     "emitDeclarationOnly": true,

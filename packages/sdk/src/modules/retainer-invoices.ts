@@ -23,185 +23,187 @@ import type { HTTPClient } from '../http.ts'
 /**
  * A lot of businesses collect an advance payment (or retainer) for products sold or services rendered by them. This amount collected will not be an income but a liability to the company. The revenue is earned only when the product is delivered or the service is completed, if not delivered or completed the advance payment made will be returned to the customer.
  */
-export class RetainerInvoices {
-  constructor(private readonly http: HTTPClient) {}
+export function createRetainerInvoices(http: HTTPClient) {
+  return {
+    async list(
+      params?: ListRetainerInvoicesQuery
+    ): Promise<ListRetainerInvoicesResponse['retainerinvoices']> {
+      const { retainerinvoices } = await http.get<ListRetainerInvoicesResponse>({
+        path: ['retainerinvoices'],
+        query: params,
+      })
+      return retainerinvoices
+    },
 
-  async list(
-    params?: ListRetainerInvoicesQuery
-  ): Promise<ListRetainerInvoicesResponse['retainerinvoices']> {
-    const { retainerinvoices } = await this.http.get<ListRetainerInvoicesResponse>({
-      path: ['retainerinvoices'],
-      query: params,
-    })
-    return retainerinvoices
-  }
+    async create(
+      data: CreateRetainerinvoiceRequest,
+      params?: CreateRetainerInvoiceQuery
+    ): Promise<CreateRetainerinvoiceResponse['retainerinvoice']> {
+      const { retainerinvoice } = await http.post<CreateRetainerinvoiceResponse>({
+        path: ['retainerinvoices'],
+        body: data,
+        query: params,
+      })
+      return retainerinvoice
+    },
 
-  async create(
-    data: CreateRetainerinvoiceRequest,
-    params?: CreateRetainerInvoiceQuery
-  ): Promise<CreateRetainerinvoiceResponse['retainerinvoice']> {
-    const { retainerinvoice } = await this.http.post<CreateRetainerinvoiceResponse>({
-      path: ['retainerinvoices'],
-      body: data,
-      query: params,
-    })
-    return retainerinvoice
-  }
+    async get(retainerinvoiceId: string): Promise<GetRetainerInvoiceResponse['retainerinvoice']> {
+      const { retainerinvoice } = await http.get<GetRetainerInvoiceResponse>({
+        path: ['retainerinvoices', retainerinvoiceId],
+      })
+      return retainerinvoice
+    },
 
-  async get(retainerinvoiceId: string): Promise<GetRetainerInvoiceResponse['retainerinvoice']> {
-    const { retainerinvoice } = await this.http.get<GetRetainerInvoiceResponse>({
-      path: ['retainerinvoices', retainerinvoiceId],
-    })
-    return retainerinvoice
-  }
+    async update(
+      retainerinvoiceId: string,
+      data: UpdateRetainerinvoiceRequest
+    ): Promise<UpdateRetainerinvoiceResponse['retainerinvoice']> {
+      const { retainerinvoice } = await http.put<UpdateRetainerinvoiceResponse>({
+        path: ['retainerinvoices', retainerinvoiceId],
+        body: data,
+      })
+      return retainerinvoice
+    },
 
-  async update(
-    retainerinvoiceId: string,
-    data: UpdateRetainerinvoiceRequest
-  ): Promise<UpdateRetainerinvoiceResponse['retainerinvoice']> {
-    const { retainerinvoice } = await this.http.put<UpdateRetainerinvoiceResponse>({
-      path: ['retainerinvoices', retainerinvoiceId],
-      body: data,
-    })
-    return retainerinvoice
-  }
+    async delete(retainerinvoiceId: string): Promise<void> {
+      await http.delete({ path: ['retainerinvoices', retainerinvoiceId] })
+    },
 
-  async delete(retainerinvoiceId: string): Promise<void> {
-    await this.http.delete({ path: ['retainerinvoices', retainerinvoiceId] })
-  }
+    async markAsSent(retainerinvoiceId: string): Promise<void> {
+      await http.post({
+        path: ['retainerinvoices', retainerinvoiceId, 'status', 'sent'],
+      })
+    },
 
-  async markAsSent(retainerinvoiceId: string): Promise<void> {
-    await this.http.post({
-      path: ['retainerinvoices', retainerinvoiceId, 'status', 'sent'],
-    })
-  }
+    async updateTemplate(retainerinvoiceId: string, templateId: string): Promise<void> {
+      await http.put({
+        path: ['retainerinvoices', retainerinvoiceId, 'templates', templateId],
+      })
+    },
 
-  async updateTemplate(retainerinvoiceId: string, templateId: string): Promise<void> {
-    await this.http.put({
-      path: ['retainerinvoices', retainerinvoiceId, 'templates', templateId],
-    })
-  }
+    async markAsVoid(retainerinvoiceId: string): Promise<void> {
+      await http.post({
+        path: ['retainerinvoices', retainerinvoiceId, 'status', 'void'],
+      })
+    },
 
-  async markAsVoid(retainerinvoiceId: string): Promise<void> {
-    await this.http.post({
-      path: ['retainerinvoices', retainerinvoiceId, 'status', 'void'],
-    })
-  }
+    async markAsDraft(retainerinvoiceId: string): Promise<void> {
+      await http.post({
+        path: ['retainerinvoices', retainerinvoiceId, 'status', 'draft'],
+      })
+    },
 
-  async markAsDraft(retainerinvoiceId: string): Promise<void> {
-    await this.http.post({
-      path: ['retainerinvoices', retainerinvoiceId, 'status', 'draft'],
-    })
-  }
+    async submitForApproval(retainerinvoiceId: string): Promise<void> {
+      await http.post({
+        path: ['retainerinvoices', retainerinvoiceId, 'submit'],
+      })
+    },
 
-  async submitForApproval(retainerinvoiceId: string): Promise<void> {
-    await this.http.post({
-      path: ['retainerinvoices', retainerinvoiceId, 'submit'],
-    })
-  }
+    async approve(retainerinvoiceId: string): Promise<void> {
+      await http.post({
+        path: ['retainerinvoices', retainerinvoiceId, 'approve'],
+      })
+    },
 
-  async approve(retainerinvoiceId: string): Promise<void> {
-    await this.http.post({
-      path: ['retainerinvoices', retainerinvoiceId, 'approve'],
-    })
-  }
+    async getEmailContent(
+      retainerinvoiceId: string
+    ): Promise<GetRetainerInvoiceEmailContentResponse> {
+      return http.get<GetRetainerInvoiceEmailContentResponse>({
+        path: ['retainerinvoices', retainerinvoiceId, 'email'],
+      })
+    },
 
-  async getEmailContent(
-    retainerinvoiceId: string
-  ): Promise<GetRetainerInvoiceEmailContentResponse> {
-    return this.http.get<GetRetainerInvoiceEmailContentResponse>({
-      path: ['retainerinvoices', retainerinvoiceId, 'email'],
-    })
-  }
+    async email(
+      retainerinvoiceId: string,
+      data?: EmailRetainerInvoiceRequest,
+      query?: EmailRetainerInvoiceQuery
+    ): Promise<void> {
+      await http.post({
+        path: ['retainerinvoices', retainerinvoiceId, 'email'],
+        body: data,
+        query,
+      })
+    },
 
-  async email(
-    retainerinvoiceId: string,
-    data?: EmailRetainerInvoiceRequest,
-    query?: EmailRetainerInvoiceQuery
-  ): Promise<void> {
-    await this.http.post({
-      path: ['retainerinvoices', retainerinvoiceId, 'email'],
-      body: data,
-      query,
-    })
-  }
+    async updateBillingAddress(
+      retainerinvoiceId: string,
+      data: RetainerInvoicesUpdateBillingAddressRequest
+    ): Promise<void> {
+      await http.put({
+        path: ['retainerinvoices', retainerinvoiceId, 'address', 'billing'],
+        body: data,
+      })
+    },
 
-  async updateBillingAddress(
-    retainerinvoiceId: string,
-    data: RetainerInvoicesUpdateBillingAddressRequest
-  ): Promise<void> {
-    await this.http.put({
-      path: ['retainerinvoices', retainerinvoiceId, 'address', 'billing'],
-      body: data,
-    })
-  }
+    async listTemplates(): Promise<ListRetainerInvoiceTemplatesResponse['templates']> {
+      const { templates } = await http.get<ListRetainerInvoiceTemplatesResponse>({
+        path: ['retainerinvoices', 'templates'],
+      })
+      return templates
+    },
 
-  async listTemplates(): Promise<ListRetainerInvoiceTemplatesResponse['templates']> {
-    const { templates } = await this.http.get<ListRetainerInvoiceTemplatesResponse>({
-      path: ['retainerinvoices', 'templates'],
-    })
-    return templates
-  }
+    async getAttachment(retainerinvoiceId: string): Promise<Blob> {
+      return http.get<Blob>({
+        path: ['retainerinvoices', retainerinvoiceId, 'attachment'],
+      })
+    },
 
-  async getAttachment(retainerinvoiceId: string): Promise<Blob> {
-    return this.http.get<Blob>({
-      path: ['retainerinvoices', retainerinvoiceId, 'attachment'],
-    })
-  }
+    async addAttachment(
+      retainerinvoiceId: string,
+      attachment: Blob,
+      canSendInMail?: boolean
+    ): Promise<void> {
+      const body = new FormData()
+      body.append('attachment', attachment)
+      if (canSendInMail !== undefined) body.append('can_send_in_mail', String(canSendInMail))
+      await http.post({
+        path: ['retainerinvoices', retainerinvoiceId, 'attachment'],
+        body,
+      })
+    },
 
-  async addAttachment(
-    retainerinvoiceId: string,
-    attachment: Blob,
-    canSendInMail?: boolean
-  ): Promise<void> {
-    const body = new FormData()
-    body.append('attachment', attachment)
-    if (canSendInMail !== undefined) body.append('can_send_in_mail', String(canSendInMail))
-    await this.http.post({
-      path: ['retainerinvoices', retainerinvoiceId, 'attachment'],
-      body,
-    })
-  }
+    async deleteAttachment(retainerinvoiceId: string, documentId: string): Promise<void> {
+      await http.delete({
+        path: ['retainerinvoices', retainerinvoiceId, 'documents', documentId],
+      })
+    },
 
-  async deleteAttachment(retainerinvoiceId: string, documentId: string): Promise<void> {
-    await this.http.delete({
-      path: ['retainerinvoices', retainerinvoiceId, 'documents', documentId],
-    })
-  }
+    async listComments(
+      retainerinvoiceId: string
+    ): Promise<ListRetainerInvoiceCommentsAndHistoryResponse['comments']> {
+      const { comments } = await http.get<ListRetainerInvoiceCommentsAndHistoryResponse>({
+        path: ['retainerinvoices', retainerinvoiceId, 'comments'],
+      })
+      return comments
+    },
 
-  async listComments(
-    retainerinvoiceId: string
-  ): Promise<ListRetainerInvoiceCommentsAndHistoryResponse['comments']> {
-    const { comments } = await this.http.get<ListRetainerInvoiceCommentsAndHistoryResponse>({
-      path: ['retainerinvoices', retainerinvoiceId, 'comments'],
-    })
-    return comments
-  }
+    async addComment(
+      retainerinvoiceId: string,
+      data: RetainerInvoicesAddCommentRequest
+    ): Promise<void> {
+      await http.post({
+        path: ['retainerinvoices', retainerinvoiceId, 'comments'],
+        body: data,
+      })
+    },
 
-  async addComment(
-    retainerinvoiceId: string,
-    data: RetainerInvoicesAddCommentRequest
-  ): Promise<void> {
-    await this.http.post({
-      path: ['retainerinvoices', retainerinvoiceId, 'comments'],
-      body: data,
-    })
-  }
+    async updateComment(
+      retainerinvoiceId: string,
+      commentId: string,
+      data: RetainerInvoicesUpdateCommentRequest
+    ): Promise<RetainerInvoicesUpdateCommentResponse> {
+      return http.put<RetainerInvoicesUpdateCommentResponse>({
+        path: ['retainerinvoices', retainerinvoiceId, 'comments', commentId],
+        body: data,
+      })
+    },
 
-  async updateComment(
-    retainerinvoiceId: string,
-    commentId: string,
-    data: RetainerInvoicesUpdateCommentRequest
-  ): Promise<RetainerInvoicesUpdateCommentResponse> {
-    return this.http.put<RetainerInvoicesUpdateCommentResponse>({
-      path: ['retainerinvoices', retainerinvoiceId, 'comments', commentId],
-      body: data,
-    })
-  }
-
-  async deleteComment(retainerinvoiceId: string, commentId: string): Promise<void> {
-    await this.http.delete({
-      path: ['retainerinvoices', retainerinvoiceId, 'comments', commentId],
-    })
+    async deleteComment(retainerinvoiceId: string, commentId: string): Promise<void> {
+      await http.delete({
+        path: ['retainerinvoices', retainerinvoiceId, 'comments', commentId],
+      })
+    },
   }
 }
+
+export type RetainerInvoices = ReturnType<typeof createRetainerInvoices>

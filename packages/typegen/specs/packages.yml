@@ -1193,7 +1193,7 @@ components:
           type: string
           example: success
           readOnly: true
-        packagea:
+        packages:
           type: array
           items:
             type: object

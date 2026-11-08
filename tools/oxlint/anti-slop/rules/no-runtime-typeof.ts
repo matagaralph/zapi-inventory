@@ -29,7 +29,7 @@ export const noRuntimeTypeofRule = defineRule({
 		type: "problem",
 		docs: {
 			description:
-				"Disallow runtime typeof checks; external values must be decoded into meaningful types at their I/O boundary.",
+				"Disallow runtime typeof checks. External values must be decoded into meaningful types at their I/O boundary.",
 		},
 		messages: {
 			runtimeTypeof:

@@ -14,80 +14,82 @@ import type { HTTPClient } from '../http.ts'
 /**
  * Inventory Adjustments are used to synchronize the inventory/stock to account for things that occur outside the normal business like theft, damaged goods, data entry error etc.
  */
-export class InventoryAdjustments {
-  constructor(private readonly http: HTTPClient) {}
+export function createInventoryAdjustments(http: HTTPClient) {
+  return {
+    async list(
+      params?: ListInventoryAdjustmentsQuery
+    ): Promise<ListInventoryAdjustmentsResponse['inventory_adjustments']> {
+      const { inventory_adjustments } = await http.get<ListInventoryAdjustmentsResponse>({
+        path: ['inventoryadjustments'],
+        query: { ...params },
+      })
+      return inventory_adjustments
+    },
 
-  async list(
-    params?: ListInventoryAdjustmentsQuery
-  ): Promise<ListInventoryAdjustmentsResponse['inventory_adjustments']> {
-    const { inventory_adjustments } = await this.http.get<ListInventoryAdjustmentsResponse>({
-      path: ['inventoryadjustments'],
-      query: { ...params },
-    })
-    return inventory_adjustments
-  }
+    async create(
+      data: CreateInventoryAdjustmentRequest
+    ): Promise<CreateInventoryAdjustmentResponse['inventory_adjustment']> {
+      const { inventory_adjustment } = await http.post<CreateInventoryAdjustmentResponse>({
+        path: ['inventoryadjustments'],
+        body: data,
+      })
+      return inventory_adjustment
+    },
 
-  async create(
-    data: CreateInventoryAdjustmentRequest
-  ): Promise<CreateInventoryAdjustmentResponse['inventory_adjustment']> {
-    const { inventory_adjustment } = await this.http.post<CreateInventoryAdjustmentResponse>({
-      path: ['inventoryadjustments'],
-      body: data,
-    })
-    return inventory_adjustment
-  }
+    async get(
+      inventoryAdjustmentId: string
+    ): Promise<GetInventoryAdjustmentResponse['inventory_adjustment']> {
+      const { inventory_adjustment } = await http.get<GetInventoryAdjustmentResponse>({
+        path: ['inventoryadjustments', inventoryAdjustmentId],
+      })
+      return inventory_adjustment
+    },
 
-  async get(
-    inventoryAdjustmentId: string
-  ): Promise<GetInventoryAdjustmentResponse['inventory_adjustment']> {
-    const { inventory_adjustment } = await this.http.get<GetInventoryAdjustmentResponse>({
-      path: ['inventoryadjustments', inventoryAdjustmentId],
-    })
-    return inventory_adjustment
-  }
+    async update(
+      inventoryAdjustmentId: string,
+      data: UpdateInventoryAdjustmentRequest
+    ): Promise<UpdateInventoryAdjustmentResponse['inventory_adjustment']> {
+      const { inventory_adjustment } = await http.put<UpdateInventoryAdjustmentResponse>({
+        path: ['inventoryadjustments', inventoryAdjustmentId],
+        body: data,
+      })
+      return inventory_adjustment
+    },
 
-  async update(
-    inventoryAdjustmentId: string,
-    data: UpdateInventoryAdjustmentRequest
-  ): Promise<UpdateInventoryAdjustmentResponse['inventory_adjustment']> {
-    const { inventory_adjustment } = await this.http.put<UpdateInventoryAdjustmentResponse>({
-      path: ['inventoryadjustments', inventoryAdjustmentId],
-      body: data,
-    })
-    return inventory_adjustment
-  }
+    async delete(inventoryAdjustmentId: string): Promise<void> {
+      await http.delete({
+        path: ['inventoryadjustments', inventoryAdjustmentId],
+      })
+    },
 
-  async delete(inventoryAdjustmentId: string): Promise<void> {
-    await this.http.delete({
-      path: ['inventoryadjustments', inventoryAdjustmentId],
-    })
-  }
+    async submit(inventoryAdjustmentId: string): Promise<void> {
+      await http.post({
+        path: ['inventoryadjustments', inventoryAdjustmentId, 'submit'],
+      })
+    },
 
-  async submit(inventoryAdjustmentId: string): Promise<void> {
-    await this.http.post({
-      path: ['inventoryadjustments', inventoryAdjustmentId, 'submit'],
-    })
-  }
+    async approve(inventoryAdjustmentId: string): Promise<void> {
+      await http.post({
+        path: ['inventoryadjustments', inventoryAdjustmentId, 'approve'],
+      })
+    },
 
-  async approve(inventoryAdjustmentId: string): Promise<void> {
-    await this.http.post({
-      path: ['inventoryadjustments', inventoryAdjustmentId, 'approve'],
-    })
-  }
+    async approveFinal(inventoryAdjustmentId: string): Promise<void> {
+      await http.post({
+        path: ['inventoryadjustments', inventoryAdjustmentId, 'approve', 'final'],
+      })
+    },
 
-  async approveFinal(inventoryAdjustmentId: string): Promise<void> {
-    await this.http.post({
-      path: ['inventoryadjustments', inventoryAdjustmentId, 'approve', 'final'],
-    })
-  }
-
-  async reject(
-    inventoryAdjustmentId: string,
-    data?: InventoryadjustmentsRejectRequest
-  ): Promise<void> {
-    await this.http.post({
-      path: ['inventoryadjustments', inventoryAdjustmentId, 'reject'],
-      body: data,
-    })
+    async reject(
+      inventoryAdjustmentId: string,
+      data?: InventoryadjustmentsRejectRequest
+    ): Promise<void> {
+      await http.post({
+        path: ['inventoryadjustments', inventoryAdjustmentId, 'reject'],
+        body: data,
+      })
+    },
   }
 }
+
+export type InventoryAdjustments = ReturnType<typeof createInventoryAdjustments>

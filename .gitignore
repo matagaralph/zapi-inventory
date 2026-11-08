@@ -1,4 +1,4 @@
-# dependencies (bun install)
+# dependencies (pnpm install)
 node_modules
 
 # output
@@ -10,7 +10,7 @@ dist
 packages/sdk/README.md
 packages/sdk/LICENSE
 
-# generated reproducible via `bun run generate` from packages/typegen/specs/*.yml
+# generated reproducible via `pnpm generate` from packages/typegen/specs/*.yml
 packages/typegen/src/generated/
 packages/typegen/src/types/
 packages/typegen/src/index.ts

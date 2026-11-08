@@ -8,7 +8,7 @@ export const noReflectGetRule = defineRule({
     type: "problem",
     docs: {
       description:
-        "Disallow Reflect.get; use typed property access or parse dynamic input into a domain type.",
+        "Disallow Reflect.get. Use typed property access or parse dynamic input into a domain type.",
     },
     messages: {
       reflectGet:

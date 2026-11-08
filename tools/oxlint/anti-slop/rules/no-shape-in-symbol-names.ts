@@ -17,7 +17,7 @@ export const noForbiddenTermInSymbolNamesRule = defineRule({
     },
     messages: {
       forbiddenSymbolName:
-        'Rename symbol "{{name}}" for its domain role; "shape" describes structure rather than ownership.',
+        'Rename symbol "{{name}}" for its domain role, because "shape" describes structure rather than ownership.',
     },
   },
   createOnce(context) {

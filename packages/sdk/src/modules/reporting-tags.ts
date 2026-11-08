@@ -15,7 +15,7 @@ import type {
 import type { HTTPClient } from '../http.ts'
 
 // no named schema for this in Zoho's OpenAPI export, so it's declared locally
-interface ReportingTagSummary {
+export interface ReportingTagSummary {
   tag_id?: string
   tag_name?: string
   tag_order?: number
@@ -26,11 +26,11 @@ interface ReportingTagSummary {
   is_draft?: boolean
 }
 
-interface ActionResponse {
+export interface ActionResponse {
   message?: string
 }
 
-interface ReorderTagsResponse {
+export interface ReorderTagsResponse {
   code?: number
   message?: string
   tags?: ReportingTagSummary[]
@@ -39,101 +39,103 @@ interface ReorderTagsResponse {
 /**
  * Reporting tags are custom financial labels you add to financial transactions to categorize them  by department, cost center, business unit, or any other way based on business needs for reporting. In this document,  you'll learn how to create and manage reporting tags for the specific requirements that your organization needs.
  */
-export class ReportingTags {
-  constructor(private readonly http: HTTPClient) {}
+export function createReportingTags(http: HTTPClient) {
+  return {
+    async list(): Promise<ReportingTagSummary[] | undefined> {
+      const { reporting_tags } = await http.get<{ reporting_tags?: ReportingTagSummary[] }>({
+        path: ['reportingtags'],
+      })
+      return reporting_tags
+    },
 
-  async list(): Promise<ReportingTagSummary[] | undefined> {
-    const { reporting_tags } = await this.http.get<{ reporting_tags?: ReportingTagSummary[] }>({
-      path: ['reportingtags'],
-    })
-    return reporting_tags
-  }
+    async create(data: UpdateReportingTagRequest): Promise<ReportingTagsResponse['tag']> {
+      const { tag } = await http.post<ReportingTagsResponse>({
+        path: ['reportingtags'],
+        body: data,
+      })
+      return tag
+    },
 
-  async create(data: UpdateReportingTagRequest): Promise<ReportingTagsResponse['tag']> {
-    const { tag } = await this.http.post<ReportingTagsResponse>({
-      path: ['reportingtags'],
-      body: data,
-    })
-    return tag
-  }
+    async update(
+      tagId: string,
+      data: UpdateReportingTagRequest
+    ): Promise<ReportingTagsResponse['tag']> {
+      const { tag } = await http.put<ReportingTagsResponse>({
+        path: ['reportingtags', tagId],
+        body: data,
+      })
+      return tag
+    },
 
-  async update(
-    tagId: string,
-    data: UpdateReportingTagRequest
-  ): Promise<ReportingTagsResponse['tag']> {
-    const { tag } = await this.http.put<ReportingTagsResponse>({
-      path: ['reportingtags', tagId],
-      body: data,
-    })
-    return tag
-  }
+    async markDefaultOption(tagId: string, params: MarkDefaultOptionQuery): Promise<void> {
+      await http.post({
+        path: ['reportingtags', tagId],
+        query: params,
+      })
+    },
 
-  async markDefaultOption(tagId: string, params: MarkDefaultOptionQuery): Promise<void> {
-    await this.http.post({
-      path: ['reportingtags', tagId],
-      query: params,
-    })
-  }
+    async delete(tagId: string): Promise<void> {
+      await http.delete({ path: ['reportingtags', tagId] })
+    },
 
-  async delete(tagId: string): Promise<void> {
-    await this.http.delete({ path: ['reportingtags', tagId] })
-  }
+    async updateOptions(tagId: string, data: UpdateOptionsRequest): Promise<UpdateOptionsResponse> {
+      return http.put<UpdateOptionsResponse>({
+        path: ['reportingtags', tagId, 'options'],
+        body: data,
+      })
+    },
 
-  async updateOptions(tagId: string, data: UpdateOptionsRequest): Promise<UpdateOptionsResponse> {
-    return this.http.put<UpdateOptionsResponse>({
-      path: ['reportingtags', tagId, 'options'],
-      body: data,
-    })
-  }
+    async updateCriteria(
+      tagId: string,
+      data: UpdateCriteriaRequest
+    ): Promise<UpdateCriteriaResponse> {
+      return http.put<UpdateCriteriaResponse>({
+        path: ['reportingtags', tagId, 'criteria'],
+        body: data,
+      })
+    },
 
-  async updateCriteria(
-    tagId: string,
-    data: UpdateCriteriaRequest
-  ): Promise<UpdateCriteriaResponse> {
-    return this.http.put<UpdateCriteriaResponse>({
-      path: ['reportingtags', tagId, 'criteria'],
-      body: data,
-    })
-  }
+    async activate(tagId: string): Promise<ActionResponse> {
+      return http.post<ActionResponse>({ path: ['reportingtags', tagId, 'active'] })
+    },
 
-  async activate(tagId: string): Promise<ActionResponse> {
-    return this.http.post<ActionResponse>({ path: ['reportingtags', tagId, 'active'] })
-  }
+    async deactivate(tagId: string): Promise<ActionResponse> {
+      return http.post<ActionResponse>({ path: ['reportingtags', tagId, 'inactive'] })
+    },
 
-  async deactivate(tagId: string): Promise<ActionResponse> {
-    return this.http.post<ActionResponse>({ path: ['reportingtags', tagId, 'inactive'] })
-  }
+    async activateOption(tagId: string, optionId: string): Promise<ActionResponse> {
+      return http.post<ActionResponse>({
+        path: ['reportingtags', tagId, 'option', optionId, 'active'],
+      })
+    },
 
-  async activateOption(tagId: string, optionId: string): Promise<ActionResponse> {
-    return this.http.post<ActionResponse>({
-      path: ['reportingtags', tagId, 'option', optionId, 'active'],
-    })
-  }
+    async deactivateOption(tagId: string, optionId: string): Promise<ActionResponse> {
+      return http.post<ActionResponse>({
+        path: ['reportingtags', tagId, 'option', optionId, 'inactive'],
+      })
+    },
 
-  async deactivateOption(tagId: string, optionId: string): Promise<ActionResponse> {
-    return this.http.post<ActionResponse>({
-      path: ['reportingtags', tagId, 'option', optionId, 'inactive'],
-    })
-  }
+    async getOptionsDetailPage(params: GetTagOptionsQuery): Promise<OptionsDetailPageResponse> {
+      return http.get<OptionsDetailPageResponse>({
+        path: ['reportingtags', 'options'],
+        query: params,
+      })
+    },
 
-  async getOptionsDetailPage(params: GetTagOptionsQuery): Promise<OptionsDetailPageResponse> {
-    return this.http.get<OptionsDetailPageResponse>({
-      path: ['reportingtags', 'options'],
-      query: params,
-    })
-  }
+    async listAllOptions(params: TagOptionsQuery): Promise<OptionsResponse> {
+      return http.get<OptionsResponse>({
+        path: ['reportingtags', 'options', 'all'],
+        query: params,
+      })
+    },
 
-  async listAllOptions(params: TagOptionsQuery): Promise<OptionsResponse> {
-    return this.http.get<OptionsResponse>({
-      path: ['reportingtags', 'options', 'all'],
-      query: params,
-    })
-  }
-
-  async reorder(tagIds: string[]): Promise<ReorderTagsResponse> {
-    return this.http.put<ReorderTagsResponse>({
-      path: ['reportingtags', 'reorder'],
-      body: { tag_ids: tagIds },
-    })
+    async reorder(tagIds: string[]): Promise<ReorderTagsResponse> {
+      return http.put<ReorderTagsResponse>({
+        path: ['reportingtags', 'reorder'],
+        body: { tag_ids: tagIds },
+      })
+    },
   }
 }
+
+export type ReportingTags = ReturnType<typeof createReportingTags>

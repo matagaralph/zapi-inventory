@@ -8,7 +8,7 @@ export const noReflectApplyRule = defineRule({
     type: "problem",
     docs: {
       description:
-        "Disallow Reflect.apply; call typed functions directly or model dynamic dispatch behind an interface.",
+        "Disallow Reflect.apply. Call typed functions directly or model dynamic dispatch behind an interface.",
     },
     messages: {
       reflectApply:

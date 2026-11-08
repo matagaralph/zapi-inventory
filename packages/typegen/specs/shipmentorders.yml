@@ -734,7 +734,7 @@ components:
           type: string
           example: Shipment created successfully.
           readOnly: true
-        shipment_order:
+        shipmentorder:
           $ref: '#/components/schemas/shipment_order-response'
     update-a-shipment-order-response:
       type: object
@@ -851,7 +851,7 @@ components:
           type: string
           example: success
           readOnly: true
-        shipment_order:
+        shipmentorder:
           type: object
           properties:
             salesorder_id:

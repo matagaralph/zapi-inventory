@@ -9,10 +9,11 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "generate": "bun run generate.ts"
+    "generate": "node generate.ts"
   },
-  "dependencies": {
+  "devDependencies": {
+    "@types/node": "^24.10.0",
     "openapi-typescript": "^7.13.0",
-    "typescript": "^5"
+    "typescript": "^5.9.3"
   }
 }

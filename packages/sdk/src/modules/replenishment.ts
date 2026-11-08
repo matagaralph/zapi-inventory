@@ -29,180 +29,182 @@ import type { HTTPClient } from '../http.ts'
 /**
  * Replenishment helps you configure and manage stock replenishment for items.
  */
-export class Replenishment {
-  constructor(private readonly http: HTTPClient) {}
+export function createReplenishment(http: HTTPClient) {
+  return {
+    async getLocationConfigurations(
+      itemId: string
+    ): Promise<
+      GetReplenishmentConfigurationsForAssociatedLocationsResponse['replenishment_configurations']
+    > {
+      const { replenishment_configurations } =
+        await http.get<GetReplenishmentConfigurationsForAssociatedLocationsResponse>({
+          path: ['items', itemId, 'locations', 'replenishments'],
+        })
+      return replenishment_configurations
+    },
 
-  async getLocationConfigurations(
-    itemId: string
-  ): Promise<
-    GetReplenishmentConfigurationsForAssociatedLocationsResponse['replenishment_configurations']
-  > {
-    const { replenishment_configurations } =
-      await this.http.get<GetReplenishmentConfigurationsForAssociatedLocationsResponse>({
-        path: ['items', itemId, 'locations', 'replenishments'],
+    async getWarehouseConfigurations(
+      itemId: string
+    ): Promise<
+      GetReplenishmentConfigurationsForAssociatedWarehousesResponse['replenishment_configurations']
+    > {
+      const { replenishment_configurations } =
+        await http.get<GetReplenishmentConfigurationsForAssociatedWarehousesResponse>({
+          path: ['items', itemId, 'warehouses', 'replenishments'],
+        })
+      return replenishment_configurations
+    },
+
+    async get(
+      replenishmentConfigurationId: string
+    ): Promise<GetReplenishmentConfigurationResponse['replenishment_configuration']> {
+      const { replenishment_configuration } = await http.get<GetReplenishmentConfigurationResponse>(
+        {
+          path: ['replenishments', replenishmentConfigurationId],
+        }
+      )
+      return replenishment_configuration
+    },
+
+    async update(
+      replenishmentConfigurationId: string,
+      data: UpdateReplenishmentConfigurationRequest
+    ): Promise<UpdateReplenishmentConfigurationResponse['replenishment_configuration']> {
+      const { replenishment_configuration } =
+        await http.put<UpdateReplenishmentConfigurationResponse>({
+          path: ['replenishments', replenishmentConfigurationId],
+          body: data,
+        })
+      return replenishment_configuration
+    },
+
+    async bulkUpdate(
+      data: BulkUpdateReplenishmentConfigurationsRequest,
+      params: BulkUpdateReplenishmentsQuery
+    ): Promise<BulkUpdateReplenishmentConfigurationsResponse['replenishment_configurations']> {
+      const { replenishment_configurations } =
+        await http.put<BulkUpdateReplenishmentConfigurationsResponse>({
+          path: ['replenishments'],
+          query: params,
+          body: data,
+        })
+      return replenishment_configurations
+    },
+
+    async create(
+      data: CreateReplenishmentConfigurationRequest
+    ): Promise<CreateReplenishmentConfigurationResponse['replenishment_configuration']> {
+      const { replenishment_configuration } =
+        await http.post<CreateReplenishmentConfigurationResponse>({
+          path: ['replenishments'],
+          body: data,
+        })
+      return replenishment_configuration
+    },
+
+    async listTasks(
+      params?: ListReplenishmentTasksQuery
+    ): Promise<ListReplenishmentTasksResponse['replenishment_tasks']> {
+      const { replenishment_tasks } = await http.get<ListReplenishmentTasksResponse>({
+        path: ['replenishments', 'tasks'],
+        query: { ...params },
       })
-    return replenishment_configurations
-  }
+      return replenishment_tasks
+    },
 
-  async getWarehouseConfigurations(
-    itemId: string
-  ): Promise<
-    GetReplenishmentConfigurationsForAssociatedWarehousesResponse['replenishment_configurations']
-  > {
-    const { replenishment_configurations } =
-      await this.http.get<GetReplenishmentConfigurationsForAssociatedWarehousesResponse>({
-        path: ['items', itemId, 'warehouses', 'replenishments'],
+    async getTask(taskId: string): Promise<GetReplenishmentTaskResponse['task_details']> {
+      const { task_details } = await http.get<GetReplenishmentTaskResponse>({
+        path: ['replenishments', 'tasks', taskId],
       })
-    return replenishment_configurations
-  }
+      return task_details
+    },
 
-  async get(
-    replenishmentConfigurationId: string
-  ): Promise<GetReplenishmentConfigurationResponse['replenishment_configuration']> {
-    const { replenishment_configuration } =
-      await this.http.get<GetReplenishmentConfigurationResponse>({
-        path: ['replenishments', replenishmentConfigurationId],
+    async dismissTask(taskId: string): Promise<void> {
+      await http.put({
+        path: ['replenishments', 'tasks', taskId, 'dismiss'],
       })
-    return replenishment_configuration
-  }
+    },
 
-  async update(
-    replenishmentConfigurationId: string,
-    data: UpdateReplenishmentConfigurationRequest
-  ): Promise<UpdateReplenishmentConfigurationResponse['replenishment_configuration']> {
-    const { replenishment_configuration } =
-      await this.http.put<UpdateReplenishmentConfigurationResponse>({
-        path: ['replenishments', replenishmentConfigurationId],
-        body: data,
-      })
-    return replenishment_configuration
-  }
-
-  async bulkUpdate(
-    data: BulkUpdateReplenishmentConfigurationsRequest,
-    params: BulkUpdateReplenishmentsQuery
-  ): Promise<BulkUpdateReplenishmentConfigurationsResponse['replenishment_configurations']> {
-    const { replenishment_configurations } =
-      await this.http.put<BulkUpdateReplenishmentConfigurationsResponse>({
-        path: ['replenishments'],
+    async getTaskForItem(
+      params: GetReplenishmentTaskForItemQuery
+    ): Promise<GetReplenishmentTaskResponse['task_details']> {
+      const { task_details } = await http.get<GetReplenishmentTaskResponse>({
+        path: ['replenishments', 'tasks', 'details'],
         query: params,
-        body: data,
       })
-    return replenishment_configurations
-  }
+      return task_details
+    },
 
-  async create(
-    data: CreateReplenishmentConfigurationRequest
-  ): Promise<CreateReplenishmentConfigurationResponse['replenishment_configuration']> {
-    const { replenishment_configuration } =
-      await this.http.post<CreateReplenishmentConfigurationResponse>({
-        path: ['replenishments'],
-        body: data,
-      })
-    return replenishment_configuration
-  }
-
-  async listTasks(
-    params?: ListReplenishmentTasksQuery
-  ): Promise<ListReplenishmentTasksResponse['replenishment_tasks']> {
-    const { replenishment_tasks } = await this.http.get<ListReplenishmentTasksResponse>({
-      path: ['replenishments', 'tasks'],
-      query: { ...params },
-    })
-    return replenishment_tasks
-  }
-
-  async getTask(taskId: string): Promise<GetReplenishmentTaskResponse['task_details']> {
-    const { task_details } = await this.http.get<GetReplenishmentTaskResponse>({
-      path: ['replenishments', 'tasks', taskId],
-    })
-    return task_details
-  }
-
-  async dismissTask(taskId: string): Promise<void> {
-    await this.http.put({
-      path: ['replenishments', 'tasks', taskId, 'dismiss'],
-    })
-  }
-
-  async getTaskForItem(
-    params: GetReplenishmentTaskForItemQuery
-  ): Promise<GetReplenishmentTaskResponse['task_details']> {
-    const { task_details } = await this.http.get<GetReplenishmentTaskResponse>({
-      path: ['replenishments', 'tasks', 'details'],
-      query: params,
-    })
-    return task_details
-  }
-
-  async getOrderDetails(
-    params: GetReplenishmentOrderDetailsQuery
-  ): Promise<GetReplenishmentOrderDetailsResponse['replenishment_order_details']> {
-    const { replenishment_order_details } =
-      await this.http.get<GetReplenishmentOrderDetailsResponse>({
+    async getOrderDetails(
+      params: GetReplenishmentOrderDetailsQuery
+    ): Promise<GetReplenishmentOrderDetailsResponse['replenishment_order_details']> {
+      const { replenishment_order_details } = await http.get<GetReplenishmentOrderDetailsResponse>({
         path: ['replenishments', 'orders'],
         query: params,
       })
-    return replenishment_order_details
-  }
+      return replenishment_order_details
+    },
 
-  async pause(
-    replenishmentConfigurationId: string,
-    params?: PauseReplenishmentConfigurationQuery
-  ): Promise<void> {
-    await this.http.put({
-      path: ['replenishments', replenishmentConfigurationId, 'pause'],
-      query: params,
-    })
-  }
+    async pause(
+      replenishmentConfigurationId: string,
+      params?: PauseReplenishmentConfigurationQuery
+    ): Promise<void> {
+      await http.put({
+        path: ['replenishments', replenishmentConfigurationId, 'pause'],
+        query: params,
+      })
+    },
 
-  async bulkPause(params: BulkPauseReplenishmentsQuery): Promise<void> {
-    await this.http.put({
-      path: ['replenishments', 'pause'],
-      query: params,
-    })
-  }
+    async bulkPause(params: BulkPauseReplenishmentsQuery): Promise<void> {
+      await http.put({
+        path: ['replenishments', 'pause'],
+        query: params,
+      })
+    },
 
-  async resume(replenishmentConfigurationId: string): Promise<void> {
-    await this.http.put({
-      path: ['replenishments', replenishmentConfigurationId, 'resume'],
-    })
-  }
+    async resume(replenishmentConfigurationId: string): Promise<void> {
+      await http.put({
+        path: ['replenishments', replenishmentConfigurationId, 'resume'],
+      })
+    },
 
-  async bulkResume(params: BulkResumeReplenishmentsQuery): Promise<void> {
-    await this.http.put({
-      path: ['replenishments', 'resume'],
-      query: params,
-    })
-  }
+    async bulkResume(params: BulkResumeReplenishmentsQuery): Promise<void> {
+      await http.put({
+        path: ['replenishments', 'resume'],
+        query: params,
+      })
+    },
 
-  async bulkDismissTasks(params: BulkDismissReplenishmentTasksQuery): Promise<void> {
-    await this.http.put({
-      path: ['replenishments', 'tasks', 'dismiss'],
-      query: params,
-    })
-  }
+    async bulkDismissTasks(params: BulkDismissReplenishmentTasksQuery): Promise<void> {
+      await http.put({
+        path: ['replenishments', 'tasks', 'dismiss'],
+        query: params,
+      })
+    },
 
-  async generateTask(replenishmentConfigurationId: string): Promise<void> {
-    await this.http.post({
-      path: ['replenishments', replenishmentConfigurationId, 'tasks', 'generate'],
-    })
-  }
+    async generateTask(replenishmentConfigurationId: string): Promise<void> {
+      await http.post({
+        path: ['replenishments', replenishmentConfigurationId, 'tasks', 'generate'],
+      })
+    },
 
-  async bulkGenerateTasks(params: BulkGenerateReplenishmentTasksQuery): Promise<void> {
-    await this.http.post({
-      path: ['replenishments', 'tasks', 'generate'],
-      query: params,
-    })
-  }
+    async bulkGenerateTasks(params: BulkGenerateReplenishmentTasksQuery): Promise<void> {
+      await http.post({
+        path: ['replenishments', 'tasks', 'generate'],
+        query: params,
+      })
+    },
 
-  async getTasksReport(
-    params?: GetReplenishmentTasksReportQuery
-  ): Promise<GetReplenishmentTaskDetailsReportResponse['replenishment_tasks']> {
-    const { replenishment_tasks } = await this.http.get<GetReplenishmentTaskDetailsReportResponse>({
-      path: ['reports', 'replenishments', 'tasks'],
-      query: { ...params },
-    })
-    return replenishment_tasks
+    async getTasksReport(
+      params?: GetReplenishmentTasksReportQuery
+    ): Promise<GetReplenishmentTaskDetailsReportResponse['replenishment_tasks']> {
+      const { replenishment_tasks } = await http.get<GetReplenishmentTaskDetailsReportResponse>({
+        path: ['reports', 'replenishments', 'tasks'],
+        query: { ...params },
+      })
+      return replenishment_tasks
+    },
   }
 }
+
+export type Replenishment = ReturnType<typeof createReplenishment>

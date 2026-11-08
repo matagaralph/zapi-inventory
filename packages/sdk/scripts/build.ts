@@ -1,26 +1,30 @@
-import { readdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { execFileSync } from 'node:child_process'
+import { copyFile, readdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import { dirname, join, relative } from 'node:path'
-import { $ } from 'bun'
+import type { BuildOptions } from 'esbuild'
+import { build } from 'esbuild'
 
-const root = join(import.meta.dir, '..')
+const root = join(import.meta.dirname, '..')
 const repoRoot = join(root, '..', '..')
 const entrypoint = join(root, 'src', 'index.ts')
 const outdir = join(root, 'dist')
 const typesOutdir = join(outdir, 'types')
 const typegenRoot = join(root, '..', 'typegen')
+const tsc = createRequire(import.meta.url).resolve('typescript/bin/tsc')
 
 // npm looks for README/LICENSE next to package.json (for the npm page) and won't reach up to
 // the repo root, so a workspace package that only lives at the root publishes with neither. A
 // copy also goes into dist/ so the built output is self-contained on its own.
 async function copyPackageMetadata(): Promise<void> {
-  const readme = Bun.file(join(repoRoot, 'README.md'))
-  const license = Bun.file(join(repoRoot, 'LICENSE'))
+  const readme = join(repoRoot, 'README.md')
+  const license = join(repoRoot, 'LICENSE')
 
   await Promise.all([
-    Bun.write(join(root, 'README.md'), readme),
-    Bun.write(join(root, 'LICENSE'), license),
-    Bun.write(join(outdir, 'README.md'), readme),
-    Bun.write(join(outdir, 'LICENSE'), license),
+    copyFile(readme, join(root, 'README.md')),
+    copyFile(license, join(root, 'LICENSE')),
+    copyFile(readme, join(outdir, 'README.md')),
+    copyFile(license, join(outdir, 'LICENSE')),
   ])
 }
 
@@ -63,42 +67,30 @@ async function rewriteDeclarations(): Promise<void> {
   )
 }
 
+function runTsc(project: string): void {
+  execFileSync(process.execPath, [tsc, '-p', project], { stdio: 'inherit' })
+}
+
 await rm(outdir, { force: true, recursive: true })
 
-const commonConfig = {
-  entrypoints: [entrypoint],
+// The SDK has no runtime dependencies, so marking packages external only ever affects the
+// type-only typegen workspace, whose imports are erased before bundling.
+const commonOptions = {
+  entryPoints: [entrypoint],
+  bundle: true,
   packages: 'external',
-  target: 'node',
+  platform: 'neutral',
+  target: 'es2022',
   minify: true,
-} satisfies Omit<Bun.BuildConfig, 'format' | 'outdir'>
+  logLevel: 'warning',
+} satisfies BuildOptions
 
-const builds = [
-  Bun.build({
-    ...commonConfig,
-    format: 'esm',
-    naming: 'index.mjs',
-    outdir,
-  }),
-  Bun.build({
-    ...commonConfig,
-    format: 'cjs',
-    naming: 'index.cjs',
-    outdir,
-  }),
-]
+await Promise.all([
+  build({ ...commonOptions, format: 'esm', outfile: join(outdir, 'index.mjs') }),
+  build({ ...commonOptions, format: 'cjs', outfile: join(outdir, 'index.cjs') }),
+])
 
-const results = await Promise.all(builds)
-const logs = results.flatMap((result) => result.logs)
-
-if (logs.length > 0) {
-  for (const log of logs) console.error(log)
-}
-
-if (results.some((result) => !result.success)) {
-  process.exit(1)
-}
-
-await $`bunx tsc -p ${join(typegenRoot, 'tsconfig.build.json')}`
-await $`bunx tsc -p ${join(root, 'tsconfig.build.json')}`
+runTsc(join(typegenRoot, 'tsconfig.build.json'))
+runTsc(join(root, 'tsconfig.build.json'))
 await rewriteDeclarations()
 await copyPackageMetadata()

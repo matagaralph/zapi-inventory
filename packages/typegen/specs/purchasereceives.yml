@@ -1380,7 +1380,7 @@ components:
           type: string
           example: success
           readOnly: true
-        purchase_receive:
+        purchasereceive:
           $ref: '#/components/schemas/purchase-receive-response'
     create-purchase-receive-request:
       required:
@@ -1493,7 +1493,7 @@ components:
           type: string
           example: success
           readOnly: true
-        purchase_receive:
+        purchasereceive:
           $ref: '#/components/schemas/purchase-receive-response'
     update-purchase-receive-request:
       type: object
@@ -1522,7 +1522,7 @@ components:
           type: string
           example: success
           readOnly: true
-        purchase_receive:
+        purchasereceive:
           $ref: '#/components/schemas/purchase-receive-response'
     delete-purchase-receive-response:
       type: object

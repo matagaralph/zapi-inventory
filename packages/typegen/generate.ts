@@ -1,11 +1,12 @@
-import { mkdir, readdir } from 'node:fs/promises'
+import { mkdir, readdir, writeFile } from 'node:fs/promises'
 import { join, basename } from 'node:path'
+import { pathToFileURL } from 'node:url'
 import openapiTS, { astToString } from 'openapi-typescript'
 import ts from 'typescript'
 
-const specsDir = join(import.meta.dir, 'specs')
-const generatedDir = join(import.meta.dir, 'src', 'generated')
-const typesDir = join(import.meta.dir, 'src', 'types')
+const specsDir = join(import.meta.dirname, 'specs')
+const generatedDir = join(import.meta.dirname, 'src', 'generated')
+const typesDir = join(import.meta.dirname, 'src', 'types')
 
 await mkdir(generatedDir, { recursive: true })
 await mkdir(typesDir, { recursive: true })
@@ -15,10 +16,10 @@ const toNamespace = (name: string) =>
     .replace(/[-_](.)/g, (_, c: string) => c.toUpperCase())
     .replace(/^(.)/, (c) => c.toUpperCase())
 
-// Zoho repeats this docs-renderer schema in every domain; it always aliases another schema we already export.
+// Zoho repeats this docs-renderer schema in every domain, and it always aliases another schema we already export.
 const IGNORED_SCHEMA_KEYS = new Set(['gendoc-attributes-schema'])
 
-// Only object literals, schema aliases, and intersections are worth a top-level alias; primitives like batch_id aren't.
+// Only object literals, schema aliases, and intersections are worth a top-level alias. Primitives like batch_id aren't.
 const STRUCTURAL_KINDS = new Set([
   ts.SyntaxKind.TypeLiteral,
   ts.SyntaxKind.IndexedAccessType,
@@ -174,9 +175,9 @@ function requireResponseFields(ast: readonly ts.Node[]): ts.Node[] {
   })
 }
 
-// The SDK hand-writes its own request functions against `components` and `operations`;
-// `paths` (every route keyed by URL, duplicating what `operations` already types) is never
-// referenced and would otherwise ship dead weight in the published declaration files.
+// The SDK hand-writes its own request functions against `components` and `operations`. The
+// `paths` interface (every route keyed by URL, duplicating what `operations` already types) is
+// never referenced and would otherwise ship dead weight in the published declaration files.
 function dropUnusedPathsInterface(ast: readonly ts.Node[]): ts.Node[] {
   return ast.filter((node) => !ts.isInterfaceDeclaration(node) || node.name.text !== 'paths')
 }
@@ -238,7 +239,7 @@ function hasExtraQueryParams(operationType: ts.TypeNode): boolean {
   })
 }
 
-// types/*.ts only ever reaches into operations["id"]["parameters"]["query"]; everything else an
+// types/*.ts only ever reaches into operations["id"]["parameters"]["query"]. Everything else an
 // operation carries (path/header/cookie params, requestBody, responses, other operationIds
 // entirely) is dead weight that would otherwise ship in the published declaration files.
 function pruneOperations(
@@ -314,6 +315,26 @@ function extractQueryableOperationIds(ast: readonly ts.Node[]): string[] {
   return ids
 }
 
+// The SDK forbids `any`, explicit or implicit. openapi-typescript falls back to it for some
+// schema constructs, so the build fails loudly rather than shipping one in the declarations.
+function assertNoAnyType(source: string, fileName: string): void {
+  const sourceFile = ts.createSourceFile(fileName, source, ts.ScriptTarget.Latest)
+  const offenders: string[] = []
+
+  function visit(node: ts.Node): void {
+    if (node.kind === ts.SyntaxKind.AnyKeyword) {
+      const { line } = sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile))
+      offenders.push(`${fileName}:${line + 1}`)
+    }
+    ts.forEachChild(node, visit)
+  }
+  visit(sourceFile)
+
+  if (offenders.length > 0) {
+    throw new Error(`[typegen] generated types must not use \`any\`:\n${offenders.join('\n')}`)
+  }
+}
+
 const specFiles = (await readdir(specsDir)).filter((f) => f.endsWith('.yml')).sort()
 
 const moduleNames: string[] = []
@@ -360,11 +381,13 @@ for (const file of specFiles) {
   const namespace = toNamespace(moduleName)
 
   const preprunedAst = dropUnusedWebhooksType(
-    dropUnusedPathsInterface(requireResponseFields(await openapiTS(Bun.pathToFileURL(specPath))))
+    dropUnusedPathsInterface(requireResponseFields(await openapiTS(pathToFileURL(specPath))))
   )
   const keepOperationIds = new Set(extractQueryableOperationIds(preprunedAst))
   const ast = pruneOperations(preprunedAst, keepOperationIds)
-  await Bun.write(join(generatedDir, `${moduleName}.ts`), stripExampleComments(astToString(ast)))
+  const generatedSource = stripExampleComments(astToString(ast))
+  assertNoAnyType(generatedSource, `generated/${moduleName}.ts`)
+  await writeFile(join(generatedDir, `${moduleName}.ts`), generatedSource)
 
   const localAliasOwners = new Map<string, string>()
   const collisionCounts = new Map<string, number>()
@@ -412,7 +435,7 @@ for (const file of specFiles) {
     ...(queryEntries.length > 0 ? ['', queryBody] : []),
     '',
   ].join('\n')
-  await Bun.write(join(typesDir, `${moduleName}.ts`), contents)
+  await writeFile(join(typesDir, `${moduleName}.ts`), contents)
 
   moduleNames.push(moduleName)
   console.log(
@@ -423,8 +446,8 @@ for (const file of specFiles) {
 moduleNames.sort()
 
 const typesBarrel = moduleNames.map((name) => `export * from "./${name}.ts";`).join('\n') + '\n'
-await Bun.write(join(typesDir, 'index.ts'), typesBarrel)
+await writeFile(join(typesDir, 'index.ts'), typesBarrel)
 
-await Bun.write(join(import.meta.dir, 'src', 'index.ts'), 'export * from "./types/index.ts";\n')
+await writeFile(join(import.meta.dirname, 'src', 'index.ts'), 'export * from "./types/index.ts";\n')
 
 console.log('generated src/types/index.ts and src/index.ts')

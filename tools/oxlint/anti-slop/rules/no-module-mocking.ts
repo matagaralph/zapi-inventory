@@ -71,7 +71,7 @@ export const noModuleMockingRule = defineRule({
     type: "problem",
     docs: {
       description:
-        "Disallow Vitest and Jest module mocking; tests must replace dependencies through real interfaces.",
+        "Disallow Vitest and Jest module mocking. Tests must replace dependencies through real interfaces.",
     },
     messages: {
       moduleMock:

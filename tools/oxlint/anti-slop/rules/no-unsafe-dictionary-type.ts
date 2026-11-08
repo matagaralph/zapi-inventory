@@ -94,7 +94,7 @@ export const noUnsafeDictionaryTypeRule = defineRule({
 		},
 		messages: {
 			unsafeDictionary:
-				"This dictionary's {{value}} value type gives callers no concrete value contract. Use an owner/schema-derived value type; parse external payloads before insertion.",
+				"This dictionary's {{value}} value type gives callers no concrete value contract. Use an owner/schema-derived value type. Parse external payloads before insertion.",
 		},
 	},
 	createOnce(context) {

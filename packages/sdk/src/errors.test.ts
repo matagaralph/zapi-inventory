@@ -1,74 +1,61 @@
-import { describe, expect, test } from 'bun:test'
-import { XiorError, type XiorResponse } from 'xior'
-import { APIError, isAPIError } from './errors.ts'
+import { describe, expect, test } from 'vitest'
+import { createAPIError, isAPIError } from './errors.ts'
 
-function fakeXiorError(status: number, cause: unknown): XiorError {
-  const requestConfig = { headers: {}, params: {}, url: '/items/123', method: 'GET' }
-  const response: XiorResponse = {
-    data: cause,
-    status,
-    statusText: '',
-    headers: new Headers(),
-    response: new Response(),
-    request: requestConfig,
-    config: requestConfig,
-  }
-  const err = new XiorError(`Request failed with status code ${status}`, undefined, response)
-  err.config = { baseURL: 'https://api.example.com', url: '/items/123' }
-  return err
-}
+describe('createAPIError', () => {
+  test('creates a native Error carrying the SDK metadata', () => {
+    const error = createAPIError('Item not found', {
+      statusCode: 404,
+      url: 'https://www.zohoapis.com/inventory/v1/items/123',
+      data: { code: 1002, message: 'Item not found' },
+    })
 
-describe('isAPIError', () => {
-  test('true for APIError instances', () => {
-    expect(isAPIError(new APIError('boom'))).toBe(true)
+    expect(error).toBeInstanceOf(Error)
+    expect(error.name).toBe('APIError')
+    expect(error.message).toBe('Item not found')
+    expect(error.statusCode).toBe(404)
+    expect(error.url).toBe('https://www.zohoapis.com/inventory/v1/items/123')
+    expect(error.data).toEqual({ code: 1002, message: 'Item not found' })
+    expect(error.stack).toContain('Item not found')
   })
 
-  test('false for plain errors and non-errors', () => {
-    expect(isAPIError(new Error('boom'))).toBe(false)
-    expect(isAPIError('boom')).toBe(false)
-    expect(isAPIError(undefined)).toBe(false)
+  test('leaves metadata undefined when the request never produced a response', () => {
+    const cause = new TypeError('fetch failed')
+    const error = createAPIError('fetch failed', { url: 'https://example.com/items', cause })
+
+    expect(error.statusCode).toBeUndefined()
+    expect(error.data).toBeUndefined()
+    expect(error.cause).toBe(cause)
+  })
+
+  test('omits cause when none is given', () => {
+    expect('cause' in createAPIError('boom')).toBe(false)
+  })
+
+  test('formats like a native error', () => {
+    expect(String(createAPIError('boom'))).toBe('APIError: boom')
   })
 })
 
-describe('APIError.fromXiorError', () => {
-  test('uses the response body message when present', () => {
-    const err = fakeXiorError(422, { message: 'Item not found', code: 1002 })
-    const apiError = APIError.fromXiorError(err)
-
-    expect(apiError.message).toBe('Item not found')
-    expect(apiError.statusCode).toBe(422)
-    expect(apiError.url).toBe('https://api.example.com/items/123')
-    expect(apiError.data).toEqual({ message: 'Item not found', code: 1002 })
+describe('isAPIError', () => {
+  test('true for errors created by createAPIError', () => {
+    expect(isAPIError(createAPIError('boom'))).toBe(true)
   })
 
-  test('falls back to the xior error message when the body has no string message', () => {
-    const err = fakeXiorError(500, { message: 12345 })
-    const apiError = APIError.fromXiorError(err)
+  test('true for errors branded by another copy of the SDK', () => {
+    const foreign = new Error('boom')
+    Object.defineProperty(foreign, Symbol.for('zapi-inventory.APIError'), { value: true })
 
-    expect(apiError.message).toBe(err.message)
+    expect(isAPIError(foreign)).toBe(true)
   })
 
-  test('falls back to the xior error message when the body is not an object', () => {
-    const err = fakeXiorError(500, 'internal error')
-    const apiError = APIError.fromXiorError(err)
+  test('false for lookalikes, plain errors and non-errors', () => {
+    const lookalike = Object.assign(new Error('boom'), { name: 'APIError', statusCode: 500 })
 
-    expect(apiError.message).toBe(err.message)
-  })
-
-  test('is itself recognized by isAPIError', () => {
-    const apiError = APIError.fromXiorError(fakeXiorError(400, { message: 'bad request' }))
-    expect(isAPIError(apiError)).toBe(true)
-  })
-
-  test('handles network failures that never produced a response', () => {
-    const err = new XiorError('Network Error')
-    err.config = { baseURL: 'https://api.example.com', url: '/items/123' }
-
-    const apiError = APIError.fromXiorError(err)
-
-    expect(apiError.message).toBe('Network Error')
-    expect(apiError.statusCode).toBeUndefined()
-    expect(apiError.url).toBe('https://api.example.com/items/123')
-    expect(apiError.data).toBeUndefined()
+    expect(isAPIError(lookalike)).toBe(false)
+    expect(isAPIError({ name: 'APIError', message: 'boom' })).toBe(false)
+    expect(isAPIError(new Error('boom'))).toBe(false)
+    expect(isAPIError('boom')).toBe(false)
+    expect(isAPIError(null)).toBe(false)
+    expect(isAPIError(undefined)).toBe(false)
   })
 })
