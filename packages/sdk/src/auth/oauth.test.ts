@@ -199,9 +199,9 @@ describe('createOAuthToken', () => {
     const gate = new Promise<void>((resolve) => {
       release = resolve
     })
-    const { fetch, requests } = createFetch(async (request, call) => {
+    const { fetch, requests } = createFetch(async (request, call, signal) => {
       await gate
-      return issueTokens(request, call)
+      return issueTokens(request, call, signal)
     })
     const store = createRecordingTokenStore()
     const auth = createProvider(fetch, store)
@@ -269,8 +269,8 @@ describe('createOAuthToken', () => {
   })
 
   test('does not retry a failed refresh, but tries again on the next call', async () => {
-    const { fetch, requests } = createFetch((request, call) =>
-      call === 1 ? json({ message: 'Down' }, 500) : issueTokens(request, call)
+    const { fetch, requests } = createFetch((request, call, signal) =>
+      call === 1 ? json({ message: 'Down' }, 500) : issueTokens(request, call, signal)
     )
     const auth = createProvider(fetch)
 
@@ -363,9 +363,9 @@ describe('createOAuthToken', () => {
     const gate = new Promise<void>((resolve) => {
       release = resolve
     })
-    const { fetch, requests } = createFetch(async (request, call) => {
+    const { fetch, requests } = createFetch(async (request, call, signal) => {
       if (call === 1) await gate
-      return issueTokens(request, call)
+      return issueTokens(request, call, signal)
     })
     const store = createRecordingTokenStore()
     const auth = createProvider(fetch, store)
@@ -458,9 +458,9 @@ describe('createOAuthToken', () => {
     const gate = new Promise<void>((resolve) => {
       release = resolve
     })
-    const { fetch, requests } = createFetch(async (request, call) => {
+    const { fetch, requests } = createFetch(async (request, call, signal) => {
       if (call === 1) await gate
-      return issueTokens(request, call)
+      return issueTokens(request, call, signal)
     })
     const auth = createProvider(fetch)
 

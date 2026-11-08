@@ -1,6 +1,14 @@
 import { describe, expect, expectTypeOf, test } from 'vitest'
 import { MODULE_INVENTORY } from '../test/module-inventory.ts'
-import { apiRequests, createFetch, createZohoFetch, json, tokenRequests } from '../test/fetch.ts'
+import {
+  apiRequests,
+  createFetch,
+  createHangingFetch,
+  createZohoFetch,
+  json,
+  tokenRequests,
+  waitForAbort,
+} from '../test/fetch.ts'
 import { createMemoryTokenStore } from './auth/memory-token-store.ts'
 import type { ZAPI, ZohoDataCenter } from './client.ts'
 import { zAPI } from './client.ts'
@@ -124,13 +132,11 @@ describe('zAPI', () => {
   })
 
   test('applies the timeout option to API requests', async () => {
-    const { fetch } = createFetch((request) => {
+    const { fetch } = createFetch((request, _call, signal) => {
       if (new URL(request.url).pathname === '/oauth/v2/token') {
         return json({ access_token: 'token', expires_in: 3600 })
       }
-      return new Promise<Response>((_resolve, reject) => {
-        request.signal.addEventListener('abort', () => reject(request.signal.reason))
-      })
+      return waitForAbort(signal)
     })
     const inventory = zAPI({ ...credentials, fetch, timeout: 20 })
 
@@ -138,12 +144,7 @@ describe('zAPI', () => {
   })
 
   test('applies the timeout option to token refreshes too', async () => {
-    const { fetch, requests } = createFetch(
-      (request) =>
-        new Promise<Response>((_resolve, reject) => {
-          request.signal.addEventListener('abort', () => reject(request.signal.reason))
-        })
-    )
+    const { fetch, requests } = createHangingFetch()
     const inventory = zAPI({ ...credentials, fetch, timeout: 20 })
 
     await expect(Promise.all([inventory.items.list(), inventory.bills.list()])).rejects.toThrow(
