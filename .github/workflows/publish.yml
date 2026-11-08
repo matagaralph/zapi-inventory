@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - next
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -13,7 +14,7 @@ jobs:
   release:
     name: Publish
     needs: [check]
-    if: github.repository == 'matagaralph/zapi-inventory'
+    if: github.repository == 'matagaralph/zapi-inventory' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -24,16 +25,48 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/ci-setup
-      - run: bun run build
-      # npm trusted publishing (OIDC) needs npm >= 11.5.1; the runner's
+      - run: pnpm build
+      # npm trusted publishing (OIDC) needs npm >= 11.5.1, but the runner's
       # preinstalled npm predates that, so it silently falls back to
       # classic auth and fails with ENEEDAUTH.
       - run: npm install -g npm@latest
       - name: Create Release Pull Request or Publish to npm
         uses: changesets/action@v1
         with:
-          version: bun run changeset:version
-          publish: bun run changeset:publish
+          version: pnpm changeset:version
+          publish: pnpm changeset:publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
+
+  prerelease:
+    name: Publish release candidate
+    needs: [check]
+    if: github.repository == 'matagaralph/zapi-inventory' && github.ref == 'refs/heads/next'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/ci-setup
+      - run: pnpm build
+      # Same as above: trusted publishing needs npm >= 11.5.1.
+      - run: npm install -g npm@latest
+      - name: Publish the release candidate to npm under the rc tag
+        working-directory: packages/sdk
+        run: |
+          version=$(node -p "require('./package.json').version")
+          case "$version" in
+            *-rc.*) ;;
+            *)
+              echo "next only publishes release candidates, skipping $version"
+              exit 0
+              ;;
+          esac
+          if npm view "zapi-inventory@$version" version > /dev/null 2>&1; then
+            echo "zapi-inventory@$version is already published, skipping"
+            exit 0
+          fi
+          npm publish --tag rc --access public --provenance
